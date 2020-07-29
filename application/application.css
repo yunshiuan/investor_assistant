@@ -1,0 +1,163 @@
+/**
+ * This is the css style sheet for the program defined in Main.java.
+ * 
+ * @project a2 Milestone 2: UI
+ * @course CS400
+ * @author Chuang, Yun-Shiuan (Sean)
+ * @email ychuang26@wisc.edu
+ * @date 20200714
+ * @attribution 
+ * - see Main.java for details
+ */
+
+/* 
+Constants 
+*/
+.root {
+  /* to show the helper border lines, set this to "black" */
+  /* HELPER_BORDER_LINE_COLOR: "black"; */
+  HELPER_BORDER_LINE_COLOR: "#00000000";
+}
+/* 
+Special classes
+*/
+/* The special class for the labels on the pie chart */
+.chart-pie-label {
+  -fx-font-size: 10pt ;
+}
+
+/* The special class for figure titles */
+.chart-title{
+  -fx-font-size: 18pt ; 
+}
+/* 
+Normal classes
+*/
+.text-main-window-title {
+  /* padding: top right bottom left */
+  -fx-padding: 10px 0px 0px 0px;
+  -fx-border-insets: 10px 0px 0px 0px;
+  -fx-background-insets: 10px 0px 0px 0px;
+  /* font */
+  -fx-font-size: 22;
+  -fx-font-family: 'sans-serif';
+  -fx-font-weight: bold;
+
+  /* border */
+  -fx-border-color: HELPER_BORDER_LINE_COLOR;
+  -fx-border-width: 1;
+}
+.text-new-window-title {
+  /* padding: top right bottom left */
+  -fx-padding: 30px 0px 0px 0px;
+  -fx-border-insets: 30px 0px 0px 0px;
+  -fx-background-insets: 30px 0px 0px 0px;
+  /* font */
+  -fx-font-size: 19;
+  -fx-font-family: 'sans-serif';
+  /* border */
+  -fx-border-color: HELPER_BORDER_LINE_COLOR;
+  -fx-border-width: 1;
+}
+
+.box-investors {
+  -fx-spacing: 20;
+  /* padding: top right bottom left */
+  -fx-padding: 10px 0px 10px 20px;
+  -fx-border-insets: 10px 0px 10px 20px;
+  -fx-background-insets: 10px 0px 10px 20px;
+  /* border */
+  -fx-border-color: HELPER_BORDER_LINE_COLOR;
+  -fx-border-width: 1;
+}
+
+.box-one-investor {
+  /* padding: top right bottom left */
+  -fx-padding: 0px 5px 0px 0px;
+  -fx-border-insets: 0px 5px 0px 0px;
+  -fx-background-insets: 0px 5px 0px 0px;
+
+  /* color */
+  -fx-background-color: #d0cece;
+  -fx-background-radius: 10;
+  /* border */
+  -fx-border-color: black;
+  -fx-border-width: 1;
+  -fx-border-radius: 10;
+}
+
+.box-investor-text {
+  /* size */
+  /* -fx-pref-height: 450px; */
+  -fx-pref-width: 160px;
+  /* font */
+  -fx-font-size: 19;
+  -fx-font-family: 'sans-serif';
+  /* border */
+  -fx-border-color: HELPER_BORDER_LINE_COLOR;
+  -fx-border-width: 1;
+}
+
+.text-investor-title {
+  /* font */
+  -fx-font-size: 21;
+  -fx-font-weight: bold;
+}
+
+.box-chart-portfolio {
+  /* size */
+  /* -fx-pref-height: 450px; */
+  -fx-pref-width: 200px;
+  /* -fx-background-color: #d0cece; */
+  /* border */
+  -fx-border-color: HELPER_BORDER_LINE_COLOR;
+  -fx-border-width: 1;
+  /* size */
+  /* -fx-pref-width: 10;
+  -fx-pref-height: 10;
+  -fx-min-width: 10;
+  -fx-min-height: 10;
+  -fx-max-width: 10;
+  -fx-max-height: 10; */
+}
+
+.box-menu-buttons {
+  -fx-spacing: 10;
+  /* -fx-background-color: #d0cece; */
+  /* padding: top right bottom left */
+  -fx-padding: 0px 30px 10px 15px;
+  -fx-border-insets: 0px 30px 10px 15px;
+  -fx-background-insets: 0px 30px 10px 15px;
+  /* border */
+  -fx-border-color: HELPER_BORDER_LINE_COLOR;
+  -fx-border-width: 1;
+}
+
+.menu-button {
+  /* size */
+  -fx-pref-height: 50px;
+  -fx-pref-width: 160px;
+  /* padding: top right bottom left */
+  /* -fx-padding: 0px 30px 0px 0px;
+  -fx-border-insets: 0px 30px 0px 0px;
+  -fx-background-insets: 0px 30px 0px 0px; */
+  /* color */
+  -fx-background-color: #d0cece;
+  -fx-background-radius: 10;
+  /* border */
+  -fx-border-color: black;
+  -fx-border-width: 1;
+  -fx-border-radius: 10;
+  /* font */
+  -fx-font-size: 21;
+  -fx-font-family: 'sans-serif';
+}
+
+.menu-button:hover {
+  -fx-background-color: #ada9a9;
+}
+
+.menu-button:pressed {
+  -fx-background-color: #686565;
+  /* TODO: Add the "pressed" effect */
+}
