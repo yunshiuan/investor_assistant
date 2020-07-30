@@ -11,6 +11,7 @@
  */
 package application;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
@@ -50,10 +51,9 @@ public class Recorder {
 	// the list to contain the transactions
 	// TODO: Should utilize this
 	private LinkedList<TransactionNode> records = new LinkedList<TransactionNode>();
+	// the file reader to read and parse the imported file
+	// - use the static methods in MyFileReader
 
-	/**
-	 * Public Methods
-	 */
 	/**
 	 * Getters and setters
 	 */
@@ -69,6 +69,26 @@ public class Recorder {
 	 */
 	public void setTableInvestors(Hashtable<String, Investor> tableInvestors) {
 		this.tableInvestors = tableInvestors;
+	}
+
+	/**
+	 * Public Methods
+	 */
+	/**
+	 * import the file of transactions that is downloaded from brokerage companies
+	 * 
+	 * @param fileName
+	 * @return true if succeeded and false if failed
+	 */
+	public boolean importData(String fileName) {
+		try {
+			this.records.addAll(MyFileReader.readTransactionFile(fileName));
+//			System.out.println(this.records.toString());
+		} catch (IOException | InvalidFileFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**

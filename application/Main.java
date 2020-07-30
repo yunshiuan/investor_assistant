@@ -17,6 +17,8 @@
  * (6-2) file chooser: https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm
  * (7) Enable css in new windows: https://stackoverflow.com/questions/36295482/javafx-css-not-loading-when-opening-new-window
  * (8) Styling Charts with CSS: https://docs.oracle.com/javafx/2/charts/css-styles.htm
+ * (9) Read in csv filse: https://stackabuse.com/reading-and-writing-csvs-in-java/
+ * (10) Self-defined exceptions: p3/KeyNotFoundException.java
  */
 package application;
 
@@ -89,7 +91,7 @@ public class Main extends Application {
 	/**
 	 * Private fields
 	 */
-	private static Recorder myRecorder = new Recorder();
+	private Recorder myRecorder = new Recorder();
 
 	/**
 	 * Design the GUI. Inherit from the class Application.
@@ -101,6 +103,15 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// save args example
 		args = this.getParameters().getRaw();
+		/*
+		 * Initialize the recorder
+		 */
+		// create investors
+		// - load in demo investor data
+		myRecorder.loadDemoInvestors();
+		myRecorder.importData("./data/transaction_record_20200730.csv");
+		// - TODO: This is hard-coded for a3. It should be read from input file.
+		// - TODO: Make the parameters here as class constants
 
 		/**
 		 * Define the border pane
@@ -118,6 +129,14 @@ public class Main extends Application {
 		 */
 		mainScene.getStylesheets().add("application/application.css");
 
+//		/**
+//		 * Bottom panel: Only for developing use. Show console output.
+//		 */
+//		TextArea textArea = new TextArea();
+//		HBox boxTextArea = new HBox(textArea);
+//		boxTextArea.getStyleClass().add("text-main-window-title");		
+//        textArea.setText("abc");
+//		root.setBottom(boxTextArea);
 		/**
 		 * Top panel: title
 		 */
@@ -134,11 +153,6 @@ public class Main extends Application {
 		// the box to contain multiple investors
 		HBox boxInvestors = new HBox();
 		boxInvestors.getStyleClass().add("box-investors");
-		// create investors
-		// - load in demo investor data
-		myRecorder.loadDemoInvestors();
-		// - TODO: This is hard-coded for a3. It should be read from input file.
-		// - TODO: Make the parameters here as class constants
 
 		// put investor information into the box
 		Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
