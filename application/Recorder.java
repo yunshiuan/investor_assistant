@@ -75,7 +75,7 @@ public class Recorder {
 	 * Public Methods
 	 */
 	/**
-	 * import the file of transactions that is downloaded from brokerage companies
+	 * Import the file of transactions that is downloaded from brokerage companies
 	 * 
 	 * @param fileName
 	 * @return true if succeeded and false if failed
@@ -89,6 +89,37 @@ public class Recorder {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	/**
+	 * Show a list of the transactions.
+	 */
+	public void showTransactions() {
+		System.out.println("-----------------");
+		System.out.println("Show all transactions in the recorders");
+		System.out.println("-----------------");
+
+		for (TransactionNode node : records) {
+			System.out.println("-----------------");
+			System.out.println(node.toString());
+		}
+	}
+
+	/**
+	 * Show a given investor's list of the transactions.
+	 * 
+	 * @param investor the investor's name.
+	 */
+	public void showInvestorTransactions(String investor) {
+		System.out.println("-----------------");
+		System.out.println("Show " + investor + "'s transactions in the recorders");
+		System.out.println("-----------------");
+		for (TransactionNode node : records) {
+			if (node.getInvestorName().equals(investor)) {
+				System.out.println("-----------------");
+				System.out.println(node.toString());
+			}
+		}
 	}
 
 	/**

@@ -110,6 +110,8 @@ public class Main extends Application {
 		// - load in demo investor data
 		myRecorder.loadDemoInvestors();
 		myRecorder.importData("./data/transaction_record_20200730.csv");
+		myRecorder.showTransactions();
+		myRecorder.showInvestorTransactions("V");
 		// - TODO: This is hard-coded for a3. It should be read from input file.
 		// - TODO: Make the parameters here as class constants
 
