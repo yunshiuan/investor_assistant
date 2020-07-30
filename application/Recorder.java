@@ -71,4 +71,28 @@ public class Recorder {
 		this.tableInvestors = tableInvestors;
 	}
 
+	/**
+	 * Load in demo investor data.
+	 */
+	public void loadDemoInvestors() {
+		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
+				new Hashtable<String, Double>());
+		investorA.getPortfolio().put("VTI", 8.2);
+		investorA.getPortfolio().put("VGK", 3.2);
+		investorA.getPortfolio().put("VWO", 1.4);
+		investorA.getPortfolio().put("IEI", 1.2);
+		this.tableInvestors.put(investorA.getName(), investorA);
+
+		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
+				new Hashtable<String, Double>());
+		investorB.getPortfolio().put("VTI", 2.5);
+		investorB.getPortfolio().put("VGK", 1.4);
+		investorB.getPortfolio().put("VWO", 5.0);
+		investorB.getPortfolio().put("IEI", 3.0);
+		this.tableInvestors.put(investorB.getName(), investorB);
+	}
+
+	/**
+	 * Private Methods
+	 */
 }

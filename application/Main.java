@@ -136,8 +136,8 @@ public class Main extends Application {
 		boxInvestors.getStyleClass().add("box-investors");
 		// create investors
 		// - load in demo investor data
-		myRecorder.setTableInvestors(Main.loadDemoInvestors(myRecorder.getTableInvestors()));
-		// - TODO: This is hard-coded for a2. It should be read from input file.
+		myRecorder.loadDemoInvestors();
+		// - TODO: This is hard-coded for a3. It should be read from input file.
 		// - TODO: Make the parameters here as class constants
 
 		// put investor information into the box
@@ -760,32 +760,6 @@ public class Main extends Application {
 		}
 		return pieChartData;
 
-	}
-
-	/**
-	 * Load in demo investor data.
-	 * 
-	 * @param tableInvestors the empty table
-	 * @return the table filled by the demo data
-	 */
-	private static Hashtable<String, Investor> loadDemoInvestors(
-			Hashtable<String, Investor> tableInvestors) {
-		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
-				new Hashtable<String, Double>());
-		investorA.getPortfolio().put("VTI", 8.2);
-		investorA.getPortfolio().put("VGK", 3.2);
-		investorA.getPortfolio().put("VWO", 1.4);
-		investorA.getPortfolio().put("IEI", 1.2);
-		tableInvestors.put(investorA.getName(), investorA);
-
-		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
-				new Hashtable<String, Double>());
-		investorB.getPortfolio().put("VTI", 2.5);
-		investorB.getPortfolio().put("VGK", 1.4);
-		investorB.getPortfolio().put("VWO", 5.0);
-		investorB.getPortfolio().put("IEI", 3.0);
-		tableInvestors.put(investorB.getName(), investorB);
-		return tableInvestors;
 	}
 
 }
