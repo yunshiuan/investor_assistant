@@ -29,29 +29,46 @@ public class Recorder {
 	/**
 	 * Constructors
 	 */
-	
+	/**
+	 * No-args
+	 */
+	public Recorder() {
+
+	}
+
 	/**
 	 * Private fields
 	 */
 	// a file chooser for browsing the file
 	protected static final FileChooser fileChooser = new FileChooser();
-	// the table to contFain investors
+	// the table to contain investors
 	private Hashtable<String, Investor> tableInvestors = new Hashtable<String, Investor>();
+	// the hash table with keys being the investment target name and values being
+	// the object InvestmentTarget (which contains the investment target
+	// information)
+	private Hashtable<String, InvestmentTarget> tableInvestmentTarget;
 	// the list to contain the transactions
 	// TODO: Should utilize this
 	private LinkedList<TransactionNode> records = new LinkedList<TransactionNode>();
+
+	/**
+	 * Public Methods
+	 */
+	/**
+	 * Getters and setters
+	 */
 	/**
 	 * @return the tableInvestors
 	 */
 	public Hashtable<String, Investor> getTableInvestors() {
 		return tableInvestors;
 	}
+
 	/**
 	 * @param tableInvestors the tableInvestors to set
 	 */
 	public void setTableInvestors(Hashtable<String, Investor> tableInvestors) {
 		this.tableInvestors = tableInvestors;
 	}
-	
 
 }

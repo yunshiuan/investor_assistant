@@ -1,7 +1,7 @@
 /**
- * This is the program for the assignment a2.
+ * This is the program for the assignment a3.
  * 
- * @project a2 Milestone 2: UI
+ * @project a3 Milestone 3: Final Project
  * @course CS400
  * @author Chuang, Yun-Shiuan (Sean)
  * @email ychuang26@wisc.edu
