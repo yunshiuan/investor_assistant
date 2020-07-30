@@ -1,13 +1,13 @@
 /**
- * This is the program for the assignment a2.
+ * This is the program for the assignment a3.
  * 
- * @project a2 Milestone 2: UI
+ * @project a3 Milestone 3: Final Project
  * @course CS400
  * @author Chuang, Yun-Shiuan (Sean)
- * @email ychuang26@wisc.edu
- * @date 20200714
+ * @email ychuang26@wisc.eduF
+ * @date 20200730
  * @attribution 
- * (1) modified from my assignment "p2 HelloFX "
+ * (1) based on  my assignment "a1 Milestone1: Design" and "a2 Milestone 2: UI"
  * (2) pie chart: https://docs.oracle.com/javafx/2/charts/pie-chart.htm
  * (3) JavaFX Overview: http://tutorials.jenkov.com/javafx/overview.html
  * (4) JavaFX css reference guide: https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
@@ -22,7 +22,6 @@ package application;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -44,7 +43,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -85,19 +83,13 @@ public class Main extends Application {
 	private static final String[] ADD_TRANS_LABELS = { "Transaction Date", "Transaction Type",
 			"Investor Name", "Target Name", "Unit Price", "# of Units" };
 	// the prompts for the "add a transaction" window
-	private static final String[] ADD_TRANS_PROMPT = { "20200714", "Buying",
-			"Andy", "VTI", "155.13", "4.5" };	
-	
+	private static final String[] ADD_TRANS_PROMPT = { "20200714", "Buying", "Andy", "VTI",
+			"155.13", "4.5" };
+
 	/**
-	 * Global variables
+	 * Private fields
 	 */
-	// a file chooser for browsing the file
-	private static final FileChooser fileChooser = new FileChooser();
-	// the table to contain investors
-	private Hashtable<String, Investor> tableInvestors = new Hashtable<String, Investor>();
-	// the list to contain the transactions
-	// TODO: Should utilize this
-	private LinkedList<TransactionNode> records = new LinkedList<TransactionNode>();
+	private static Recorder myRecorder = new Recorder();
 
 	/**
 	 * Design the GUI. Inherit from the class Application.
@@ -144,12 +136,12 @@ public class Main extends Application {
 		boxInvestors.getStyleClass().add("box-investors");
 		// create investors
 		// - load in demo investor data
-		tableInvestors = Main.loadDemoInvestors(tableInvestors);
+		myRecorder.setTableInvestors(Main.loadDemoInvestors(myRecorder.getTableInvestors()));
 		// - TODO: This is hard-coded for a2. It should be read from input file.
 		// - TODO: Make the parameters here as class constants
 
 		// put investor information into the box
-		Set<String> namesInvestors = tableInvestors.keySet();
+		Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
 		int indexInvestor = 0;
 		for (String thisInvestor : namesInvestors) {
 			indexInvestor++;
@@ -169,7 +161,8 @@ public class Main extends Application {
 			boxThisInvestor.getChildren().add(boxText);
 			boxText.getStyleClass().add("box-investor-text");
 			// add the investor information to the box
-			Main.investorToText(boxText, tableInvestors.get(thisInvestor), indexInvestor);
+			Main.investorToText(boxText, myRecorder.getTableInvestors().get(thisInvestor),
+					indexInvestor);
 
 			/**
 			 * chart box at the bottom
@@ -180,7 +173,7 @@ public class Main extends Application {
 			// - TODO: Should beatify the chart.
 			// -- (1) Show the unit and percentage besides each slide in the pie
 			ObservableList<PieChart.Data> pieChartData = Main
-					.createPortfolioChartData(tableInvestors.get(thisInvestor));
+					.createPortfolioChartData(myRecorder.getTableInvestors().get(thisInvestor));
 			// create the pie chart
 			// TODO: ensure the color binds with specific target across investors' charts
 			PieChart chart = new PieChart(pieChartData);
@@ -281,7 +274,7 @@ public class Main extends Application {
 					@Override
 					public void handle(final ActionEvent e) {
 						// TODO: should actually import the data
-						File file = fileChooser.showOpenDialog(newWindow);
+						File file = Recorder.fileChooser.showOpenDialog(newWindow);
 					}
 				});
 				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
@@ -358,7 +351,7 @@ public class Main extends Application {
 					HBox box = new HBox();
 					boxTextFields.getChildren().add(box);
 					TextField textField = new TextField();
-					textField.setPromptText(ADD_TRANS_PROMPT[indexField]);					
+					textField.setPromptText(ADD_TRANS_PROMPT[indexField]);
 					box.getChildren().add(new Label(ADD_TRANS_LABELS[indexField]));
 					box.getChildren().add(textField);
 					box.setAlignment(Pos.CENTER);
@@ -442,7 +435,7 @@ public class Main extends Application {
 				 * Center panel: a combo box
 				 */
 				ObservableList<String> listInvestors = FXCollections.observableArrayList();
-				Set<String> namesInvestors = tableInvestors.keySet();
+				Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
 				for (String nameInvestor : namesInvestors) {
 					listInvestors.add(nameInvestor);
 				}
@@ -572,7 +565,7 @@ public class Main extends Application {
 					@Override
 					public void handle(final ActionEvent e) {
 						// TODO: should actually import the data
-						File file = fileChooser.showOpenDialog(newWindow);
+						File file = Recorder.fileChooser.showOpenDialog(newWindow);
 					}
 				});
 				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
@@ -667,7 +660,7 @@ public class Main extends Application {
 					@Override
 					public void handle(final ActionEvent e) {
 						// TODO: should actually import the data
-						File file = fileChooser.showOpenDialog(newWindow);
+						File file = Recorder.fileChooser.showOpenDialog(newWindow);
 					}
 				});
 				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {

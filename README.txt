@@ -14,6 +14,11 @@ screenshots
 - the screenshots of the program
 
 -----------------
+data
+-----------------
+- the data read by the recorder program.
+
+-----------------
 manifest.txt
 -----------------
 - the file required for creating JAR file.

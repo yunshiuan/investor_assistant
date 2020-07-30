@@ -12,6 +12,7 @@
 package application;
 
 /**
+ * The class to store the information of each transaction.
  * @author Chuang, Yun-Shiuan (Sean)
  * @email ychuang26@wisc.edu
  * @date 20200715
