@@ -1,0 +1,10 @@
+(1) Enable the functionality of
+  (1-1) 'add/remove a transaction'
+  (1-2) select file via browsing
+  (1-3) write summary
+  (1-4)
+(2) Create a second target_info file to demonstrate what happens when the current price changes.
+(3) Pie chart
+  (3-1) Show the percentage and the asset value of each target.
+(4) Investor box
+  (4-1) Show the current total asset
