@@ -48,8 +48,9 @@ public class Recorder {
 	// the hash table with keys being the investment target name and values being
 	// the object InvestmentTarget (which contains the investment target
 	// information)
-	private HashMap<String, InvestmentTarget> tableInvestmentTarget;
+	private HashMap<String, InvestmentTarget> tableTargets;
 	// the hash table to contain the transactions for each investor
+	// - each investor's records are stored in a linked list
 	private HashMap<String, LinkedList<TransactionNode>> tableRecords = new HashMap<String, LinkedList<TransactionNode>>();
 	// the file reader to read and parse the imported file
 	// - use the static methods in MyFileReader
@@ -76,18 +77,19 @@ public class Recorder {
 	 */
 	/**
 	 * Import the file of transactions that is downloaded from brokerage companies
+	 * This saves the records into 'this.tableRecords' and update the portfolios in
+	 * 'this.tableInvestors' accordingly.
 	 * 
-	 * @param fileName
+	 * @param fileName a csv file that contains the file of transaction records.
 	 * @return true if succeeded and false if failed
 	 * @throws NonExistentInvestorException
 	 */
-	public boolean importData(String fileName) throws NonExistentInvestorException {
+	public boolean importRecordData(String fileName) throws NonExistentInvestorException {
 		try {
-			// should check if the investor already exists in 'tableInvestors'
-			Set<String> investorNames = this.tableInvestors.keySet();
-
 			// get the list of the new nodes in the file
 			LinkedList<TransactionNode> newNodes = MyFileReader.readTransactionFile(fileName);
+			// should check if the investor already exists in 'tableInvestors'
+			Set<String> investorNames = this.tableInvestors.keySet();
 			// add the new nodes to the recorder
 			for (TransactionNode node : newNodes) {
 				if (!investorNames.contains(node.getInvestorName())) {
@@ -100,7 +102,7 @@ public class Recorder {
 					newList.add(node);
 					this.tableRecords.put(node.getInvestorName(), newList);
 				} else {
-					// if the investor exists in 'tableInvestors' and already has records					
+					// if the investor exists in 'tableInvestors' and already has records
 					this.tableRecords.get(node.getInvestorName()).add(node);
 				}
 			}
@@ -119,6 +121,32 @@ public class Recorder {
 	}
 
 	/**
+	 * Update the information of each target based on an external file. This update
+	 * the current price in 'tableTargets' and add the target if it is not yet
+	 * present in 'tableTargets'.
+	 * 
+	 * @param fileName the file that contains the current price of each target.
+	 * @return true if succeeded and false if failed
+	 */
+	public boolean updateTargetInfo(String fileName) {
+		// get the hash table that contains the current price of each target
+		try {
+			HashMap<String, InvestmentTarget> newTargetInfo = MyFileReader
+					.readTargetInfoFile(fileName);
+			this.tableTargets = newTargetInfo;
+		} catch (IOException | InvalidFileFormatException e) {
+			// TODO Should print this to the GUI
+			e.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			// TODO Should print this to the GUI
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+
+	/**
 	 * Show a list of the transactions.
 	 */
 	public void showAllTransactions() {
@@ -127,16 +155,16 @@ public class Recorder {
 		System.out.println("=================");
 		Set<String> investorNames = this.tableInvestors.keySet();
 		for (String investorName : investorNames) {
-			System.out.println("-----------------");
+			System.out.println("=================");
 			System.out.println("Show " + investorName + "'s transactions in the recorders");
-			System.out.println("-----------------");
+			System.out.println("=================");
 			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
 			for (TransactionNode node : records) {
 				System.out.println("-----------------");
 				System.out.println(node.toString());
 			}
 		}
-
+		System.out.println("--------End------");
 	}
 
 	/**
@@ -153,6 +181,23 @@ public class Recorder {
 			System.out.println("-----------------");
 			System.out.println(node.toString());
 		}
+		System.out.println("--------End------");
+	}
+
+	/**
+	 * Show the information of all targets in the recorder.
+	 */
+	public void showAllTargetsInfo() {
+		System.out.println("=================");
+		System.out.println("Show the information of all targets in the recorder.");
+		System.out.println("=================");
+		Set<String> targetNames = this.tableTargets.keySet();
+		for (String targetName : targetNames) {
+			System.out.println("-----------------");
+			System.out.println(this.tableTargets.get(targetName).toString());
+		}
+		System.out.println("--------End------");
+
 	}
 
 	/**
@@ -198,6 +243,8 @@ public class Recorder {
 	 */
 	private void updateInvestorPortfolioAfterOneChange(String investorName, String TransactionType,
 			String target, double numUnits) {
+		// TODO: portfolios should store the current asset value of each target, not the
+		// number of units.
 		// update the number of units
 		HashMap<String, Double> currentPortfolio = this.tableInvestors.get(investorName)
 				.getPortfolio();

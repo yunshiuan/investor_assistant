@@ -62,7 +62,6 @@ public class TransactionNode {
 	 */
 	@Override
 	public String toString() {
-
 		return "Date: " + this.date + "\nInvestor: " + this.investorName + "\nType: "
 				+ this.TransactionType + "\nTarget: " + this.target + "\n#Units: " + this.numUnits
 				+ "\nUnit Price: " + this.unitPrice;

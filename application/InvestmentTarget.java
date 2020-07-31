@@ -40,6 +40,15 @@ public class InvestmentTarget {
 	}
 
 	/**
+	 * Public Methods
+	 */
+	@Override
+	public String toString() {
+		return "Name: " + this.name + "\nCurrent Unit Price: $" + this.currentPrice + "\nType: "
+				+ this.type;
+	}
+
+	/**
 	 * Getters and setters
 	 */
 

@@ -110,9 +110,11 @@ public class Main extends Application {
 		// - load in demo investor data
 		myRecorder.loadDemoInvestors();
 //		myRecorder.loadDemoRecords();
-		myRecorder.importData("./data/transaction_record_20200730.csv");
+		myRecorder.importRecordData("./data/transaction_record_20200730.csv");
+		myRecorder.updateTargetInfo("./data/target_info_20200731.csv");
 		myRecorder.showAllTransactions();
 		myRecorder.showInvestorTransactions("Amy");
+		myRecorder.showAllTargetsInfo();
 		// - TODO: This is hard-coded for a3. It should be read from input file.
 		// - TODO: Make the parameters here as class constants
 
@@ -769,7 +771,7 @@ public class Main extends Application {
 		HashMap<String, Double> portfolio = investor.getPortfolio();
 		// get the target names
 		Set<String> namesTargets = portfolio.keySet();
-		//TODO: The pie chart should show the value rather than number of units
+		// TODO: The pie chart should show the value rather than number of units
 		// the list to return
 		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
 		// add portfolio information to the list
