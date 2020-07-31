@@ -83,9 +83,8 @@ public class Recorder {
 	 * 
 	 * @param fileName a csv file that contains the file of transaction records.
 	 * @return true if succeeded and false if failed
-	 * @throws NonExistentInvestorException
 	 */
-	public boolean importRecordData(String fileName) throws NonExistentInvestorException {
+	public boolean importRecordData(String fileName) {
 		try {
 			// TODO: Should check if the node is already present in the recorder
 			// get the list of the new nodes in the file
@@ -187,6 +186,23 @@ public class Recorder {
 	}
 
 	/**
+	 * Initialize the program based on the data in external files.
+	 */
+	public void initializeFromFiles() {
+		this.updateInvestorInfo("./data/investor_info_20200731.csv");
+		this.importRecordData("./data/transaction_record_20200730.csv");
+		this.updateTargetInfo("./data/target_info_20200731.csv");
+	}
+
+	/**
+	 * Initialize the program based on demo data.
+	 */
+	public void initializeDemo() {
+		this.loadDemoInvestors();
+		this.loadDemoRecords();
+	}
+
+	/**
 	 * Show a list of the transactions.
 	 */
 	public void showAllTransactions() {
@@ -238,34 +254,6 @@ public class Recorder {
 		}
 		System.out.println("--------End------");
 
-	}
-
-	/**
-	 * Load in demo investor data.
-	 */
-	public void loadDemoInvestors() {
-		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
-				new HashMap<String, Double>());
-		investorA.getPortfolio().put("VTI", 8.2);
-		investorA.getPortfolio().put("VGK", 3.2);
-		investorA.getPortfolio().put("VWO", 1.4);
-		investorA.getPortfolio().put("IEI", 1.2);
-		this.tableInvestors.put(investorA.getName(), investorA);
-
-		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
-				new HashMap<String, Double>());
-		investorB.getPortfolio().put("VTI", 2.5);
-		investorB.getPortfolio().put("VGK", 1.4);
-		investorB.getPortfolio().put("VWO", 5.0);
-		investorB.getPortfolio().put("IEI", 3.0);
-		this.tableInvestors.put(investorB.getName(), investorB);
-	}
-
-	public void loadDemoRecords() {
-		LinkedList<TransactionNode> recordsA = new LinkedList<TransactionNode>();
-		LinkedList<TransactionNode> recordsB = new LinkedList<TransactionNode>();
-		this.tableRecords.put("Andy", recordsA);
-		this.tableRecords.put("Amy", recordsB);
 	}
 
 	/**
@@ -330,5 +318,36 @@ public class Recorder {
 			}
 
 		}
+	}
+
+	/**
+	 * Load in demo investor data.
+	 */
+	private void loadDemoInvestors() {
+		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
+				new HashMap<String, Double>());
+		investorA.getPortfolio().put("VTI", 8.2);
+		investorA.getPortfolio().put("VGK", 3.2);
+		investorA.getPortfolio().put("VWO", 1.4);
+		investorA.getPortfolio().put("IEI", 1.2);
+		this.tableInvestors.put(investorA.getName(), investorA);
+
+		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
+				new HashMap<String, Double>());
+		investorB.getPortfolio().put("VTI", 2.5);
+		investorB.getPortfolio().put("VGK", 1.4);
+		investorB.getPortfolio().put("VWO", 5.0);
+		investorB.getPortfolio().put("IEI", 3.0);
+		this.tableInvestors.put(investorB.getName(), investorB);
+	}
+
+	/**
+	 * Load in demo record data.
+	 */
+	private void loadDemoRecords() {
+		LinkedList<TransactionNode> recordsA = new LinkedList<TransactionNode>();
+		LinkedList<TransactionNode> recordsB = new LinkedList<TransactionNode>();
+		this.tableRecords.put("Andy", recordsA);
+		this.tableRecords.put("Amy", recordsB);
 	}
 }

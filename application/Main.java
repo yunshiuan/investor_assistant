@@ -108,11 +108,10 @@ public class Main extends Application {
 		 */
 		// create investors
 		// - load in demo investor data
-		myRecorder.updateInvestorInfo("./data/investor_info_20200731.csv");
-//		myRecorder.loadDemoInvestors();
-//		myRecorder.loadDemoRecords();
-		myRecorder.importRecordData("./data/transaction_record_20200730.csv");
-		myRecorder.updateTargetInfo("./data/target_info_20200731.csv");
+		myRecorder.initializeFromFiles();
+//		myRecorder.initializeDemo();
+
+
 		myRecorder.showAllTransactions();
 		myRecorder.showInvestorTransactions("Amy");
 		myRecorder.showAllTargetsInfo();
