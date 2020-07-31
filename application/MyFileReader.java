@@ -188,4 +188,71 @@ public class MyFileReader {
 		}
 	}
 
+	/**
+	 * Read a file that contains the investor information (e.g., name, target
+	 * ratio). portfolio and rateReturn are initialized to null.
+	 * 
+	 * @return
+	 * @throws InvalidFileFormatException
+	 * @throws IOException
+	 */
+	public static HashMap<String, Investor> readInvestorInfoFile(String fileName)
+			throws InvalidFileFormatException, IOException {
+		File csvFile = new File(fileName);
+		// read the file only if it exists
+		if (csvFile.isFile()) {
+			// the row in the csv file
+			String row = null;
+			int indexRow = 0;
+			// create BufferedReader and read data from csv
+			BufferedReader csvReader = new BufferedReader(new FileReader(fileName));
+			try {
+				// read the rest of the lines
+				HashMap<String, Investor> tableInvestorInfo = new HashMap<String, Investor>();
+				while ((row = csvReader.readLine()) != null) {
+					String[] data = row.split(",");
+
+					// check the header at the first line (header)
+					if (indexRow == 0) {
+						// check if the column names
+						if (!(data[0].equals("name") && data[1].equals("targetRatio"))) {
+							throw new InvalidFileFormatException(
+									"The column names of the file is invalid.");
+						}
+						indexRow++;
+						continue;
+					}
+					// for the rest of the rows
+					// - create the transaction node for each row
+					String name = data[0];
+					double targetRatio = Double.valueOf(data[1]);
+
+					// add the row data to the hash table
+					Investor investorInfo = new Investor(name, targetRatio);
+					tableInvestorInfo.put(name, investorInfo);
+					indexRow++;
+				}
+				// return the table
+				return tableInvestorInfo;
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new IOException("IO Exception occured while reading the file at line "
+						+ String.valueOf(indexRow) + " in: " + fileName);
+			} catch (NumberFormatException e) {
+				throw new InvalidFileFormatException(
+						"The format of the file at line " + String.valueOf(indexRow)
+								+ " is invalid,i.e.," + row + " in: " + fileName);
+			} finally {
+				// close the reader
+				csvReader.close();
+			}
+		} else
+
+		{
+			throw new FileNotFoundException(
+					"The file you attempted to read does not exist or is not a valid file: "
+							+ fileName);
+		}
+	}
+
 }

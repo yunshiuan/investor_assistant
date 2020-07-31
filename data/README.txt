@@ -7,4 +7,10 @@ transaction_record_20200730
 -----------------
 target_info_20200731
 -----------------
+- created manually on 20200731
 - price is retrieved on 20200731
+
+-----------------
+investor_info_20200731
+-----------------
+- created manually on 20200731

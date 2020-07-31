@@ -87,6 +87,7 @@ public class Recorder {
 	 */
 	public boolean importRecordData(String fileName) throws NonExistentInvestorException {
 		try {
+			// TODO: Should check if the node is already present in the recorder
 			// get the list of the new nodes in the file
 			LinkedList<TransactionNode> newNodes = MyFileReader.readTransactionFile(fileName);
 			// should check if the investor already exists in 'tableInvestors'
@@ -135,6 +136,44 @@ public class Recorder {
 			HashMap<String, InvestmentTarget> newTargetInfo = MyFileReader
 					.readTargetInfoFile(fileName);
 			this.tableTargets = newTargetInfo;
+		} catch (IOException | InvalidFileFormatException e) {
+			// TODO Should print this to the GUI
+			e.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			// TODO Should print this to the GUI
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Add the information of each investor based on an external file. This update
+	 * the name and the target ratio and add the investor if it is not yet present
+	 * in 'tableInvestors'.
+	 * 
+	 * @param fileName the file that contains investors' information.
+	 * @return true if succeeded and false if failed
+	 */
+	public boolean updateInvestorInfo(String fileName) {
+		// get the hash table that contains the information of each investor
+		try {
+			HashMap<String, Investor> newInvestorInfo = MyFileReader.readInvestorInfoFile(fileName);
+			// add back the information that was present in the table but not in the
+			// external file
+			// - e.g., portfolio and rateReturn
+			Set<String> investorNames = newInvestorInfo.keySet();
+			for (String investorName : investorNames) {
+				Investor oldInvestorInfo = this.tableInvestors.get(investorName);
+				if (oldInvestorInfo != null) {
+					newInvestorInfo.get(investorName)
+							.setRateReturn(oldInvestorInfo.getRateReturn());
+					newInvestorInfo.get(investorName).setPortfolio(oldInvestorInfo.getPortfolio());
+				}
+			}
+			// update the tableInvestors
+			this.tableInvestors = newInvestorInfo;
 		} catch (IOException | InvalidFileFormatException e) {
 			// TODO Should print this to the GUI
 			e.printStackTrace();
@@ -244,17 +283,22 @@ public class Recorder {
 	 */
 	private void updateInvestorPortfolioAfterOneChange(String investorName, String TransactionType,
 			String target, double numUnits) {
-		// TODO: portfolios should store the current asset value of each target, not the
-		// number of units.
+
 		// update the number of units
 		HashMap<String, Double> currentPortfolio = this.tableInvestors.get(investorName)
 				.getPortfolio();
-		// - if the target not yet exists in this investor's portfolio
+		// special case for the new investor who does not yet have any record
+		if (currentPortfolio == null) {
+			this.tableInvestors.get(investorName).setPortfolio(new HashMap<String, Double>());
+			this.tableInvestors.get(investorName).getPortfolio().put(target, numUnits);
+			return;
+		}
+		// if the target not yet exists in this investor's portfolio
 		if (!currentPortfolio.containsKey(target)) {
 			this.tableInvestors.get(investorName).getPortfolio().put(target, numUnits);
 			return;
 		}
-		// - if the target already exists in this investor's portfolio
+		// if the target already exists in this investor's portfolio
 		double currentNumUnits = currentPortfolio.get(target);
 		double updatedNumUnits = currentNumUnits;
 		if (TransactionType.equals("buy")) {
