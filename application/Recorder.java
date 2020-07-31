@@ -48,7 +48,8 @@ public class Recorder {
 	// the hash table with keys being the investment target name and values being
 	// the object InvestmentTarget (which contains the investment target
 	// information)
-	private HashMap<String, InvestmentTarget> tableTargets;
+	private HashMap<String, InvestmentTarget> tableTargets = new HashMap<String, InvestmentTarget>();
+
 	// the hash table to contain the transactions for each investor
 	// - each investor's records are stored in a linked list
 	private HashMap<String, LinkedList<TransactionNode>> tableRecords = new HashMap<String, LinkedList<TransactionNode>>();
@@ -66,10 +67,10 @@ public class Recorder {
 	}
 
 	/**
-	 * @param tableInvestors the tableInvestors to set
+	 * @return the tableTargets
 	 */
-	public void setTableInvestors(HashMap<String, Investor> tableInvestors) {
-		this.tableInvestors = tableInvestors;
+	public HashMap<String, InvestmentTarget> getTableTargets() {
+		return tableTargets;
 	}
 
 	/**

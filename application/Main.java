@@ -115,8 +115,6 @@ public class Main extends Application {
 		myRecorder.showAllTransactions();
 		myRecorder.showInvestorTransactions("Amy");
 		myRecorder.showAllTargetsInfo();
-		// - TODO: This is hard-coded for a3. It should be read from input file.
-		// - TODO: Make the parameters here as class constants
 
 		/**
 		 * Define the border pane
@@ -191,8 +189,8 @@ public class Main extends Application {
 			// create portfolio data for the pie chart
 			// - TODO: Should beatify the chart.
 			// -- (1) Show the unit and percentage besides each slide in the pie
-			ObservableList<PieChart.Data> pieChartData = Main
-					.createPortfolioChartData(myRecorder.getTableInvestors().get(thisInvestor));
+			ObservableList<PieChart.Data> pieChartData = Main.createPortfolioChartData(thisInvestor,
+					myRecorder);
 			// create the pie chart
 			// TODO: ensure the color binds with specific target across investors' charts
 			PieChart chart = new PieChart(pieChartData);
@@ -762,21 +760,25 @@ public class Main extends Application {
 	 * Create the pie chart data for the portfolio pie chart. The data will be used
 	 * by the constructor PieChart().
 	 * 
-	 * @param investor the investor's portfolio
+	 * @param investorName the investor's name of interest
+	 * @param recorder     the recorder that contains all information for portfolio
 	 * @return ObservableList<PieChart.Data> that will be used by the constructor
 	 *         PieChart().
 	 */
-	private static ObservableList<PieChart.Data> createPortfolioChartData(Investor investor) {
-		// get the portfolio
-		HashMap<String, Double> portfolio = investor.getPortfolio();
+	private static ObservableList<PieChart.Data> createPortfolioChartData(String investorName,
+			Recorder recorder) {
+		// get the current number of units
+		HashMap<String, Double> portfolio = recorder.getTableInvestors().get(investorName)
+				.getPortfolio();
 		// get the target names
 		Set<String> namesTargets = portfolio.keySet();
-		// TODO: The pie chart should show the value rather than number of units
-		// the list to return
 		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
 		// add portfolio information to the list
 		for (String thisTarget : namesTargets) {
-			pieChartData.add(new PieChart.Data(thisTarget, portfolio.get(thisTarget)));
+			// multiple the number of units by the current unit price
+			double targetAsset = portfolio.get(thisTarget)
+					* recorder.getTableTargets().get(thisTarget).getCurrentPrice();
+			pieChartData.add(new PieChart.Data(thisTarget, targetAsset));
 		}
 		return pieChartData;
 

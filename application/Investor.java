@@ -34,6 +34,10 @@ public class Investor {
 	private Double rateReturn;
 	// the hash table with keys being the investment target name and values being
 	// the number of units that the investor has
+	// - note that strictly speaking, this is not portfolio, which is a set of
+	// financial assets (not number of units). In order to compute the portfolio,
+	// The number of units should be multiplied by unit price, which is stored in
+	// 'InvestmentTarget'.
 	private HashMap<String, Double> portfolio;
 
 	/**
