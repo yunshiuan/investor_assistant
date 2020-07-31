@@ -12,8 +12,9 @@
 package application;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 import javafx.stage.FileChooser;
 
@@ -43,14 +44,13 @@ public class Recorder {
 	// a file chooser for browsing the file
 	protected static final FileChooser fileChooser = new FileChooser();
 	// the table to contain investors
-	private Hashtable<String, Investor> tableInvestors = new Hashtable<String, Investor>();
+	private HashMap<String, Investor> tableInvestors = new HashMap<String, Investor>();
 	// the hash table with keys being the investment target name and values being
 	// the object InvestmentTarget (which contains the investment target
 	// information)
-	private Hashtable<String, InvestmentTarget> tableInvestmentTarget;
-	// the list to contain the transactions
-	// TODO: Should utilize this
-	private LinkedList<TransactionNode> records = new LinkedList<TransactionNode>();
+	private HashMap<String, InvestmentTarget> tableInvestmentTarget;
+	// the hash table to contain the transactions for each investor
+	private HashMap<String, LinkedList<TransactionNode>> tableRecords = new HashMap<String, LinkedList<TransactionNode>>();
 	// the file reader to read and parse the imported file
 	// - use the static methods in MyFileReader
 
@@ -60,14 +60,14 @@ public class Recorder {
 	/**
 	 * @return the tableInvestors
 	 */
-	public Hashtable<String, Investor> getTableInvestors() {
+	public HashMap<String, Investor> getTableInvestors() {
 		return tableInvestors;
 	}
 
 	/**
 	 * @param tableInvestors the tableInvestors to set
 	 */
-	public void setTableInvestors(Hashtable<String, Investor> tableInvestors) {
+	public void setTableInvestors(HashMap<String, Investor> tableInvestors) {
 		this.tableInvestors = tableInvestors;
 	}
 
@@ -79,30 +79,55 @@ public class Recorder {
 	 * 
 	 * @param fileName
 	 * @return true if succeeded and false if failed
+	 * @throws NonExistentInvestorException
 	 */
-	public boolean importData(String fileName) {
+	public boolean importData(String fileName) throws NonExistentInvestorException {
 		try {
-			this.records.addAll(MyFileReader.readTransactionFile(fileName));
-//			System.out.println(this.records.toString());
+			// should check if the investor already exists in the recorder
+			Set<String> investorNames = this.tableInvestors.keySet();
+
+			// get the list of the new nodes in the file
+			LinkedList<TransactionNode> newNodes = MyFileReader.readTransactionFile(fileName);
+			// add the new nodes to the recorder
+			for (TransactionNode node : newNodes) {
+				if (!investorNames.contains(node.getInvestorName())) {
+					throw new NonExistentInvestorException("The investor " + node.getInvestorName()
+							+ " is not present in the recorder.");
+				}
+				this.tableRecords.get(node.getInvestorName()).add(node);
+			}
+			return true;
+//			this.tableRecords.get(key).addAll(MyFileReader.readTransactionFile(fileName));
 		} catch (IOException | InvalidFileFormatException e) {
-			// TODO Auto-generated catch block
+			// TODO Should print this to the GUI
 			e.printStackTrace();
+			return false;
+		} catch (Exception e) {
+			// TODO Should print this to the GUI
+			e.printStackTrace();
+			return false;
 		}
-		return false;
 	}
 
 	/**
 	 * Show a list of the transactions.
 	 */
-	public void showTransactions() {
-		System.out.println("-----------------");
+	public void showAllTransactions() {
+		System.out.println("=================");
 		System.out.println("Show all transactions in the recorders");
-		System.out.println("-----------------");
-
-		for (TransactionNode node : records) {
+		System.out.println("=================");
+		Set<String> investorNames = this.tableInvestors.keySet();
+		for (String investorName : investorNames) {
 			System.out.println("-----------------");
-			System.out.println(node.toString());
+			System.out.println("Show " + investorName + "'s transactions in the recorders");
+			System.out.println("-----------------");
+			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
+			for (TransactionNode node : records) {
+				System.out.println("-----------------");
+				System.out.println(node.toString());
+			}
 		}
+
 	}
 
 	/**
@@ -110,15 +135,14 @@ public class Recorder {
 	 * 
 	 * @param investor the investor's name.
 	 */
-	public void showInvestorTransactions(String investor) {
-		System.out.println("-----------------");
-		System.out.println("Show " + investor + "'s transactions in the recorders");
-		System.out.println("-----------------");
+	public void showInvestorTransactions(String investorName) {
+		System.out.println("=================");
+		System.out.println("Show " + investorName + "'s transactions in the recorders");
+		System.out.println("=================");
+		LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
 		for (TransactionNode node : records) {
-			if (node.getInvestorName().equals(investor)) {
-				System.out.println("-----------------");
-				System.out.println(node.toString());
-			}
+			System.out.println("-----------------");
+			System.out.println(node.toString());
 		}
 	}
 
@@ -127,7 +151,7 @@ public class Recorder {
 	 */
 	public void loadDemoInvestors() {
 		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
-				new Hashtable<String, Double>());
+				new HashMap<String, Double>());
 		investorA.getPortfolio().put("VTI", 8.2);
 		investorA.getPortfolio().put("VGK", 3.2);
 		investorA.getPortfolio().put("VWO", 1.4);
@@ -135,7 +159,7 @@ public class Recorder {
 		this.tableInvestors.put(investorA.getName(), investorA);
 
 		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
-				new Hashtable<String, Double>());
+				new HashMap<String, Double>());
 		investorB.getPortfolio().put("VTI", 2.5);
 		investorB.getPortfolio().put("VGK", 1.4);
 		investorB.getPortfolio().put("VWO", 5.0);
@@ -143,7 +167,38 @@ public class Recorder {
 		this.tableInvestors.put(investorB.getName(), investorB);
 	}
 
+	public void loadDemoRecords() {
+		LinkedList<TransactionNode> recordsA = new LinkedList<TransactionNode>();
+		LinkedList<TransactionNode> recordsB = new LinkedList<TransactionNode>();
+		this.tableRecords.put("Andy",recordsA);
+		this.tableRecords.put("Amy",recordsB);		
+	}
+
 	/**
 	 * Private Methods
 	 */
+	/**
+	 * Update the investors' portfolios (in tableInvestors) based on the total
+	 * number of units (records).
+	 */
+	private void updateInvestorPortfolio() {
+		// get all investor names
+		Set<String> investorNames = this.tableInvestors.keySet();
+
+		// create a new tableInvestors
+		// - save to a hash table of hash tables. Each element is a investor's portfolio
+		// - this then replace the old 'this.tableInvestors'
+		HashMap<String, HashMap<String, Double>> newTableInvestors = new HashMap<String, HashMap<String, Double>>(
+				investorNames.size());
+
+		// replace the old portfolio by the new one
+//		this.tableInvestors = newTableInvestors;
+
+		// get the portfolio
+//		HashMap<String, Double> portfolio = investor.getPortfolio();
+		// get the target names
+		// recalculate the each investor's total number of units
+//		this.tableInvestmentTarget.get(key)
+
+	}
 }

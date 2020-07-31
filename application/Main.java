@@ -23,7 +23,7 @@
 package application;
 
 import java.io.File;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -109,9 +109,10 @@ public class Main extends Application {
 		// create investors
 		// - load in demo investor data
 		myRecorder.loadDemoInvestors();
+		myRecorder.loadDemoRecords();
 		myRecorder.importData("./data/transaction_record_20200730.csv");
-		myRecorder.showTransactions();
-		myRecorder.showInvestorTransactions("V");
+		myRecorder.showAllTransactions();
+		myRecorder.showInvestorTransactions("Amy");
 		// - TODO: This is hard-coded for a3. It should be read from input file.
 		// - TODO: Make the parameters here as class constants
 
@@ -765,9 +766,10 @@ public class Main extends Application {
 	 */
 	private static ObservableList<PieChart.Data> createPortfolioChartData(Investor investor) {
 		// get the portfolio
-		Hashtable<String, Double> portfolio = investor.getPortfolio();
+		HashMap<String, Double> portfolio = investor.getPortfolio();
 		// get the target names
 		Set<String> namesTargets = portfolio.keySet();
+		//TODO: The pie chart should show the value rather than number of units
 		// the list to return
 		ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
 		// add portfolio information to the list

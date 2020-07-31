@@ -11,7 +11,7 @@
  */
 package application;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * The class to store each investor’s information.
@@ -34,7 +34,7 @@ public class Investor {
 	private Double rateReturn;
 	// the hash table with keys being the investment target name and values being
 	// the number of units that the investor has
-	private Hashtable<String, Double> portfolio;
+	private HashMap<String, Double> portfolio;
 
 	/**
 	 * Constructors
@@ -73,7 +73,7 @@ public class Investor {
 	 * @param portfolio
 	 */
 	public Investor(String name, Double targetRatio, Double rateReturn,
-			Hashtable<String, Double> portfolio) {
+			HashMap<String, Double> portfolio) {
 		this.setName(name);
 		this.setTargetRatio(targetRatio);
 		this.setRateReturn(rateReturn);
@@ -128,14 +128,14 @@ public class Investor {
 	/**
 	 * @return the portfolio
 	 */
-	public Hashtable<String, Double> getPortfolio() {
+	public HashMap<String, Double> getPortfolio() {
 		return portfolio;
 	}
 
 	/**
 	 * @param portfolio the portfolio to set
 	 */
-	public void setPortfolio(Hashtable<String, Double> portfolio) {
+	public void setPortfolio(HashMap<String, Double> portfolio) {
 		this.portfolio = portfolio;
 	}
 
