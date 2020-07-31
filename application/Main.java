@@ -109,7 +109,7 @@ public class Main extends Application {
 		// create investors
 		// - load in demo investor data
 		myRecorder.loadDemoInvestors();
-		myRecorder.loadDemoRecords();
+//		myRecorder.loadDemoRecords();
 		myRecorder.importData("./data/transaction_record_20200730.csv");
 		myRecorder.showAllTransactions();
 		myRecorder.showInvestorTransactions("Amy");

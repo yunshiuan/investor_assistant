@@ -83,7 +83,7 @@ public class Recorder {
 	 */
 	public boolean importData(String fileName) throws NonExistentInvestorException {
 		try {
-			// should check if the investor already exists in the recorder
+			// should check if the investor already exists in 'tableInvestors'
 			Set<String> investorNames = this.tableInvestors.keySet();
 
 			// get the list of the new nodes in the file
@@ -94,7 +94,15 @@ public class Recorder {
 					throw new NonExistentInvestorException("The investor " + node.getInvestorName()
 							+ " is not present in the recorder.");
 				}
-				this.tableRecords.get(node.getInvestorName()).add(node);
+				// if the investor exists in 'tableInvestors' but has empty records
+				if (this.tableRecords.get(node.getInvestorName()) == null) {
+					LinkedList<TransactionNode> newList = new LinkedList<TransactionNode>();
+					newList.add(node);
+					this.tableRecords.put(node.getInvestorName(), newList);
+				} else {
+					// if the investor exists in 'tableInvestors' and already has records					
+					this.tableRecords.get(node.getInvestorName()).add(node);
+				}
 			}
 			// update the investors' portfolios
 			this.updateInvestorPortfolioAfterImporting();
