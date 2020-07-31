@@ -96,8 +96,9 @@ public class Recorder {
 				}
 				this.tableRecords.get(node.getInvestorName()).add(node);
 			}
+			// update the investors' portfolios
+			this.updateInvestorPortfolioAfterImporting();
 			return true;
-//			this.tableRecords.get(key).addAll(MyFileReader.readTransactionFile(fileName));
 		} catch (IOException | InvalidFileFormatException e) {
 			// TODO Should print this to the GUI
 			e.printStackTrace();
@@ -170,35 +171,64 @@ public class Recorder {
 	public void loadDemoRecords() {
 		LinkedList<TransactionNode> recordsA = new LinkedList<TransactionNode>();
 		LinkedList<TransactionNode> recordsB = new LinkedList<TransactionNode>();
-		this.tableRecords.put("Andy",recordsA);
-		this.tableRecords.put("Amy",recordsB);		
+		this.tableRecords.put("Andy", recordsA);
+		this.tableRecords.put("Amy", recordsB);
 	}
 
 	/**
 	 * Private Methods
 	 */
 	/**
-	 * Update the investors' portfolios (in tableInvestors) based on the total
-	 * number of units (records).
+	 * Update the investors' portfolios (in tableInvestors) based on the one
+	 * transaction record. This method is required after adding or deleting one
+	 * transaction record.
+	 * 
+	 * @param investorName
+	 * @param TransactionType
+	 * @param target
+	 * @param numUnits
 	 */
-	private void updateInvestorPortfolio() {
+	private void updateInvestorPortfolioAfterOneChange(String investorName, String TransactionType,
+			String target, double numUnits) {
+		// update the number of units
+		HashMap<String, Double> currentPortfolio = this.tableInvestors.get(investorName)
+				.getPortfolio();
+		// - if the target not yet exists in this investor's portfolio
+		if (!currentPortfolio.containsKey(target)) {
+			this.tableInvestors.get(investorName).getPortfolio().put(target, numUnits);
+			return;
+		}
+		// - if the target already exists in this investor's portfolio
+		double currentNumUnits = currentPortfolio.get(target);
+		double updatedNumUnits = currentNumUnits;
+		if (TransactionType.equals("buy")) {
+			updatedNumUnits += numUnits;
+		} else if (TransactionType.equals("sell")) {
+			updatedNumUnits -= numUnits;
+		}
+		this.tableInvestors.get(investorName).getPortfolio().put(target, updatedNumUnits);
+	}
+
+	/**
+	 * Update the investors' portfolios (in tableInvestors) based on the current
+	 * total number of units (records). This method is required after importing an
+	 * external record file.
+	 */
+	private void updateInvestorPortfolioAfterImporting() {
 		// get all investor names
 		Set<String> investorNames = this.tableInvestors.keySet();
 
-		// create a new tableInvestors
-		// - save to a hash table of hash tables. Each element is a investor's portfolio
-		// - this then replace the old 'this.tableInvestors'
-		HashMap<String, HashMap<String, Double>> newTableInvestors = new HashMap<String, HashMap<String, Double>>(
-				investorNames.size());
+		// iterate over the tableRecords and output each investor's updated number of
+		// units of each target
+		for (String investorName : investorNames) {
+			// the current records
+			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
+			// update the number of units based on current records
+			for (TransactionNode node : records) {
+				this.updateInvestorPortfolioAfterOneChange(node.getInvestorName(),
+						node.getTransactionType(), node.getTarget(), node.getNumUnits());
+			}
 
-		// replace the old portfolio by the new one
-//		this.tableInvestors = newTableInvestors;
-
-		// get the portfolio
-//		HashMap<String, Double> portfolio = investor.getPortfolio();
-		// get the target names
-		// recalculate the each investor's total number of units
-//		this.tableInvestmentTarget.get(key)
-
+		}
 	}
 }

@@ -28,7 +28,7 @@ public class TransactionNode {
 	// the name of the investor
 	private String investorName;
 	// ”sell”,”buy”,”dividend”
-	private String transactionType;
+	private String TransactionType;
 	// the name of the investment target
 	private String target;
 	// the unit price of the transaction
@@ -42,16 +42,16 @@ public class TransactionNode {
 	/**
 	 * @param date
 	 * @param investorName
-	 * @param transactionType
+	 * @param TransactionType
 	 * @param target
 	 * @param unitPrice
 	 * @param numUnits
 	 */
-	public TransactionNode(long date, String investorName, String transactionType, String target,
+	public TransactionNode(long date, String investorName, String TransactionType, String target,
 			double unitPrice, double numUnits) {
 		this.date = date;
 		this.investorName = investorName;
-		this.transactionType = transactionType;
+		this.TransactionType = TransactionType;
 		this.target = target;
 		this.unitPrice = unitPrice;
 		this.numUnits = numUnits;
@@ -64,7 +64,7 @@ public class TransactionNode {
 	public String toString() {
 
 		return "Date: " + this.date + "\nInvestor: " + this.investorName + "\nType: "
-				+ this.transactionType + "\nTarget: " + this.target + "\n#Units: " + this.numUnits
+				+ this.TransactionType + "\nTarget: " + this.target + "\n#Units: " + this.numUnits
 				+ "\nUnit Price: " + this.unitPrice;
 	}
 
@@ -100,17 +100,17 @@ public class TransactionNode {
 	}
 
 	/**
-	 * @return the transactionType
+	 * @return the TransactionType
 	 */
-	public String gettransactionType() {
-		return transactionType;
+	public String getTransactionType() {
+		return TransactionType;
 	}
 
 	/**
-	 * @param transactionType the transactionType to set
+	 * @param TransactionType the TransactionType to set
 	 */
-	public void settransactionType(String transactionType) {
-		this.transactionType = transactionType;
+	public void setTransactionType(String TransactionType) {
+		this.TransactionType = TransactionType;
 	}
 
 	/**

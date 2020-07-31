@@ -28,6 +28,7 @@ import java.util.LinkedList;
  *
  */
 public class MyFileReader {
+
 	/**
 	 * Public Methods
 	 */
@@ -78,6 +79,10 @@ public class MyFileReader {
 					String investorName = data[3];
 					double numUnits = Double.valueOf(data[4]);
 					String transactionType = data[5];
+					if (!(transactionType.equals("sell") || transactionType.equals("buy"))) {
+						throw new InvalidFileFormatException(
+								"Unrecognized transaction type" + transactionType);
+					}
 					// add the row data to the list
 					TransactionNode node = new TransactionNode(date, investorName, transactionType,
 							target, unitPrice, numUnits);
