@@ -1,11 +1,11 @@
 /**
  * This is the css style sheet for the program defined in Main.java.
  * 
- * @project a2 Milestone 2: UI
+ * @project  a3 Milestone 3: Final Project
  * @course CS400
  * @author Chuang, Yun-Shiuan (Sean)
  * @email ychuang26@wisc.edu
- * @date 20200714
+ * @date 20200730
  * @attribution 
  * - see Main.java for details
  */
@@ -18,18 +18,20 @@ Constants
   /* HELPER_BORDER_LINE_COLOR: "black"; */
   HELPER_BORDER_LINE_COLOR: "#00000000";
 }
+
 /* 
 Special classes
 */
 /* The special class for the labels on the pie chart */
 .chart-pie-label {
-  -fx-font-size: 10pt ;
+  -fx-font-size: 10pt;
 }
 
 /* The special class for figure titles */
-.chart-title{
-  -fx-font-size: 18pt ; 
+.chart-title {
+  -fx-font-size: 18pt;
 }
+
 /* 
 Normal classes
 */
@@ -47,6 +49,7 @@ Normal classes
   -fx-border-color: HELPER_BORDER_LINE_COLOR;
   -fx-border-width: 1;
 }
+
 .text-new-window-title {
   /* padding: top right bottom left */
   -fx-padding: 30px 0px 0px 0px;
@@ -106,19 +109,13 @@ Normal classes
 
 .box-chart-portfolio {
   /* size */
-  /* -fx-pref-height: 450px; */
-  -fx-pref-width: 200px;
+  -fx-pref-height: 300px;
+  -fx-pref-width: 300px;
   /* -fx-background-color: #d0cece; */
   /* border */
   -fx-border-color: HELPER_BORDER_LINE_COLOR;
   -fx-border-width: 1;
-  /* size */
-  /* -fx-pref-width: 10;
-  -fx-pref-height: 10;
-  -fx-min-width: 10;
-  -fx-min-height: 10;
-  -fx-max-width: 10;
-  -fx-max-height: 10; */
+ 
 }
 
 .box-menu-buttons {

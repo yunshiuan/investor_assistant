@@ -8,7 +8,9 @@
  * @date 20200730
  * @attribution 
  * - based on  my assignment "a1 Milestone1: Design" and "a2 Milestone 2: UI"
- * - pie chart: https://docs.oracle.com/javafx/2/charts/pie-chart.htm
+ * - pie chart: 
+ * -- https://docs.oracle.com/javafx/2/charts/pie-chart.htm
+ * -- change pie label: https://stackoverflow.com/questions/35479375/display-additional-values-in-pie-chart
  * - JavaFX Overview: http://tutorials.jenkov.com/javafx/overview.html
  * - JavaFX css reference guide: https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
  * - padding: https://stackoverflow.com/questions/38528328/how-to-only-change-left-padding-in-javafx-css
@@ -27,6 +29,7 @@ package application;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 
 import javafx.application.Application;
@@ -35,6 +38,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
@@ -61,7 +65,7 @@ public class Main extends Application {
 	 * Constants
 	 */
 	// the window size
-	private static final int SIZE_FACTOR = 30;
+	private static final int SIZE_FACTOR = 35;
 	private static final int WINDOW_WIDTH = 26 * SIZE_FACTOR;
 	private static final int WINDOW_HEIGHT = 15 * SIZE_FACTOR;
 	private static final int SECOND_WINDOW_WIDTH = (400 / 30) * SIZE_FACTOR;
@@ -115,9 +119,9 @@ public class Main extends Application {
 		myRecorder.initializeFromFiles();
 //		myRecorder.initializeDemo();
 
-		myRecorder.showAllTransactions();
-		myRecorder.showInvestorTransactions("Amy");
-		myRecorder.showAllTargetsInfo();
+//		myRecorder.showAllTransactions();
+//		myRecorder.showInvestorTransactions("Amy");
+//		myRecorder.showAllTargetsInfo();
 
 		/**
 		 * Define the border pane
@@ -199,7 +203,29 @@ public class Main extends Application {
 			boxThisInvestor.getChildren().add(boxChart);
 			// create the pie chart
 			// TODO: ensure the color binds with specific target across investors' charts
-			PieChart chart = new PieChart(this.tablePieChartData.get(thisInvestor));
+			// TODO: add percentage to the label
+
+			PieChart chart = new PieChart(this.tablePieChartData.get(thisInvestor)) {
+				@Override
+				protected void layoutChartChildren(double top, double left, double contentWidth,
+						double contentHeight) {
+					if (getLabelsVisible()) {
+						getData().forEach(d -> {
+							Optional<Node> opTextNode = this.lookupAll(".chart-pie-label").stream()
+									.filter(n -> n instanceof Text
+											&& ((Text) n).getText().contains(d.getName()))
+									.findAny();
+							if (opTextNode.isPresent()) {
+								((Text) opTextNode.get())
+										.setText(d.getName() + "\n$" + Math.round(d.getPieValue()));
+								//TODO: Should show the percentage as well
+							}
+						});
+					}
+					super.layoutChartChildren(top, left, contentWidth, contentHeight);
+				}
+			};
+			chart.setLegendVisible(false);
 			chart.setTitle("Portfolio");
 			boxChart.getStyleClass().add("box-chart-portfolio");
 			boxChart.getChildren().add(chart);

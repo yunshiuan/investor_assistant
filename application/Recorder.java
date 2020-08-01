@@ -215,6 +215,7 @@ public class Recorder {
 	public void initializeDemo() {
 		this.loadDemoInvestors();
 		this.loadDemoRecords();
+		this.loadDemoTargets();
 		// set the default directory for file chooser to the data directory
 		String currentPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
 		Recorder.fileChooser.setInitialDirectory(new File(currentPath));
@@ -367,5 +368,12 @@ public class Recorder {
 		LinkedList<TransactionNode> recordsB = new LinkedList<TransactionNode>();
 		this.tableRecords.put("Andy", recordsA);
 		this.tableRecords.put("Amy", recordsB);
+	}
+
+	private void loadDemoTargets() {
+		this.tableTargets.put("VTI", new InvestmentTarget("VTI", 150, "stock"));
+		this.tableTargets.put("VGK", new InvestmentTarget("VGK", 50, "stock"));
+		this.tableTargets.put("VWO", new InvestmentTarget("VWO", 40, "stock"));
+		this.tableTargets.put("IEI", new InvestmentTarget("IEI", 134, "bond"));
 	}
 }
