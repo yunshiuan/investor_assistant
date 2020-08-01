@@ -5,6 +5,11 @@ transaction_record_20200730
   - ETF/With W/investment_overview_joint.xlsx
 
 -----------------
+transaction_record_20200801
+-----------------
+- fake data created manually on 20200801:
+
+-----------------
 target_info_20200731
 -----------------
 - created manually on 20200731
