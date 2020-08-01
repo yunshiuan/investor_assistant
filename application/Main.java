@@ -7,18 +7,21 @@
  * @email ychuang26@wisc.eduF
  * @date 20200730
  * @attribution 
- * (1) based on  my assignment "a1 Milestone1: Design" and "a2 Milestone 2: UI"
- * (2) pie chart: https://docs.oracle.com/javafx/2/charts/pie-chart.htm
- * (3) JavaFX Overview: http://tutorials.jenkov.com/javafx/overview.html
- * (4) JavaFX css reference guide: https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
- * (5) padding: https://stackoverflow.com/questions/38528328/how-to-only-change-left-padding-in-javafx-css
- * (6) Event handler: 
- * (6-1) open a new window: https://o7planning.org/en/11533/opening-a-new-window-in-javafx
- * (6-2) file chooser: https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm
- * (7) Enable css in new windows: https://stackoverflow.com/questions/36295482/javafx-css-not-loading-when-opening-new-window
- * (8) Styling Charts with CSS: https://docs.oracle.com/javafx/2/charts/css-styles.htm
- * (9) Read in csv filse: https://stackabuse.com/reading-and-writing-csvs-in-java/
- * (10) Self-defined exceptions: p3/KeyNotFoundException.java
+ * - based on  my assignment "a1 Milestone1: Design" and "a2 Milestone 2: UI"
+ * - pie chart: https://docs.oracle.com/javafx/2/charts/pie-chart.htm
+ * - JavaFX Overview: http://tutorials.jenkov.com/javafx/overview.html
+ * - JavaFX css reference guide: https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
+ * - padding: https://stackoverflow.com/questions/38528328/how-to-only-change-left-padding-in-javafx-css
+ * - Event handler: 
+ * -- open a new window: https://o7planning.org/en/11533/opening-a-new-window-in-javafx
+ * -- encapsulate the handlers: https://stackoverflow.com/questions/51534680/eventhandler-in-a-separate-class
+ * - file chooser:
+ * -- https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm
+ * -- set initial directory: https://stackoverflow.com/questions/44003330/set-programs-directory-as-the-initial-directory-of-javafx-filechooser
+ * - Enable css in new windows: https://stackoverflow.com/questions/36295482/javafx-css-not-loading-when-opening-new-window
+ * - Styling Charts with CSS: https://docs.oracle.com/javafx/2/charts/css-styles.htm
+ * - Read in csv filse: https://stackabuse.com/reading-and-writing-csvs-in-java/
+ * - Self-defined exceptions: p3/KeyNotFoundException.java
  */
 package application;
 
@@ -162,7 +165,7 @@ public class Main extends Application {
 		// -- (1) Show the unit and percentage besides each slide in the
 		// - TODO: Should update the pie chart once the portfolio changes
 		// -- (1) (V) when importing data
-		// -- (2) when adding one transaction record		
+		// -- (2) when adding one transaction record
 		updateAllPortfolioChartData();
 
 		// put investor information into the box
