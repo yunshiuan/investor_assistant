@@ -112,6 +112,8 @@ public class Recorder {
 			}
 			// update the investors' portfolios
 			this.updateInvestorPortfolioAfterImporting();
+			// update the investors' current balance
+			this.updateInvestorCurrentBalance();
 			return true;
 		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException e) {
 //			e.printStackTrace();
@@ -196,8 +198,8 @@ public class Recorder {
 	public void initializeFromFiles() {
 		try {
 			this.updateInvestorInfo("./data/investor_info_20200731.csv");
-			this.importRecordData("./data/transaction_record_20200730.csv");
 			this.updateTargetInfo("./data/target_info_20200731.csv");
+			this.importRecordData("./data/transaction_record_20200730.csv");
 		} catch (Exception e) {
 			System.out.println("Initilization failed.");
 			e.printStackTrace();
@@ -336,6 +338,20 @@ public class Recorder {
 						node.getTransactionType(), node.getTarget(), node.getNumUnits());
 			}
 
+		}
+	}
+
+	/**
+	 * Update all investors' current balance according to current target price.
+	 */
+	private void updateInvestorCurrentBalance() {
+		// get all investor names
+		Set<String> investorNames = this.tableInvestors.keySet();
+
+		// iterate over the tableRecords and output each investor's updated number of
+		// units of each target
+		for (String investorName : investorNames) {
+			this.tableInvestors.get(investorName).computeCurrentBalance(this.tableTargets);
 		}
 	}
 

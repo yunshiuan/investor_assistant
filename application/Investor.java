@@ -12,6 +12,7 @@
 package application;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * The class to store each investor’s information.
@@ -32,6 +33,7 @@ public class Investor {
 	private Double targetRatio;
 	// rate of return (%)
 	private Double rateReturn;
+	private Double currentBalance;
 	// the hash table with keys being the investment target name and values being
 	// the number of units that the investor has
 	// - note that strictly speaking, this is not portfolio, which is a set of
@@ -82,6 +84,26 @@ public class Investor {
 		this.setTargetRatio(targetRatio);
 		this.setRateReturn(rateReturn);
 		this.setPortfolio(portfolio);
+	}
+
+	/**
+	 * Public Methods
+	 */
+	/**
+	 * Compute the investor's current balance based on the current price of targets.
+	 * 
+	 * @param tableTagetsInfo the table that contain the current price of each
+	 *                        target
+	 */
+	public void computeCurrentBalance(HashMap<String, InvestmentTarget> tableTagetsInfo) {
+		// iterate over the investor's all targets
+		Set<String> targetNames = this.portfolio.keySet();
+		double currentBalance = 0;
+		for (String targetName : targetNames) {
+			currentBalance += (this.portfolio.get(targetName)
+					* tableTagetsInfo.get(targetName).getCurrentPrice());
+		}
+		this.currentBalance = currentBalance;
 	}
 
 	/**
@@ -141,6 +163,20 @@ public class Investor {
 	 */
 	public void setPortfolio(HashMap<String, Double> portfolio) {
 		this.portfolio = portfolio;
+	}
+
+	/**
+	 * @return the currentBalance
+	 */
+	public Double getCurrentBalance() {
+		return this.currentBalance;
+	}
+
+	/**
+	 * @param currentBalance the currentBalance to set
+	 */
+	public void setCurrentBalance(Double currentBalance) {
+		this.currentBalance = currentBalance;
 	}
 
 }

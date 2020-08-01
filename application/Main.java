@@ -8,6 +8,7 @@
  * @date 20200730
  * @attribution 
  * - based on  my assignment "a1 Milestone1: Design" and "a2 Milestone 2: UI"
+ * JavaFX-related
  * - pie chart: 
  * -- https://docs.oracle.com/javafx/2/charts/pie-chart.htm
  * -- change pie label: https://stackoverflow.com/questions/35479375/display-additional-values-in-pie-chart
@@ -23,6 +24,9 @@
  * - Enable css in new windows: https://stackoverflow.com/questions/36295482/javafx-css-not-loading-when-opening-new-window
  * - Styling Charts with CSS: https://docs.oracle.com/javafx/2/charts/css-styles.htm
  * - Read in csv filse: https://stackabuse.com/reading-and-writing-csvs-in-java/
+ * - DataBinding:
+ * -- https://stackoverflow.com/questions/13227809/displaying-changing-values-in-javafx-label
+ * Others
  * - Self-defined exceptions: p3/KeyNotFoundException.java
  */
 package application;
@@ -97,6 +101,7 @@ public class Main extends Application {
 	// could set the argument in "Run Configuration>Arguments>Program Arguments"
 	// private List<String> args;
 
+	// TODO: consider removing these two fields
 	// store the pie chart data as a class field so that it will get updated
 	// whenever the underlying data has changed
 	private HashMap<String, ObservableList<PieChart.Data>> tablePieChartData = new HashMap<String, ObservableList<PieChart.Data>>();
@@ -204,10 +209,9 @@ public class Main extends Application {
 			// - TODO: Should beatify the chart.
 			// -- (1) Show the unit and percentage besides each slide in the
 			// - TODO: Should update the pie chart once the portfolio changes
-			// -- (1) (V) when importing data
+			// -- (1) (-) when importing data
 			// -- (2) when adding one transaction record
 			// TODO: ensure the color binds with specific target across investors' charts
-			// TODO: add percentage to the label
 
 			AnnotatedPieChart chart = new AnnotatedPieChart(
 					this.tablePieChartData.get(thisInvestor));
@@ -296,10 +300,13 @@ public class Main extends Application {
 		numberInvestor.getStyleClass().add("text-investor-title");
 
 		Text nameInvestor = new Text("Name: " + investor.getName());
+		Text currentBalance = new Text("Current Balance: $"
+				+ ((double) Math.round(investor.getCurrentBalance()) * 100) / 100);
 		Text ratioInvestor = new Text("Targte Stock/Bond Ratio: " + investor.getTargetRatio());
 		Text returnInvestor = new Text("Return of Investment: " + investor.getRateReturn() + "%");
 		box.getChildren().add(numberInvestor);
 		box.getChildren().add(nameInvestor);
+		box.getChildren().add(currentBalance);
 		box.getChildren().add(ratioInvestor);
 		box.getChildren().add(returnInvestor);
 		return box;
@@ -376,18 +383,18 @@ public class Main extends Application {
 		}
 
 		/**
-		 * mark each slice of pie with detailed labels
+		 * Mark each slice of pie with detailed labels.
 		 */
 		@Override
 		protected void layoutChartChildren(double top, double left, double contentWidth,
 				double contentHeight) {
 			if (getLabelsVisible()) {
 				// get the sum of the total asset
-				double sumValue = 0;
+				double sumBalance = 0;
 				for (Data d : getData()) {
-					sumValue += d.getPieValue();
+					sumBalance += d.getPieValue();
 				}
-				final double SUM_VALUE = sumValue;
+				final double SUM_BALANCE = sumBalance;
 				// update the pie lab
 				// TODO: Should place the labels above the chart. Probably relocate the labels
 				getData().forEach(d -> {
@@ -398,7 +405,7 @@ public class Main extends Application {
 
 						((Text) opTextNode.get()).setText(d.getName() + "\n$"
 								+ Math.round(d.getPieValue()) + "\n("
-								+ (double) Math.round((d.getPieValue() * 1000) / SUM_VALUE) / 10
+								+ (double) Math.round((d.getPieValue() * 1000) / SUM_BALANCE) / 10
 								+ "%)");
 					}
 				});
