@@ -96,11 +96,11 @@ public class Main extends Application {
 	/**
 	 * Design the GUI. Inherit from the class Application.
 	 * 
-	 * @param primaryStage the stage for the GUI.
+	 * @param primaryWindow the stage for the GUI.
 	 * @throws Exception
 	 */
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryWindow) throws Exception {
 		// save args example
 		args = this.getParameters().getRaw();
 		/*
@@ -231,22 +231,22 @@ public class Main extends Application {
 		 * Event Handlers
 		 */
 		// the "import data" button
-		buttonImport.setOnAction(new ImportDataButtonHandler(primaryStage));
+		buttonImport.setOnAction(new ImportDataButtonHandler(primaryWindow));
 		// the "add a transaction" button
-		buttonAddTrans.setOnAction(new AddTransactionButtonHandler(primaryStage));
+		buttonAddTrans.setOnAction(new AddTransactionButtonHandler(primaryWindow));
 		// the "show transactions" button
-		buttonShowTransactions.setOnAction(new ShowTransactionsButtonHandler(primaryStage));
+		buttonShowTransactions.setOnAction(new ShowTransactionsButtonHandler(primaryWindow));
 		// the "write summary" button
-		buttonWriteSummary.setOnAction(new WriteSummaryButtomHandler(primaryStage));
+		buttonWriteSummary.setOnAction(new WriteSummaryButtomHandler(primaryWindow));
 		// the "update price" button
-		buttonUpdatePrice.setOnAction(new UpdatePriceButtomHandler(primaryStage));
+		buttonUpdatePrice.setOnAction(new UpdatePriceButtomHandler(primaryWindow));
 		/**
 		 * Define the stage based on the scene
 		 */
 		// Add the stuff and set the primary stage
-		primaryStage.setTitle(APP_TITLE);
-		primaryStage.setScene(mainScene);
-		primaryStage.show();
+		primaryWindow.setTitle(APP_TITLE);
+		primaryWindow.setScene(mainScene);
+		primaryWindow.show();
 	}
 
 	/**
@@ -323,10 +323,11 @@ public class Main extends Application {
 	 * @date 20200801
 	 */
 	private class ImportDataButtonHandler implements EventHandler<ActionEvent> {
-		private final Stage primaryStage;
+		private final Stage primaryWindow;
+		private File externalFile;
 
-		public ImportDataButtonHandler(Stage primaryStage) {
-			this.primaryStage = primaryStage;
+		public ImportDataButtonHandler(Stage primaryWindow) {
+			this.primaryWindow = primaryWindow;
 		}
 
 		@Override
@@ -369,14 +370,14 @@ public class Main extends Application {
 			secondScene.getStylesheets().add("application/application.css");
 
 			// create the stage for the new window
-			Stage newWindow = new Stage();
-			newWindow.setTitle("Import Data");
-			newWindow.setScene(secondScene);
+			Stage secondWindow = new Stage();
+			secondWindow.setTitle("Import Data");
+			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
-			newWindow.setX(this.primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-			newWindow.setY(this.primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-			newWindow.show();
+			secondWindow.setX(this.primaryWindow.getX() + OFFSET_X_SECOND_WINDOW);
+			secondWindow.setY(this.primaryWindow.getY() + OFFSET_Y_SECOND_WINDOW);
+			secondWindow.show();
 
 			/**
 			 * Secondary Event handlers
@@ -384,16 +385,33 @@ public class Main extends Application {
 			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					// TODO: should actually import the data
-					File file = Recorder.fileChooser.showOpenDialog(newWindow);
+					externalFile = Recorder.fileChooser.showOpenDialog(secondWindow);
 				}
 			});
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
+					// TODO: Should handle the case that the user confirm without browsing
+					// define the new window and the text within it
+					Stage thirdWindow = new Stage();
+					Label thirdLabel = new Label();
+					thirdLabel.setWrapText(true);
 
-					Label thirdLabel = new Label(
-							"Sorry! The functionality is still under construction.");
+					// import the transaction records
+					// - should handle the case when it fails (e.g., invalid file format)
+					try {
+						myRecorder.importRecordData(externalFile.getPath());
+						thirdLabel.setText(
+								"You have successfully imported the transaction records based the file:\n"
+										+ externalFile.getPath());
+						thirdWindow.setTitle("Imported successfully");
+					} catch (FailedReadingFileException error) {
+						thirdLabel.setText("Failed to read the file."
+								+ " Please check that the file is in the coorect format."
+								+ " For the correct format, see 'data/transaction_record_20200730.csv'"
+								+ "\n\nError Message:" + error.getMessage());
+						thirdWindow.setTitle("Failed");
+					}
 
 					StackPane thirdLayout = new StackPane();
 					thirdLayout.getChildren().add(thirdLabel);
@@ -401,20 +419,19 @@ public class Main extends Application {
 					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
 							THIRD_WINDOW_HEIGHT);
 
-					Stage newWindow = new Stage();
-					newWindow.setTitle("Under Construction.");
-					newWindow.setScene(thirdScene);
+					thirdWindow.setTitle("Under Construction.");
+					thirdWindow.setScene(thirdScene);
 
-					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+					thirdWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
+					thirdWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
-					newWindow.show();
+					thirdWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					newWindow.close();
+					secondWindow.close();
 				}
 			});
 		}
@@ -428,10 +445,10 @@ public class Main extends Application {
 	 * @date 20200801
 	 */
 	private class AddTransactionButtonHandler implements EventHandler<ActionEvent> {
-		private final Stage primaryStage;
+		private final Stage primaryWindow;
 
-		public AddTransactionButtonHandler(Stage primaryStage) {
-			this.primaryStage = primaryStage;
+		public AddTransactionButtonHandler(Stage primaryWindow) {
+			this.primaryWindow = primaryWindow;
 		}
 
 		@Override
@@ -490,14 +507,14 @@ public class Main extends Application {
 			secondScene.getStylesheets().add("application/application.css");
 
 			// create the stage for the new window
-			Stage newWindow = new Stage();
-			newWindow.setTitle("Add a transaction");
-			newWindow.setScene(secondScene);
+			Stage secondWindow = new Stage();
+			secondWindow.setTitle("Add a transaction");
+			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
-			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-			newWindow.show();
+			secondWindow.setX(primaryWindow.getX() + OFFSET_X_SECOND_WINDOW);
+			secondWindow.setY(primaryWindow.getY() + OFFSET_Y_SECOND_WINDOW);
+			secondWindow.show();
 			/**
 			 * Secondary Event handlers
 			 */
@@ -514,20 +531,20 @@ public class Main extends Application {
 					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
 							THIRD_WINDOW_HEIGHT);
 
-					Stage newWindow = new Stage();
-					newWindow.setTitle("Under Construction.");
-					newWindow.setScene(thirdScene);
+					Stage secondWindow = new Stage();
+					secondWindow.setTitle("Under Construction.");
+					secondWindow.setScene(thirdScene);
 
-					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+					secondWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
+					secondWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
-					newWindow.show();
+					secondWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					newWindow.close();
+					secondWindow.close();
 				}
 			});
 		}
@@ -541,10 +558,10 @@ public class Main extends Application {
 	 * @date 20200801
 	 */
 	private class ShowTransactionsButtonHandler implements EventHandler<ActionEvent> {
-		private final Stage primaryStage;
+		private final Stage primaryWindow;
 
-		public ShowTransactionsButtonHandler(Stage primaryStage) {
-			this.primaryStage = primaryStage;
+		public ShowTransactionsButtonHandler(Stage primaryWindow) {
+			this.primaryWindow = primaryWindow;
 		}
 
 		@Override
@@ -596,14 +613,14 @@ public class Main extends Application {
 			secondScene.getStylesheets().add("application/application.css");
 
 			// create the stage for the new window
-			Stage newWindow = new Stage();
-			newWindow.setTitle("Show transactions");
-			newWindow.setScene(secondScene);
+			Stage secondWindow = new Stage();
+			secondWindow.setTitle("Show transactions");
+			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
-			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-			newWindow.show();
+			secondWindow.setX(primaryWindow.getX() + OFFSET_X_SECOND_WINDOW);
+			secondWindow.setY(primaryWindow.getY() + OFFSET_Y_SECOND_WINDOW);
+			secondWindow.show();
 			/**
 			 * Event handlers
 			 */
@@ -620,20 +637,20 @@ public class Main extends Application {
 					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
 							THIRD_WINDOW_HEIGHT);
 
-					Stage newWindow = new Stage();
-					newWindow.setTitle("Under Construction.");
-					newWindow.setScene(thirdScene);
+					Stage secondWindow = new Stage();
+					secondWindow.setTitle("Under Construction.");
+					secondWindow.setScene(thirdScene);
 
-					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+					secondWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
+					secondWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
-					newWindow.show();
+					secondWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					newWindow.close();
+					secondWindow.close();
 				}
 			});
 		}
@@ -647,10 +664,10 @@ public class Main extends Application {
 	 * @date 20200801
 	 */
 	private class WriteSummaryButtomHandler implements EventHandler<ActionEvent> {
-		private final Stage primaryStage;
+		private final Stage primaryWindow;
 
-		public WriteSummaryButtomHandler(Stage primaryStage) {
-			this.primaryStage = primaryStage;
+		public WriteSummaryButtomHandler(Stage primaryWindow) {
+			this.primaryWindow = primaryWindow;
 		}
 
 		@Override
@@ -694,14 +711,14 @@ public class Main extends Application {
 			secondScene.getStylesheets().add("application/application.css");
 
 			// create the stage for the new window
-			Stage newWindow = new Stage();
-			newWindow.setTitle("Write Summary");
-			newWindow.setScene(secondScene);
+			Stage secondWindow = new Stage();
+			secondWindow.setTitle("Write Summary");
+			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
-			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-			newWindow.show();
+			secondWindow.setX(primaryWindow.getX() + OFFSET_X_SECOND_WINDOW);
+			secondWindow.setY(primaryWindow.getY() + OFFSET_Y_SECOND_WINDOW);
+			secondWindow.show();
 			/**
 			 * Event handlers
 			 */
@@ -709,7 +726,7 @@ public class Main extends Application {
 				@Override
 				public void handle(final ActionEvent e) {
 					// TODO: should actually import the data
-					File file = Recorder.fileChooser.showOpenDialog(newWindow);
+					File file = Recorder.fileChooser.showOpenDialog(secondWindow);
 				}
 			});
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
@@ -725,20 +742,20 @@ public class Main extends Application {
 					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
 							THIRD_WINDOW_HEIGHT);
 
-					Stage newWindow = new Stage();
-					newWindow.setTitle("Under Construction.");
-					newWindow.setScene(thirdScene);
+					Stage secondWindow = new Stage();
+					secondWindow.setTitle("Under Construction.");
+					secondWindow.setScene(thirdScene);
 
-					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+					secondWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
+					secondWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
-					newWindow.show();
+					secondWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					newWindow.close();
+					secondWindow.close();
 				}
 			});
 		}
@@ -752,10 +769,11 @@ public class Main extends Application {
 	 * @date 20200801
 	 */
 	private class UpdatePriceButtomHandler implements EventHandler<ActionEvent> {
-		private final Stage primaryStage;
+		private final Stage primaryWindow;
+		private File externalFile;
 
-		public UpdatePriceButtomHandler(Stage primaryStage) {
-			this.primaryStage = primaryStage;
+		public UpdatePriceButtomHandler(Stage primaryWindow) {
+			this.primaryWindow = primaryWindow;
 		}
 
 		@Override
@@ -800,51 +818,68 @@ public class Main extends Application {
 			secondScene.getStylesheets().add("application/application.css");
 
 			// create the stage for the new window
-			Stage newWindow = new Stage();
-			newWindow.setTitle("Update Price");
-			newWindow.setScene(secondScene);
+			Stage secondWindow = new Stage();
+			secondWindow.setTitle("Update Price");
+			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
-			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-			newWindow.show();
+			secondWindow.setX(primaryWindow.getX() + OFFSET_X_SECOND_WINDOW);
+			secondWindow.setY(primaryWindow.getY() + OFFSET_Y_SECOND_WINDOW);
+			secondWindow.show();
 			/**
 			 * Event handlers
 			 */
 			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					// TODO: should actually import the data
-					File file = Recorder.fileChooser.showOpenDialog(newWindow);
+					externalFile = Recorder.fileChooser.showOpenDialog(secondWindow);
 				}
 			});
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
+					// the text to show in the window
+					Label thirdLabel = new Label();
+					// define the new window
+					Stage thirdWindow = new Stage();
+					// TODO: Should handle the case that the user confirm without browsing
 
-					Label thirdLabel = new Label(
-							"Sorry! The functionality is still under construction.");
+					// update the target info
+					// - should handle the case when it fails (e.g., invalid file format)
+					try {
+						myRecorder.updateTargetInfo(externalFile.getPath());
+						thirdLabel
+								.setText("You have successfully updated the price based the file:\n"
+										+ externalFile.getPath());
+						thirdWindow.setTitle("Updated successfully");
 
+					} catch (FailedReadingFileException error) {
+						thirdLabel.setText("Failed to read the file."
+								+ " Please check that the file is in the coorect format."
+								+ " For the correct format, see 'data/target_info_20200731.csv'"
+								+ "\n\nError Message:" + error.getMessage());
+						thirdWindow.setTitle("Failed");
+					}
+
+					thirdLabel.setWrapText(true);
 					StackPane thirdLayout = new StackPane();
 					thirdLayout.getChildren().add(thirdLabel);
 
 					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
 							THIRD_WINDOW_HEIGHT);
 
-					Stage newWindow = new Stage();
-					newWindow.setTitle("Under Construction.");
-					newWindow.setScene(thirdScene);
+					thirdWindow.setScene(thirdScene);
 
-					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+					thirdWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
+					thirdWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
-					newWindow.show();
+					thirdWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					newWindow.close();
+					secondWindow.close();
 				}
 			});
 		}

@@ -85,8 +85,9 @@ public class Recorder {
 	 * 
 	 * @param fileName a csv file that contains the file of transaction records.
 	 * @return true if succeeded and false if failed
+	 * @throws FailedReadingFileException
 	 */
-	public boolean importRecordData(String fileName) {
+	public boolean importRecordData(String fileName) throws FailedReadingFileException {
 		try {
 			// TODO: Should check if the node is already present in the recorder
 			// get the list of the new nodes in the file
@@ -113,9 +114,9 @@ public class Recorder {
 			this.updateInvestorPortfolioAfterImporting();
 			return true;
 		} catch (IOException | InvalidFileFormatException e) {
-			// TODO Should print this to the GUI
-			e.printStackTrace();
-			return false;
+//			e.printStackTrace();
+			throw new FailedReadingFileException(e.getMessage());
+//			return false;			
 		} catch (Exception e) {
 			// TODO Should print this to the GUI
 			e.printStackTrace();
@@ -130,19 +131,21 @@ public class Recorder {
 	 * 
 	 * @param fileName the file that contains the current price of each target.
 	 * @return true if succeeded and false if failed
+	 * @throws FailedReadingFileException
 	 */
-	public boolean updateTargetInfo(String fileName) {
+	public boolean updateTargetInfo(String fileName) throws FailedReadingFileException {
 		// get the hash table that contains the current price of each target
 		try {
 			HashMap<String, InvestmentTarget> newTargetInfo = MyFileReader
 					.readTargetInfoFile(fileName);
 			this.tableTargets = newTargetInfo;
 		} catch (IOException | InvalidFileFormatException e) {
-			// TODO Should print this to the GUI
-			e.printStackTrace();
-			return false;
+//			e.printStackTrace();
+			throw new FailedReadingFileException(e.getMessage());
+//			return false;
 		} catch (Exception e) {
 			// TODO Should print this to the GUI
+			System.out.println("An unexpected exception occured!");
 			e.printStackTrace();
 			return false;
 		}
@@ -191,9 +194,16 @@ public class Recorder {
 	 * Initialize the program based on the data in external files.
 	 */
 	public void initializeFromFiles() {
-		this.updateInvestorInfo("./data/investor_info_20200731.csv");
-		this.importRecordData("./data/transaction_record_20200730.csv");
-		this.updateTargetInfo("./data/target_info_20200731.csv");
+		try {
+			this.updateInvestorInfo("./data/investor_info_20200731.csv");
+			this.importRecordData("./data/transaction_record_20200730.csv");
+			this.updateTargetInfo("./data/target_info_20200731.csv");
+		} catch (Exception e) {
+			System.out.println("Initilization failed.");
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+
 		// set the default directory for file chooser to the data directory
 		String currentPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
 		Recorder.fileChooser.setInitialDirectory(new File(currentPath));
