@@ -5,7 +5,7 @@
   (1-6) () Close the second window after confirmation
 (2) (V) Create more files
 (3) Pie chart
-  (3-1) (-) Show the percentage and the asset value of each target.
+  (3-1) (V) Show the percentage and the asset value of each target.
 (4) Investor box
   (4-1) (-) Show the current total asset
   (4-2) (-) Show the current stock/bond ratio

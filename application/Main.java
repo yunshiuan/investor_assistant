@@ -101,6 +101,10 @@ public class Main extends Application {
 	// whenever the underlying data has changed
 	private HashMap<String, ObservableList<PieChart.Data>> tablePieChartData = new HashMap<String, ObservableList<PieChart.Data>>();
 
+	// store the pie charts to make synchronization between charts and underlying
+	// data easier
+	private HashMap<String, PieChart> tablePieCharts = new HashMap<String, PieChart>();
+
 	/**
 	 * Design the GUI. Inherit from the class Application.
 	 * 
@@ -165,11 +169,6 @@ public class Main extends Application {
 		boxInvestors.getStyleClass().add("box-investors");
 
 		// create portfolio data for each investor's the pie chart
-		// - TODO: Should beatify the chart.
-		// -- (1) Show the unit and percentage besides each slide in the
-		// - TODO: Should update the pie chart once the portfolio changes
-		// -- (1) (V) when importing data
-		// -- (2) when adding one transaction record
 		updateAllPortfolioChartData();
 
 		// put investor information into the box
@@ -202,33 +201,22 @@ public class Main extends Application {
 			VBox boxChart = new VBox();
 			boxThisInvestor.getChildren().add(boxChart);
 			// create the pie chart
+			// - TODO: Should beatify the chart.
+			// -- (1) Show the unit and percentage besides each slide in the
+			// - TODO: Should update the pie chart once the portfolio changes
+			// -- (1) (V) when importing data
+			// -- (2) when adding one transaction record
 			// TODO: ensure the color binds with specific target across investors' charts
 			// TODO: add percentage to the label
 
-			PieChart chart = new PieChart(this.tablePieChartData.get(thisInvestor)) {
-				@Override
-				protected void layoutChartChildren(double top, double left, double contentWidth,
-						double contentHeight) {
-					if (getLabelsVisible()) {
-						getData().forEach(d -> {
-							Optional<Node> opTextNode = this.lookupAll(".chart-pie-label").stream()
-									.filter(n -> n instanceof Text
-											&& ((Text) n).getText().contains(d.getName()))
-									.findAny();
-							if (opTextNode.isPresent()) {
-								((Text) opTextNode.get())
-										.setText(d.getName() + "\n$" + Math.round(d.getPieValue()));
-								//TODO: Should show the percentage as well
-							}
-						});
-					}
-					super.layoutChartChildren(top, left, contentWidth, contentHeight);
-				}
-			};
+			AnnotatedPieChart chart = new AnnotatedPieChart(
+					this.tablePieChartData.get(thisInvestor));
+			// hide the legend
 			chart.setLegendVisible(false);
 			chart.setTitle("Portfolio");
+			this.tablePieCharts.put(thisInvestor, chart);
 			boxChart.getStyleClass().add("box-chart-portfolio");
-			boxChart.getChildren().add(chart);
+			boxChart.getChildren().add(this.tablePieCharts.get(thisInvestor));
 		}
 
 		// place the box for investors
@@ -346,13 +334,78 @@ public class Main extends Application {
 	/**
 	 * Create the pie chart data for all investors' the portfolio pie chart.
 	 */
-	public void updateAllPortfolioChartData() {
+	private void updateAllPortfolioChartData() {
 		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
 		for (String investorName : investorNames) {
 			updateOnePortfolioChartData(investorName, myRecorder);
 		}
-
 	}
+
+//	/**
+//	 * Update pie charts based on 'tablePieChartData'.
+//	 */
+//	private void updatePieCharts(Box box) {
+//		// iterate over investors
+//		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
+//		for (String investorName : investorNames) {
+//			AnnotatedPieChart updatedChart = new AnnotatedPieChart(
+//					this.tablePieChartData.get(investorName));
+//			this.tablePieCharts.put(investorName, updatedChart);
+//		}
+//	}
+
+	/**
+	 * Helper classes
+	 */
+	/**
+	 * The class for annotated pie chart that provides detailed label for each slice
+	 * of pie.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 *
+	 */
+	private class AnnotatedPieChart extends PieChart {
+
+		/**
+		 * Constructor
+		 */
+		AnnotatedPieChart(ObservableList<Data> data) {
+			super(data);
+		}
+
+		/**
+		 * mark each slice of pie with detailed labels
+		 */
+		@Override
+		protected void layoutChartChildren(double top, double left, double contentWidth,
+				double contentHeight) {
+			if (getLabelsVisible()) {
+				// get the sum of the total asset
+				double sumValue = 0;
+				for (Data d : getData()) {
+					sumValue += d.getPieValue();
+				}
+				final double SUM_VALUE = sumValue;
+				// update the pie lab
+				// TODO: Should place the labels above the chart. Probably relocate the labels
+				getData().forEach(d -> {
+					Optional<Node> opTextNode = this.lookupAll(".chart-pie-label").stream().filter(
+							n -> n instanceof Text && ((Text) n).getText().contains(d.getName()))
+							.findAny();
+					if (opTextNode.isPresent()) {
+
+						((Text) opTextNode.get()).setText(d.getName() + "\n$"
+								+ Math.round(d.getPieValue()) + "\n("
+								+ (double) Math.round((d.getPieValue() * 1000) / SUM_VALUE) / 10
+								+ "%)");
+					}
+				});
+			}
+			super.layoutChartChildren(top, left, contentWidth, contentHeight);
+		}
+	};
 
 	/**
 	 * Event Handlers
@@ -445,6 +498,7 @@ public class Main extends Application {
 						myRecorder.importRecordData(externalFile.getPath());
 						// update the pie charts accordingly
 						updateAllPortfolioChartData();
+//						updatePieCharts();
 						thirdLabel.setText(
 								"You have successfully imported the transaction records based the file:\n"
 										+ externalFile.getPath());
@@ -892,6 +946,7 @@ public class Main extends Application {
 					// - should handle the case when it fails (e.g., invalid file format)
 					try {
 						myRecorder.updateTargetInfo(externalFile.getPath());
+//						updatePieCharts();
 						thirdLabel
 								.setText("You have successfully updated the price based the file:\n"
 										+ externalFile.getPath());
