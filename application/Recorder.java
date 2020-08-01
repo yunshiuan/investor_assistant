@@ -11,7 +11,9 @@
  */
 package application;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -192,6 +194,9 @@ public class Recorder {
 		this.updateInvestorInfo("./data/investor_info_20200731.csv");
 		this.importRecordData("./data/transaction_record_20200730.csv");
 		this.updateTargetInfo("./data/target_info_20200731.csv");
+		// set the default directory for file chooser to the data directory
+		String currentPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
+		Recorder.fileChooser.setInitialDirectory(new File(currentPath));
 	}
 
 	/**
@@ -200,6 +205,9 @@ public class Recorder {
 	public void initializeDemo() {
 		this.loadDemoInvestors();
 		this.loadDemoRecords();
+		// set the default directory for file chooser to the data directory
+		String currentPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
+		Recorder.fileChooser.setInitialDirectory(new File(currentPath));
 	}
 
 	/**
