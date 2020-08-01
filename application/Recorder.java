@@ -113,7 +113,7 @@ public class Recorder {
 			// update the investors' portfolios
 			this.updateInvestorPortfolioAfterImporting();
 			return true;
-		} catch (IOException | InvalidFileFormatException e) {
+		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException e) {
 //			e.printStackTrace();
 			throw new FailedReadingFileException(e.getMessage());
 //			return false;			

@@ -24,7 +24,6 @@ package application;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 import javafx.application.Application;
@@ -54,12 +53,6 @@ import javafx.stage.Stage;
  *
  */
 public class Main extends Application {
-
-	// store any command-line arguments that were entered.
-	// -NOTE: this.getParameters().getRaw() will get these also
-	// could set the argument in "Run Configuration>Arguments>Program Arguments"
-
-	private List<String> args;
 
 	/**
 	 * Constants
@@ -92,6 +85,14 @@ public class Main extends Application {
 	 * Private fields
 	 */
 	private Recorder myRecorder = new Recorder();
+	// store any command-line arguments that were entered.
+	// -NOTE: this.getParameters().getRaw() will get these also
+	// could set the argument in "Run Configuration>Arguments>Program Arguments"
+	// private List<String> args;
+
+	// store the pie chart data as a class field so that it will get updated
+	// whenever the underlying data has changed
+	private HashMap<String, ObservableList<PieChart.Data>> tablePieChartData = new HashMap<String, ObservableList<PieChart.Data>>();
 
 	/**
 	 * Design the GUI. Inherit from the class Application.
@@ -101,8 +102,8 @@ public class Main extends Application {
 	 */
 	@Override
 	public void start(Stage primaryWindow) throws Exception {
-		// save args example
-		args = this.getParameters().getRaw();
+//		// save args example
+//		args = this.getParameters().getRaw();
 		/*
 		 * Initialize the recorder
 		 */
@@ -156,6 +157,14 @@ public class Main extends Application {
 		HBox boxInvestors = new HBox();
 		boxInvestors.getStyleClass().add("box-investors");
 
+		// create portfolio data for each investor's the pie chart
+		// - TODO: Should beatify the chart.
+		// -- (1) Show the unit and percentage besides each slide in the
+		// - TODO: Should update the pie chart once the portfolio changes
+		// -- (1) (V) when importing data
+		// -- (2) when adding one transaction record		
+		updateAllPortfolioChartData();
+
 		// put investor information into the box
 		Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
 		int indexInvestor = 0;
@@ -185,14 +194,9 @@ public class Main extends Application {
 			 */
 			VBox boxChart = new VBox();
 			boxThisInvestor.getChildren().add(boxChart);
-			// create portfolio data for the pie chart
-			// - TODO: Should beatify the chart.
-			// -- (1) Show the unit and percentage besides each slide in the pie
-			ObservableList<PieChart.Data> pieChartData = Main.createPortfolioChartData(thisInvestor,
-					myRecorder);
 			// create the pie chart
 			// TODO: ensure the color binds with specific target across investors' charts
-			PieChart chart = new PieChart(pieChartData);
+			PieChart chart = new PieChart(this.tablePieChartData.get(thisInvestor));
 			chart.setTitle("Portfolio");
 			boxChart.getStyleClass().add("box-chart-portfolio");
 			boxChart.getChildren().add(chart);
@@ -285,16 +289,15 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Create the pie chart data for the portfolio pie chart. The data will be used
-	 * by the constructor PieChart().
+	 * Create the pie chart data for one investor's the portfolio pie chart. The
+	 * data will be used by the constructor PieChart().
 	 * 
 	 * @param investorName the investor's name of interest
 	 * @param recorder     the recorder that contains all information for portfolio
 	 * @return ObservableList<PieChart.Data> that will be used by the constructor
 	 *         PieChart().
 	 */
-	private static ObservableList<PieChart.Data> createPortfolioChartData(String investorName,
-			Recorder recorder) {
+	private void updateOnePortfolioChartData(String investorName, Recorder recorder) {
 		// get the current number of units
 		HashMap<String, Double> portfolio = recorder.getTableInvestors().get(investorName)
 				.getPortfolio();
@@ -308,7 +311,17 @@ public class Main extends Application {
 					* recorder.getTableTargets().get(thisTarget).getCurrentPrice();
 			pieChartData.add(new PieChart.Data(thisTarget, targetAsset));
 		}
-		return pieChartData;
+		this.tablePieChartData.put(investorName, pieChartData);
+	}
+
+	/**
+	 * Create the pie chart data for all investors' the portfolio pie chart.
+	 */
+	public void updateAllPortfolioChartData() {
+		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
+		for (String investorName : investorNames) {
+			updateOnePortfolioChartData(investorName, myRecorder);
+		}
 
 	}
 
@@ -401,6 +414,8 @@ public class Main extends Application {
 					// - should handle the case when it fails (e.g., invalid file format)
 					try {
 						myRecorder.importRecordData(externalFile.getPath());
+						// update the pie charts accordingly
+						updateAllPortfolioChartData();
 						thirdLabel.setText(
 								"You have successfully imported the transaction records based the file:\n"
 										+ externalFile.getPath());

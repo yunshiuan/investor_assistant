@@ -12,4 +12,5 @@
   (3-1) Show the percentage and the asset value of each target.
 (4) Investor box
   (4-1) Show the current total asset
+  (4-2) Show the current stock/bond ratio
 (5) Should handle the case when the imported data contains targets that are not yet present in the recorder.
