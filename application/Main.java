@@ -111,7 +111,6 @@ public class Main extends Application {
 		myRecorder.initializeFromFiles();
 //		myRecorder.initializeDemo();
 
-
 		myRecorder.showAllTransactions();
 		myRecorder.showInvestorTransactions("Amy");
 		myRecorder.showAllTargetsInfo();
@@ -232,486 +231,15 @@ public class Main extends Application {
 		 * Event Handlers
 		 */
 		// the "import data" button
-		buttonImport.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-				// define the new main window
-				BorderPane secondRoot = new BorderPane();
-
-				/**
-				 * Top panel: add the title
-				 */
-				// the text to show on the new window
-				Text secondTitle = new Text(
-						"Please select the the file of transactions to import.");
-
-				secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
-				HBox boxTitle = new HBox(secondTitle);
-				boxTitle.getStyleClass().add("text-new-window-title");
-				boxTitle.setAlignment(Pos.CENTER);
-				secondRoot.setTop(boxTitle);
-
-				/**
-				 * Bottom panel: a Confirm and a Cancel button
-				 */
-				HBox boxButton = new HBox();
-				Button buttonBrowse = new Button("Browse");
-				Button buttonConfirm = new Button("Confirm");
-				Button buttonCancel = new Button("Cancel");
-				boxButton.getChildren().add(buttonBrowse);
-				boxButton.getChildren().add(buttonConfirm);
-				boxButton.getChildren().add(buttonCancel);
-
-				// center the box
-				boxButton.setAlignment(Pos.CENTER);
-				secondRoot.setBottom(boxButton);
-
-				/**
-				 * Create the scene for the new window
-				 */
-				Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH,
-						SECOND_WINDOW_HEIGHT);
-				secondScene.getStylesheets().add("application/application.css");
-
-				// create the stage for the new window
-				Stage newWindow = new Stage();
-				newWindow.setTitle("Import Data");
-				newWindow.setScene(secondScene);
-
-				// set position of the new window, related to primary window.
-				newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-				newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-				newWindow.show();
-
-				/**
-				 * Event handlers
-				 */
-				buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						// TODO: should actually import the data
-						File file = Recorder.fileChooser.showOpenDialog(newWindow);
-					}
-				});
-				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-
-						Label thirdLabel = new Label(
-								"Sorry! The functionality is still under construction.");
-
-						StackPane thirdLayout = new StackPane();
-						thirdLayout.getChildren().add(thirdLabel);
-
-						Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-								THIRD_WINDOW_HEIGHT);
-
-						Stage newWindow = new Stage();
-						newWindow.setTitle("Under Construction.");
-						newWindow.setScene(thirdScene);
-
-						newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-						newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
-
-						newWindow.show();
-					}
-				});
-				buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						newWindow.close();
-					}
-				});
-			}
-
-		});
+		buttonImport.setOnAction(new ImportDataButtonHandler(primaryStage));
 		// the "add a transaction" button
-		buttonAddTrans.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-				// define the new main window
-				BorderPane secondRoot = new BorderPane();
-
-				/**
-				 * Top panel: add the title
-				 */
-				// the text to show on the new window
-				Text secondTitle = new Text("Type in the tractions you want to add");
-
-				secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
-				HBox boxTitle = new HBox(secondTitle);
-				boxTitle.getStyleClass().add("text-new-window-title");
-				boxTitle.setAlignment(Pos.CENTER);
-				secondRoot.setTop(boxTitle);
-
-				/**
-				 * Bottom panel: a Confirm and a Cancel button
-				 */
-				HBox boxButton = new HBox();
-				Button buttonConfirm = new Button("Confirm");
-				Button buttonCancel = new Button("Cancel");
-				boxButton.getChildren().add(buttonConfirm);
-				boxButton.getChildren().add(buttonCancel);
-
-				// center the box
-				boxButton.setAlignment(Pos.CENTER);
-				secondRoot.setBottom(boxButton);
-
-				/**
-				 * Center panel: text fields
-				 */
-				VBox boxTextFields = new VBox();
-				// the date field
-				for (int indexField = 0; indexField < ADD_TRANS_LABELS.length; indexField++) {
-					HBox box = new HBox();
-					boxTextFields.getChildren().add(box);
-					TextField textField = new TextField();
-					textField.setPromptText(ADD_TRANS_PROMPT[indexField]);
-					box.getChildren().add(new Label(ADD_TRANS_LABELS[indexField]));
-					box.getChildren().add(textField);
-					box.setAlignment(Pos.CENTER);
-				}
-
-				// center the text fields
-				boxTextFields.setAlignment(Pos.CENTER);
-				secondRoot.setCenter(boxTextFields);
-				/**
-				 * Create the scene for the new window
-				 */
-				Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH,
-						SECOND_WINDOW_HEIGHT);
-				secondScene.getStylesheets().add("application/application.css");
-
-				// create the stage for the new window
-				Stage newWindow = new Stage();
-				newWindow.setTitle("Add a transaction");
-				newWindow.setScene(secondScene);
-
-				// set position of the new window, related to primary window.
-				newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-				newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-				newWindow.show();
-				/**
-				 * Event handlers
-				 */
-				// TODO: See if I could re-use event handlers
-				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						Label thirdLabel = new Label(
-								"Sorry! The functionality is still under construction.");
-
-						StackPane thirdLayout = new StackPane();
-						thirdLayout.getChildren().add(thirdLabel);
-
-						Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-								THIRD_WINDOW_HEIGHT);
-
-						Stage newWindow = new Stage();
-						newWindow.setTitle("Under Construction.");
-						newWindow.setScene(thirdScene);
-
-						newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-						newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
-
-						newWindow.show();
-					}
-				});
-				buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						newWindow.close();
-					}
-				});
-			}
-
-		});
+		buttonAddTrans.setOnAction(new AddTransactionButtonHandler(primaryStage));
 		// the "show transactions" button
-		buttonShowTransactions.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-				// define the new main window
-				BorderPane secondRoot = new BorderPane();
-
-				/**
-				 * Top panel: add the title
-				 */
-				// the text to show on the new window
-				Text secondTitle = new Text("Which investor's transactions do you want to see?");
-				secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
-
-				HBox boxTitle = new HBox(secondTitle);
-				boxTitle.getStyleClass().add("text-new-window-title");
-				boxTitle.setAlignment(Pos.CENTER);
-				secondRoot.setTop(boxTitle);
-
-				/**
-				 * Center panel: a combo box
-				 */
-				ObservableList<String> listInvestors = FXCollections.observableArrayList();
-				Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
-				for (String nameInvestor : namesInvestors) {
-					listInvestors.add(nameInvestor);
-				}
-				ComboBox<String> comboBox = new ComboBox<String>(listInvestors);
-				secondRoot.setCenter(comboBox);
-
-				/**
-				 * Bottom panel: a Confirm and a Cancel button
-				 */
-				HBox boxButton = new HBox();
-				Button buttonConfirm = new Button("Confirm");
-				Button buttonCancel = new Button("Cancel");
-				boxButton.getChildren().add(buttonConfirm);
-				boxButton.getChildren().add(buttonCancel);
-
-				// center the box
-				boxButton.setAlignment(Pos.CENTER);
-				secondRoot.setBottom(boxButton);
-
-				/**
-				 * Create the scene for the new window
-				 */
-				Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH,
-						SECOND_WINDOW_HEIGHT);
-				secondScene.getStylesheets().add("application/application.css");
-
-				// create the stage for the new window
-				Stage newWindow = new Stage();
-				newWindow.setTitle("Show transactions");
-				newWindow.setScene(secondScene);
-
-				// set position of the new window, related to primary window.
-				newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-				newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-				newWindow.show();
-				/**
-				 * Event handlers
-				 */
-				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-
-						Label thirdLabel = new Label(
-								"Sorry! The functionality is still under construction.");
-
-						StackPane thirdLayout = new StackPane();
-						thirdLayout.getChildren().add(thirdLabel);
-
-						Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-								THIRD_WINDOW_HEIGHT);
-
-						Stage newWindow = new Stage();
-						newWindow.setTitle("Under Construction.");
-						newWindow.setScene(thirdScene);
-
-						newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-						newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
-
-						newWindow.show();
-					}
-				});
-				buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						newWindow.close();
-					}
-				});
-			}
-
-		});
+		buttonShowTransactions.setOnAction(new ShowTransactionsButtonHandler(primaryStage));
 		// the "write summary" button
-		buttonWriteSummary.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-				// define the new main window
-				BorderPane secondRoot = new BorderPane();
-
-				/**
-				 * Top panel: add the title
-				 */
-				// the text to show on the new window
-				Text secondTitle = new Text(
-						"Browse the directory to choose where the file should be written to.");
-				secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
-
-				HBox boxTitle = new HBox(secondTitle);
-				boxTitle.getStyleClass().add("text-new-window-title");
-				boxTitle.setAlignment(Pos.CENTER);
-				secondRoot.setTop(boxTitle);
-
-				/**
-				 * Bottom panel: a Confirm and a Cancel button
-				 */
-				HBox boxButton = new HBox();
-				Button buttonBrowse = new Button("Browse");
-				Button buttonConfirm = new Button("Confirm");
-				Button buttonCancel = new Button("Cancel");
-				boxButton.getChildren().add(buttonBrowse);
-				boxButton.getChildren().add(buttonConfirm);
-				boxButton.getChildren().add(buttonCancel);
-
-				// center the box
-				boxButton.setAlignment(Pos.CENTER);
-				secondRoot.setBottom(boxButton);
-
-				/**
-				 * Create the scene for the new window
-				 */
-				Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH,
-						SECOND_WINDOW_HEIGHT);
-				secondScene.getStylesheets().add("application/application.css");
-
-				// create the stage for the new window
-				Stage newWindow = new Stage();
-				newWindow.setTitle("Write Summary");
-				newWindow.setScene(secondScene);
-
-				// set position of the new window, related to primary window.
-				newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-				newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-				newWindow.show();
-				/**
-				 * Event handlers
-				 */
-				buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						// TODO: should actually import the data
-						File file = Recorder.fileChooser.showOpenDialog(newWindow);
-					}
-				});
-				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-
-						Label thirdLabel = new Label(
-								"Sorry! The functionality is still under construction.");
-
-						StackPane thirdLayout = new StackPane();
-						thirdLayout.getChildren().add(thirdLabel);
-
-						Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-								THIRD_WINDOW_HEIGHT);
-
-						Stage newWindow = new Stage();
-						newWindow.setTitle("Under Construction.");
-						newWindow.setScene(thirdScene);
-
-						newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-						newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
-
-						newWindow.show();
-					}
-				});
-				buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						newWindow.close();
-					}
-				});
-			}
-
-		});
+		buttonWriteSummary.setOnAction(new WriteSummaryButtomHandler(primaryStage));
 		// the "update price" button
-		buttonUpdatePrice.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-				// define the new main window
-				BorderPane secondRoot = new BorderPane();
-
-				/**
-				 * Top panel: add the title
-				 */
-				// the text to show on the new window
-				Text secondTitle = new Text(
-						"Please select the file that contains the current target price.");
-
-				secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
-
-				HBox boxTitle = new HBox(secondTitle);
-				boxTitle.getStyleClass().add("text-new-window-title");
-				boxTitle.setAlignment(Pos.CENTER);
-				secondRoot.setTop(boxTitle);
-
-				/**
-				 * Bottom panel: a Confirm and a Cancel button
-				 */
-				HBox boxButton = new HBox();
-				Button buttonBrowse = new Button("Browse");
-				Button buttonConfirm = new Button("Confirm");
-				Button buttonCancel = new Button("Cancel");
-				boxButton.getChildren().add(buttonBrowse);
-				boxButton.getChildren().add(buttonConfirm);
-				boxButton.getChildren().add(buttonCancel);
-
-				// center the box
-				boxButton.setAlignment(Pos.CENTER);
-				secondRoot.setBottom(boxButton);
-
-				/**
-				 * Create the scene for the new window
-				 */
-				Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH,
-						SECOND_WINDOW_HEIGHT);
-				secondScene.getStylesheets().add("application/application.css");
-
-				// create the stage for the new window
-				Stage newWindow = new Stage();
-				newWindow.setTitle("Update Price");
-				newWindow.setScene(secondScene);
-
-				// set position of the new window, related to primary window.
-				newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
-				newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
-				newWindow.show();
-				/**
-				 * Event handlers
-				 */
-				buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						// TODO: should actually import the data
-						File file = Recorder.fileChooser.showOpenDialog(newWindow);
-					}
-				});
-				buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-
-						Label thirdLabel = new Label(
-								"Sorry! The functionality is still under construction.");
-
-						StackPane thirdLayout = new StackPane();
-						thirdLayout.getChildren().add(thirdLabel);
-
-						Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-								THIRD_WINDOW_HEIGHT);
-
-						Stage newWindow = new Stage();
-						newWindow.setTitle("Under Construction.");
-						newWindow.setScene(thirdScene);
-
-						newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
-						newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
-
-						newWindow.show();
-					}
-				});
-				buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(final ActionEvent e) {
-						newWindow.close();
-					}
-				});
-			}
-
-		});
+		buttonUpdatePrice.setOnAction(new UpdatePriceButtomHandler(primaryStage));
 		/**
 		 * Define the stage based on the scene
 		 */
@@ -784,4 +312,542 @@ public class Main extends Application {
 
 	}
 
+	/**
+	 * Event Handlers
+	 */
+	/**
+	 * The event handler for the 'import data' button.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 */
+	private class ImportDataButtonHandler implements EventHandler<ActionEvent> {
+		private final Stage primaryStage;
+
+		public ImportDataButtonHandler(Stage primaryStage) {
+			this.primaryStage = primaryStage;
+		}
+
+		@Override
+		public void handle(ActionEvent arg0) {
+
+			// define the new main window
+			BorderPane secondRoot = new BorderPane();
+
+			/**
+			 * Top panel: add the title
+			 */
+			// the text to show on the new window
+			Text secondTitle = new Text("Please select the the file of transactions to import.");
+
+			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+			HBox boxTitle = new HBox(secondTitle);
+			boxTitle.getStyleClass().add("text-new-window-title");
+			boxTitle.setAlignment(Pos.CENTER);
+			secondRoot.setTop(boxTitle);
+
+			/**
+			 * Bottom panel: a Confirm and a Cancel button
+			 */
+			HBox boxButton = new HBox();
+			Button buttonBrowse = new Button("Browse");
+			Button buttonConfirm = new Button("Confirm");
+			Button buttonCancel = new Button("Cancel");
+			boxButton.getChildren().add(buttonBrowse);
+			boxButton.getChildren().add(buttonConfirm);
+			boxButton.getChildren().add(buttonCancel);
+
+			// center the box
+			boxButton.setAlignment(Pos.CENTER);
+			secondRoot.setBottom(boxButton);
+
+			/**
+			 * Create the scene for the new window
+			 */
+			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
+			secondScene.getStylesheets().add("application/application.css");
+
+			// create the stage for the new window
+			Stage newWindow = new Stage();
+			newWindow.setTitle("Import Data");
+			newWindow.setScene(secondScene);
+
+			// set position of the new window, related to primary window.
+			newWindow.setX(this.primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
+			newWindow.setY(this.primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
+			newWindow.show();
+
+			/**
+			 * Secondary Event handlers
+			 */
+			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					// TODO: should actually import the data
+					File file = Recorder.fileChooser.showOpenDialog(newWindow);
+				}
+			});
+			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+
+					Label thirdLabel = new Label(
+							"Sorry! The functionality is still under construction.");
+
+					StackPane thirdLayout = new StackPane();
+					thirdLayout.getChildren().add(thirdLabel);
+
+					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
+							THIRD_WINDOW_HEIGHT);
+
+					Stage newWindow = new Stage();
+					newWindow.setTitle("Under Construction.");
+					newWindow.setScene(thirdScene);
+
+					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
+					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+
+					newWindow.show();
+				}
+			});
+			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					newWindow.close();
+				}
+			});
+		}
+	}
+
+	/**
+	 * The event handler for the 'add a transaction' button.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 */
+	private class AddTransactionButtonHandler implements EventHandler<ActionEvent> {
+		private final Stage primaryStage;
+
+		public AddTransactionButtonHandler(Stage primaryStage) {
+			this.primaryStage = primaryStage;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+
+			// define the new main window
+			BorderPane secondRoot = new BorderPane();
+
+			/**
+			 * Top panel: add the title
+			 */
+			// the text to show on the new window
+			Text secondTitle = new Text("Type in the tractions you want to add");
+
+			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+			HBox boxTitle = new HBox(secondTitle);
+			boxTitle.getStyleClass().add("text-new-window-title");
+			boxTitle.setAlignment(Pos.CENTER);
+			secondRoot.setTop(boxTitle);
+
+			/**
+			 * Bottom panel: a Confirm and a Cancel button
+			 */
+			HBox boxButton = new HBox();
+			Button buttonConfirm = new Button("Confirm");
+			Button buttonCancel = new Button("Cancel");
+			boxButton.getChildren().add(buttonConfirm);
+			boxButton.getChildren().add(buttonCancel);
+
+			// center the box
+			boxButton.setAlignment(Pos.CENTER);
+			secondRoot.setBottom(boxButton);
+
+			/**
+			 * Center panel: text fields
+			 */
+			VBox boxTextFields = new VBox();
+			// the date field
+			for (int indexField = 0; indexField < ADD_TRANS_LABELS.length; indexField++) {
+				HBox box = new HBox();
+				boxTextFields.getChildren().add(box);
+				TextField textField = new TextField();
+				textField.setPromptText(ADD_TRANS_PROMPT[indexField]);
+				box.getChildren().add(new Label(ADD_TRANS_LABELS[indexField]));
+				box.getChildren().add(textField);
+				box.setAlignment(Pos.CENTER);
+			}
+
+			// center the text fields
+			boxTextFields.setAlignment(Pos.CENTER);
+			secondRoot.setCenter(boxTextFields);
+			/**
+			 * Create the scene for the new window
+			 */
+			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
+			secondScene.getStylesheets().add("application/application.css");
+
+			// create the stage for the new window
+			Stage newWindow = new Stage();
+			newWindow.setTitle("Add a transaction");
+			newWindow.setScene(secondScene);
+
+			// set position of the new window, related to primary window.
+			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
+			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
+			newWindow.show();
+			/**
+			 * Secondary Event handlers
+			 */
+			// TODO: See if I could re-use event handlers
+			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					Label thirdLabel = new Label(
+							"Sorry! The functionality is still under construction.");
+
+					StackPane thirdLayout = new StackPane();
+					thirdLayout.getChildren().add(thirdLabel);
+
+					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
+							THIRD_WINDOW_HEIGHT);
+
+					Stage newWindow = new Stage();
+					newWindow.setTitle("Under Construction.");
+					newWindow.setScene(thirdScene);
+
+					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
+					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+
+					newWindow.show();
+				}
+			});
+			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					newWindow.close();
+				}
+			});
+		}
+	}
+
+	/**
+	 * The event handler for the 'show transactions' button.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 */
+	private class ShowTransactionsButtonHandler implements EventHandler<ActionEvent> {
+		private final Stage primaryStage;
+
+		public ShowTransactionsButtonHandler(Stage primaryStage) {
+			this.primaryStage = primaryStage;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+
+			// define the new main window
+			BorderPane secondRoot = new BorderPane();
+
+			/**
+			 * Top panel: add the title
+			 */
+			// the text to show on the new window
+			Text secondTitle = new Text("Which investor's transactions do you want to see?");
+			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+
+			HBox boxTitle = new HBox(secondTitle);
+			boxTitle.getStyleClass().add("text-new-window-title");
+			boxTitle.setAlignment(Pos.CENTER);
+			secondRoot.setTop(boxTitle);
+
+			/**
+			 * Center panel: a combo box
+			 */
+			ObservableList<String> listInvestors = FXCollections.observableArrayList();
+			Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
+			for (String nameInvestor : namesInvestors) {
+				listInvestors.add(nameInvestor);
+			}
+			ComboBox<String> comboBox = new ComboBox<String>(listInvestors);
+			secondRoot.setCenter(comboBox);
+
+			/**
+			 * Bottom panel: a Confirm and a Cancel button
+			 */
+			HBox boxButton = new HBox();
+			Button buttonConfirm = new Button("Confirm");
+			Button buttonCancel = new Button("Cancel");
+			boxButton.getChildren().add(buttonConfirm);
+			boxButton.getChildren().add(buttonCancel);
+
+			// center the box
+			boxButton.setAlignment(Pos.CENTER);
+			secondRoot.setBottom(boxButton);
+
+			/**
+			 * Create the scene for the new window
+			 */
+			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
+			secondScene.getStylesheets().add("application/application.css");
+
+			// create the stage for the new window
+			Stage newWindow = new Stage();
+			newWindow.setTitle("Show transactions");
+			newWindow.setScene(secondScene);
+
+			// set position of the new window, related to primary window.
+			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
+			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
+			newWindow.show();
+			/**
+			 * Event handlers
+			 */
+			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+
+					Label thirdLabel = new Label(
+							"Sorry! The functionality is still under construction.");
+
+					StackPane thirdLayout = new StackPane();
+					thirdLayout.getChildren().add(thirdLabel);
+
+					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
+							THIRD_WINDOW_HEIGHT);
+
+					Stage newWindow = new Stage();
+					newWindow.setTitle("Under Construction.");
+					newWindow.setScene(thirdScene);
+
+					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
+					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+
+					newWindow.show();
+				}
+			});
+			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					newWindow.close();
+				}
+			});
+		}
+	};
+
+	/**
+	 * The event handler for the 'write summary' button.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 */
+	private class WriteSummaryButtomHandler implements EventHandler<ActionEvent> {
+		private final Stage primaryStage;
+
+		public WriteSummaryButtomHandler(Stage primaryStage) {
+			this.primaryStage = primaryStage;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+
+			// define the new main window
+			BorderPane secondRoot = new BorderPane();
+
+			/**
+			 * Top panel: add the title
+			 */
+			// the text to show on the new window
+			Text secondTitle = new Text(
+					"Browse the directory to choose where the file should be written to.");
+			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+
+			HBox boxTitle = new HBox(secondTitle);
+			boxTitle.getStyleClass().add("text-new-window-title");
+			boxTitle.setAlignment(Pos.CENTER);
+			secondRoot.setTop(boxTitle);
+
+			/**
+			 * Bottom panel: a Confirm and a Cancel button
+			 */
+			HBox boxButton = new HBox();
+			Button buttonBrowse = new Button("Browse");
+			Button buttonConfirm = new Button("Confirm");
+			Button buttonCancel = new Button("Cancel");
+			boxButton.getChildren().add(buttonBrowse);
+			boxButton.getChildren().add(buttonConfirm);
+			boxButton.getChildren().add(buttonCancel);
+
+			// center the box
+			boxButton.setAlignment(Pos.CENTER);
+			secondRoot.setBottom(boxButton);
+
+			/**
+			 * Create the scene for the new window
+			 */
+			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
+			secondScene.getStylesheets().add("application/application.css");
+
+			// create the stage for the new window
+			Stage newWindow = new Stage();
+			newWindow.setTitle("Write Summary");
+			newWindow.setScene(secondScene);
+
+			// set position of the new window, related to primary window.
+			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
+			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
+			newWindow.show();
+			/**
+			 * Event handlers
+			 */
+			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					// TODO: should actually import the data
+					File file = Recorder.fileChooser.showOpenDialog(newWindow);
+				}
+			});
+			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+
+					Label thirdLabel = new Label(
+							"Sorry! The functionality is still under construction.");
+
+					StackPane thirdLayout = new StackPane();
+					thirdLayout.getChildren().add(thirdLabel);
+
+					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
+							THIRD_WINDOW_HEIGHT);
+
+					Stage newWindow = new Stage();
+					newWindow.setTitle("Under Construction.");
+					newWindow.setScene(thirdScene);
+
+					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
+					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+
+					newWindow.show();
+				}
+			});
+			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					newWindow.close();
+				}
+			});
+		}
+	};
+
+	/**
+	 * The event handler for the 'update price' button.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 */
+	private class UpdatePriceButtomHandler implements EventHandler<ActionEvent> {
+		private final Stage primaryStage;
+
+		public UpdatePriceButtomHandler(Stage primaryStage) {
+			this.primaryStage = primaryStage;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+
+			// define the new main window
+			BorderPane secondRoot = new BorderPane();
+
+			/**
+			 * Top panel: add the title
+			 */
+			// the text to show on the new window
+			Text secondTitle = new Text(
+					"Please select the file that contains the current target price.");
+
+			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+
+			HBox boxTitle = new HBox(secondTitle);
+			boxTitle.getStyleClass().add("text-new-window-title");
+			boxTitle.setAlignment(Pos.CENTER);
+			secondRoot.setTop(boxTitle);
+
+			/**
+			 * Bottom panel: a Confirm and a Cancel button
+			 */
+			HBox boxButton = new HBox();
+			Button buttonBrowse = new Button("Browse");
+			Button buttonConfirm = new Button("Confirm");
+			Button buttonCancel = new Button("Cancel");
+			boxButton.getChildren().add(buttonBrowse);
+			boxButton.getChildren().add(buttonConfirm);
+			boxButton.getChildren().add(buttonCancel);
+
+			// center the box
+			boxButton.setAlignment(Pos.CENTER);
+			secondRoot.setBottom(boxButton);
+
+			/**
+			 * Create the scene for the new window
+			 */
+			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
+			secondScene.getStylesheets().add("application/application.css");
+
+			// create the stage for the new window
+			Stage newWindow = new Stage();
+			newWindow.setTitle("Update Price");
+			newWindow.setScene(secondScene);
+
+			// set position of the new window, related to primary window.
+			newWindow.setX(primaryStage.getX() + OFFSET_X_SECOND_WINDOW);
+			newWindow.setY(primaryStage.getY() + OFFSET_Y_SECOND_WINDOW);
+			newWindow.show();
+			/**
+			 * Event handlers
+			 */
+			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					// TODO: should actually import the data
+					File file = Recorder.fileChooser.showOpenDialog(newWindow);
+				}
+			});
+			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+
+					Label thirdLabel = new Label(
+							"Sorry! The functionality is still under construction.");
+
+					StackPane thirdLayout = new StackPane();
+					thirdLayout.getChildren().add(thirdLabel);
+
+					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
+							THIRD_WINDOW_HEIGHT);
+
+					Stage newWindow = new Stage();
+					newWindow.setTitle("Under Construction.");
+					newWindow.setScene(thirdScene);
+
+					newWindow.setX(primaryStage.getX() + OFFSET_X_THIRD_WINDOW);
+					newWindow.setY(primaryStage.getY() + OFFSET_Y_THIRD_WINDOW);
+
+					newWindow.show();
+				}
+			});
+			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					newWindow.close();
+				}
+			});
+		}
+
+	};
 }
