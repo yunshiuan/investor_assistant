@@ -11,8 +11,8 @@
   (4-2) (-) Show the current stock/bond ratio
   (4-3) (-) Show the return of investment rate
 (5) Should handle the case when the imported data or the newly added record contains targets that are not yet present in the recorder.
-(6) Replace the third windows by the class Alert.
 
 Future work:
-(1) allowing adding more investors.
-(2) Should not hard-code 'Amy' and 'Andy' here
+- allow adding more investors.
+- allow adding more targets.
+- Should not hard-code 'Amy' and 'Andy' here

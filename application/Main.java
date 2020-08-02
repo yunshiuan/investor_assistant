@@ -307,6 +307,7 @@ public class Main extends Application {
 		Text nameInvestor = new Text("Name: " + investor.getName());
 		Text currentBalance = new Text("Current Balance: $"
 				+ ((double) Math.round(investor.getCurrentBalance()) * 100) / 100);
+
 		Text ratioInvestor = new Text("Targte Stock/Bond Ratio: " + investor.getTargetRatio());
 		Text returnInvestor = new Text("Return of Investment: " + investor.getRateReturn() + "%");
 		box.getChildren().add(numberInvestor);
@@ -496,11 +497,15 @@ public class Main extends Application {
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					// TODO: Should handle the case that the user confirm without browsing
-					// define the new window and the text within it
-					Stage thirdWindow = new Stage();
-					Label thirdLabel = new Label();
-					thirdLabel.setWrapText(true);
+					// handle the case that the user confirm without browsing
+					if (externalFile == null) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText(
+								"Please select a file that contains the transaction records,"
+										+ " e.g., 'transaction_record_20200801.csv'.");
+						alert.show();
+					}
 
 					// import the transaction records
 					// - should handle the case when it fails (e.g., invalid file format)
@@ -509,31 +514,23 @@ public class Main extends Application {
 						// update the pie charts accordingly
 						updateAllPortfolioChartData();
 						updatePieCharts();
-						thirdLabel.setText(
+						// show success
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setContentText(
 								"You have successfully imported the transaction records based the file:\n"
-										+ externalFile.getPath());
-						thirdWindow.setTitle("Imported successfully");
+										+ externalFile.getPath()
+										+ "\n\nThe dashboard has been updated accordinly.");
+						alert.show();
+						secondWindow.close();
 					} catch (FailedReadingFileException error) {
-						thirdLabel.setText("Failed to read the file."
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Failed to read the file."
 								+ " Please check that the file is in the coorect format."
 								+ " For the correct format, see 'data/transaction_record_20200730.csv'"
 								+ "\n\nError Message:" + error.getMessage());
-						thirdWindow.setTitle("Failed");
+						alert.show();
 					}
-
-					StackPane thirdLayout = new StackPane();
-					thirdLayout.getChildren().add(thirdLabel);
-
-					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-							THIRD_WINDOW_HEIGHT);
-
-					thirdWindow.setTitle("Under Construction.");
-					thirdWindow.setScene(thirdScene);
-
-					thirdWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
-					thirdWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
-
-					thirdWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -642,6 +639,12 @@ public class Main extends Application {
 						Double numUnits = Double.valueOf(listFields.get(5).getText());
 						myRecorder.addTransaction(date, investorName, transactionType, target,
 								unitPrice, numUnits);
+						// show success
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setContentText("You have successfully added the record. "
+								+ "The dashboard has been updated accordinly.");
+						alert.show();
+						secondWindow.close();
 					} catch (NumberFormatException error) {
 						// show an error window
 						Alert alert = new Alert(AlertType.ERROR);
@@ -653,31 +656,14 @@ public class Main extends Application {
 					} catch (NonExistentInvestorException error) {
 						// show an error window
 						Alert alert = new Alert(AlertType.ERROR);
-						//TODO: Should not hard-code 'Amy' and 'Andy' here
+						// TODO: Should not hard-code 'Amy' and 'Andy' here
 						alert.setContentText("The investor name you typed " + "'" + investorName
-								+ "'" + "is not present in this recorder. Shold be 'Amy' or 'Andy'. \n" + "Error message: "
-								+ error.getMessage());
+								+ "'"
+								+ "is not present in this recorder. Shold be 'Amy' or 'Andy'. \n"
+								+ "Error message: " + error.getMessage());
 						alert.show();
 						return;
 					}
-
-					Label thirdLabel = new Label(
-							"Sorry! The functionality is still under construction.");
-
-					StackPane thirdLayout = new StackPane();
-					thirdLayout.getChildren().add(thirdLabel);
-
-					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-							THIRD_WINDOW_HEIGHT);
-
-					Stage secondWindow = new Stage();
-					secondWindow.setTitle("Under Construction.");
-					secondWindow.setScene(thirdScene);
-
-					secondWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
-					secondWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
-
-					secondWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -1020,11 +1006,15 @@ public class Main extends Application {
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					// the text to show in the window
-					Label thirdLabel = new Label();
-					// define the new window
-					Stage thirdWindow = new Stage();
-					// TODO: Should handle the case that the user confirm without browsing
+					// handle the case that the user confirm without browsing
+					if (externalFile == null) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText(
+								"Please select a file that contains the transaction records,"
+										+ " e.g., 'transaction_record_20200801.csv'.");
+						alert.show();
+					}
 
 					// update the target info
 					// - should handle the case when it fails (e.g., invalid file format)
@@ -1032,32 +1022,24 @@ public class Main extends Application {
 						myRecorder.updateTargetInfo(externalFile.getPath());
 						updateAllPortfolioChartData();
 						updatePieCharts();
-						thirdLabel
-								.setText("You have successfully updated the price based the file:\n"
-										+ externalFile.getPath());
-						thirdWindow.setTitle("Updated successfully");
+						// show success
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setContentText(
+								"You have successfully updated the price based the file:\n"
+										+ externalFile.getPath()
+										+ "\n\nThe dashboard has been updated accordinly.");
+						alert.show();
+						secondWindow.close();
 
 					} catch (FailedReadingFileException error) {
-						thirdLabel.setText("Failed to read the file."
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Failed to read the file."
 								+ " Please check that the file is in the coorect format."
 								+ " For the correct format, see 'data/target_info_20200731.csv'"
 								+ "\n\nError Message:" + error.getMessage());
-						thirdWindow.setTitle("Failed");
+						alert.show();
 					}
-
-					thirdLabel.setWrapText(true);
-					StackPane thirdLayout = new StackPane();
-					thirdLayout.getChildren().add(thirdLabel);
-
-					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-							THIRD_WINDOW_HEIGHT);
-
-					thirdWindow.setScene(thirdScene);
-
-					thirdWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
-					thirdWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
-
-					thirdWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {

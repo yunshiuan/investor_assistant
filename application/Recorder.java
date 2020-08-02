@@ -142,9 +142,7 @@ public class Recorder {
 					.readTargetInfoFile(fileName);
 			this.tableTargets = newTargetInfo;
 		} catch (IOException | InvalidFileFormatException e) {
-//			e.printStackTrace();
 			throw new FailedReadingFileException(e.getMessage());
-//			return false;
 		} catch (Exception e) {
 			// TODO Should print this to the GUI
 			System.out.println("An unexpected exception occured!");
