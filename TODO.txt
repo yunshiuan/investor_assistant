@@ -7,6 +7,7 @@
 (3) Pie chart
   (3-1) () Should place the labels above the chart. Probably relocate the labels.
   (3-3) () Should update the current balance once it changes.
+  () Ensure the color binds to a specific pie slice
 (4) Investor box
   (4-1) (V) Show the current total balance
   (4-2) (-) Show the current stock/bond ratio

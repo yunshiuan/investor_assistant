@@ -69,17 +69,18 @@ public class Main extends Application {
 	 * Constants
 	 */
 	// the window size
-	private static final int SIZE_FACTOR = 35;
-	private static final int WINDOW_WIDTH = 26 * SIZE_FACTOR;
-	private static final int WINDOW_HEIGHT = 15 * SIZE_FACTOR;
-	private static final int SECOND_WINDOW_WIDTH = (400 / 30) * SIZE_FACTOR;
-	private static final int SECOND_WINDOW_HEIGHT = (300 / 30) * SIZE_FACTOR;
-	private static final int OFFSET_X_SECOND_WINDOW = (200 / 30) * SIZE_FACTOR;
-	private static final int OFFSET_Y_SECOND_WINDOW = (100 / 30) * SIZE_FACTOR;
-	private static final int THIRD_WINDOW_WIDTH = (400 / 30) * SIZE_FACTOR * (1 / 2);
-	private static final int THIRD_WINDOW_HEIGHT = (300 / 30) * SIZE_FACTOR * (1 / 2);
-	private static final int OFFSET_X_THIRD_WINDOW = (200 / 30) * SIZE_FACTOR;
-	private static final int OFFSET_Y_THIRD_WINDOW = (100 / 30) * SIZE_FACTOR;
+	private static final double SIZE_FACTOR = (double) 35 / 30;
+	private static final double WINDOW_WIDTH = 26 * 30 * SIZE_FACTOR;
+	private static final double WINDOW_HEIGHT = 15 * 30 * SIZE_FACTOR;
+	private static final double SECOND_WINDOW_WIDTH = 400 * SIZE_FACTOR;
+	private static final double SECOND_WINDOW_HEIGHT = 300 * SIZE_FACTOR;
+	private static final double OFFSET_X_SECOND_WINDOW = 200 * SIZE_FACTOR;
+	private static final double OFFSET_Y_SECOND_WINDOW = 100 * SIZE_FACTOR;
+	private static final double THIRD_WINDOW_WIDTH = 400 * SIZE_FACTOR * 0.5;
+	private static final double THIRD_WINDOW_HEIGHT = 300 * SIZE_FACTOR * 0.5;
+	private static final double OFFSET_X_THIRD_WINDOW = 200 * SIZE_FACTOR;
+	private static final double OFFSET_Y_THIRD_WINDOW = 100 * SIZE_FACTOR;
+	private static final String FILE_CSS = "application/application.css";
 
 	// the app title
 	private static final String APP_TITLE = "Best Investment Assistant for Joint Account Holders";
@@ -145,7 +146,7 @@ public class Main extends Application {
 		/**
 		 * Add css
 		 */
-		mainScene.getStylesheets().add("application/application.css");
+		mainScene.getStylesheets().add(FILE_CSS);
 
 //		/**
 //		 * Bottom panel: Only for developing use. Show console output.
@@ -210,7 +211,7 @@ public class Main extends Application {
 			// - TODO: Should update the pie chart once the portfolio changes
 			// -- (1) (V) when importing data
 			// -- (2) when adding one transaction record
-			// -- (3) (V) the price gets updated			
+			// -- (3) (V) the price gets updated
 			// TODO: ensure the color binds with specific target across investors' charts
 
 			AnnotatedPieChart chart = new AnnotatedPieChart(
@@ -467,7 +468,7 @@ public class Main extends Application {
 			 * Create the scene for the new window
 			 */
 			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
-			secondScene.getStylesheets().add("application/application.css");
+			secondScene.getStylesheets().add(FILE_CSS);
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
@@ -607,7 +608,7 @@ public class Main extends Application {
 			 * Create the scene for the new window
 			 */
 			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
-			secondScene.getStylesheets().add("application/application.css");
+			secondScene.getStylesheets().add(FILE_CSS);
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
@@ -677,7 +678,8 @@ public class Main extends Application {
 			 * Top panel: add the title
 			 */
 			// the text to show on the new window
-			Text secondTitle = new Text("Which investor's transactions do you want to see?");
+			Text secondTitle = new Text(
+					"Filter: Which investor's transactions do you want to see?");
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 
 			HBox boxTitle = new HBox(secondTitle);
@@ -686,9 +688,10 @@ public class Main extends Application {
 			secondRoot.setTop(boxTitle);
 
 			/**
-			 * Center panel: a combo box
+			 * Center panel: a combo box to select the investor of interest
 			 */
 			ObservableList<String> listInvestors = FXCollections.observableArrayList();
+			listInvestors.add("All Investors");
 			Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
 			for (String nameInvestor : namesInvestors) {
 				listInvestors.add(nameInvestor);
@@ -713,7 +716,7 @@ public class Main extends Application {
 			 * Create the scene for the new window
 			 */
 			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
-			secondScene.getStylesheets().add("application/application.css");
+			secondScene.getStylesheets().add(FILE_CSS);
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
@@ -731,23 +734,30 @@ public class Main extends Application {
 				@Override
 				public void handle(final ActionEvent e) {
 
-					Label thirdLabel = new Label(
-							"Sorry! The functionality is still under construction.");
+					// TODO: Should read in the investor name and do the filtering
 
-					StackPane thirdLayout = new StackPane();
-					thirdLayout.getChildren().add(thirdLabel);
+					// create the pane
+					BorderPane thirdLayout = new BorderPane();
 
-					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-							THIRD_WINDOW_HEIGHT);
+					// create the window
+					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH * 3,
+							THIRD_WINDOW_HEIGHT * 3);
+					thirdScene.getStylesheets().add(FILE_CSS);
+					Stage thirdWindow = new Stage();
+					thirdWindow.setTitle("View Transactions");
+					thirdWindow.setScene(thirdScene);
+					// position the window
+					thirdWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
+					thirdWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
-					Stage secondWindow = new Stage();
-					secondWindow.setTitle("Under Construction.");
-					secondWindow.setScene(thirdScene);
+					// create the title
+					Label thirdLabel = new Label("See below for the transactions.");
+					HBox boxTitle = new HBox(thirdLabel);
+					boxTitle.getStyleClass().add("text-new-window-title");
+					boxTitle.setAlignment(Pos.CENTER);
+					thirdLayout.setTop(boxTitle);
 
-					secondWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
-					secondWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
-
-					secondWindow.show();
+					thirdWindow.show();
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -811,7 +821,7 @@ public class Main extends Application {
 			 * Create the scene for the new window
 			 */
 			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
-			secondScene.getStylesheets().add("application/application.css");
+			secondScene.getStylesheets().add(FILE_CSS);
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
@@ -918,7 +928,7 @@ public class Main extends Application {
 			 * Create the scene for the new window
 			 */
 			Scene secondScene = new Scene(secondRoot, SECOND_WINDOW_WIDTH, SECOND_WINDOW_HEIGHT);
-			secondScene.getStylesheets().add("application/application.css");
+			secondScene.getStylesheets().add(FILE_CSS);
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
