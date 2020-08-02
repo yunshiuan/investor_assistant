@@ -101,7 +101,6 @@ public class Main extends Application {
 	// could set the argument in "Run Configuration>Arguments>Program Arguments"
 	// private List<String> args;
 
-	// TODO: consider removing these two fields
 	// store the pie chart data as a class field so that it will get updated
 	// whenever the underlying data has changed
 	private HashMap<String, ObservableList<PieChart.Data>> tablePieChartData = new HashMap<String, ObservableList<PieChart.Data>>();
@@ -209,8 +208,9 @@ public class Main extends Application {
 			// - TODO: Should beatify the chart.
 			// -- (1) Show the unit and percentage besides each slide in the
 			// - TODO: Should update the pie chart once the portfolio changes
-			// -- (1) (-) when importing data
+			// -- (1) (V) when importing data
 			// -- (2) when adding one transaction record
+			// -- (3) (V) the price gets updated			
 			// TODO: ensure the color binds with specific target across investors' charts
 
 			AnnotatedPieChart chart = new AnnotatedPieChart(
@@ -348,18 +348,16 @@ public class Main extends Application {
 		}
 	}
 
-//	/**
-//	 * Update pie charts based on 'tablePieChartData'.
-//	 */
-//	private void updatePieCharts(Box box) {
-//		// iterate over investors
-//		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
-//		for (String investorName : investorNames) {
-//			AnnotatedPieChart updatedChart = new AnnotatedPieChart(
-//					this.tablePieChartData.get(investorName));
-//			this.tablePieCharts.put(investorName, updatedChart);
-//		}
-//	}
+	/**
+	 * Update pie charts based on 'tablePieChartData'.
+	 */
+	private void updatePieCharts() {
+		// iterate over investors
+		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
+		for (String investorName : investorNames) {
+			this.tablePieCharts.get(investorName).setData(this.tablePieChartData.get(investorName));
+		}
+	}
 
 	/**
 	 * Helper classes
@@ -505,7 +503,7 @@ public class Main extends Application {
 						myRecorder.importRecordData(externalFile.getPath());
 						// update the pie charts accordingly
 						updateAllPortfolioChartData();
-//						updatePieCharts();
+						updatePieCharts();
 						thirdLabel.setText(
 								"You have successfully imported the transaction records based the file:\n"
 										+ externalFile.getPath());
@@ -953,7 +951,8 @@ public class Main extends Application {
 					// - should handle the case when it fails (e.g., invalid file format)
 					try {
 						myRecorder.updateTargetInfo(externalFile.getPath());
-//						updatePieCharts();
+						updateAllPortfolioChartData();
+						updatePieCharts();
 						thirdLabel
 								.setText("You have successfully updated the price based the file:\n"
 										+ externalFile.getPath());

@@ -111,7 +111,7 @@ public class Recorder {
 				}
 			}
 			// update the investors' portfolios
-			this.updateInvestorPortfolioAfterImporting();
+			this.updateInvestorPortfolioAfterImporting(newNodes);
 			// update the investors' current balance
 			this.updateInvestorCurrentBalance();
 			return true;
@@ -319,26 +319,19 @@ public class Recorder {
 	}
 
 	/**
-	 * Update the investors' portfolios (in tableInvestors) based on the current
-	 * total number of units (records). This method is required after importing an
-	 * external record file.
+	 * Update the investors' portfolios (in tableInvestors) based on the given list
+	 * of new nodes. This method is required after importing an external record
+	 * file.
+	 * 
+	 * @param newNodes newly added nodes
 	 */
-	private void updateInvestorPortfolioAfterImporting() {
-		// get all investor names
-		Set<String> investorNames = this.tableInvestors.keySet();
-
-		// iterate over the tableRecords and output each investor's updated number of
-		// units of each target
-		for (String investorName : investorNames) {
-			// the current records
-			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
-			// update the number of units based on current records
-			for (TransactionNode node : records) {
-				this.updateInvestorPortfolioAfterOneChange(node.getInvestorName(),
-						node.getTransactionType(), node.getTarget(), node.getNumUnits());
-			}
-
+	private void updateInvestorPortfolioAfterImporting(LinkedList<TransactionNode> newNodes) {
+		// iterate over the new nodes
+		for (TransactionNode node : newNodes) {
+			this.updateInvestorPortfolioAfterOneChange(node.getInvestorName(),
+					node.getTransactionType(), node.getTarget(), node.getNumUnits());
 		}
+
 	}
 
 	/**

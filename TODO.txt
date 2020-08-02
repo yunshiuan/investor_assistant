@@ -6,7 +6,6 @@
 (2) (V) Create more files
 (3) Pie chart
   (3-1) () Should place the labels above the chart. Probably relocate the labels.
-  (3-2) () Should update the pie chart once the portfolio changes
   (3-3) () Should update the current balance once it changes.
 (4) Investor box
   (4-1) (V) Show the current total balance
