@@ -98,7 +98,7 @@ public class Recorder {
 			for (TransactionNode node : newNodes) {
 				if (!investorNames.contains(node.getInvestorName())) {
 					throw new NonExistentInvestorException("The investor " + node.getInvestorName()
-							+ " is not present in the recorder.");
+							+ " is not present in the recorder. Shold be 'Amy' or 'Andy'.");
 				}
 				// if the investor exists in 'tableInvestors' but has empty records
 				if (this.tableRecords.get(node.getInvestorName()) == null) {
@@ -113,7 +113,7 @@ public class Recorder {
 			// update the investors' portfolios
 			this.updateInvestorPortfolioAfterImporting(newNodes);
 			// update the investors' current balance
-			this.updateInvestorCurrentBalance();
+			this.updateAllInvestorsCurrentBalance();
 			return true;
 		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException e) {
 //			e.printStackTrace();
@@ -190,6 +190,33 @@ public class Recorder {
 			return false;
 		}
 		return false;
+	}
+
+	/**
+	 * Add a transaction node to the recorder.
+	 * 
+	 * @param date
+	 * @param investorName
+	 * @param transactionType
+	 * @param target
+	 * @param unitPrice
+	 * @param numUnits
+	 * @throws NonExistentInvestorException
+	 */
+	public void addTransaction(long date, String investorName, String transactionType,
+			String target, double unitPrice, double numUnits) throws NonExistentInvestorException {
+		if (!this.tableInvestors.containsKey(investorName)) {
+			throw new NonExistentInvestorException(
+					"The investor you typed in not present in the recorder.");
+		}
+		TransactionNode newNode = new TransactionNode(date, investorName, transactionType, target,
+				unitPrice, numUnits);
+		this.tableRecords.get(investorName).add(newNode);
+		// update the investors' portfolios
+		this.updateInvestorPortfolioAfterOneChange(investorName, transactionType, target, numUnits);
+		// update the investors' current balance
+		this.updateOneInvestorCurrentBalance(investorName);
+		;
 	}
 
 	/**
@@ -338,11 +365,11 @@ public class Recorder {
 	 * transaction record.
 	 * 
 	 * @param investorName
-	 * @param TransactionType
+	 * @param transactionType
 	 * @param target
 	 * @param numUnits
 	 */
-	private void updateInvestorPortfolioAfterOneChange(String investorName, String TransactionType,
+	private void updateInvestorPortfolioAfterOneChange(String investorName, String transactionType,
 			String target, double numUnits) {
 
 		// update the number of units
@@ -362,9 +389,9 @@ public class Recorder {
 		// if the target already exists in this investor's portfolio
 		double currentNumUnits = currentPortfolio.get(target);
 		double updatedNumUnits = currentNumUnits;
-		if (TransactionType.equals("buy")) {
+		if (transactionType.equals("buy")) {
 			updatedNumUnits += numUnits;
-		} else if (TransactionType.equals("sell")) {
+		} else if (transactionType.equals("sell")) {
 			updatedNumUnits -= numUnits;
 		}
 		this.tableInvestors.get(investorName).getPortfolio().put(target, updatedNumUnits);
@@ -387,16 +414,24 @@ public class Recorder {
 	}
 
 	/**
+	 * Update one investor's current balance according to current target price.
+	 * 
+	 * @param investorName
+	 */
+	private void updateOneInvestorCurrentBalance(String investorName) {
+		this.tableInvestors.get(investorName).computeCurrentBalance(this.tableTargets);
+	}
+
+	/**
 	 * Update all investors' current balance according to current target price.
 	 */
-	private void updateInvestorCurrentBalance() {
+	private void updateAllInvestorsCurrentBalance() {
 		// get all investor names
 		Set<String> investorNames = this.tableInvestors.keySet();
 
-		// iterate over the tableRecords and output each investor's updated number of
-		// units of each target
+		// iterate over each investor
 		for (String investorName : investorNames) {
-			this.tableInvestors.get(investorName).computeCurrentBalance(this.tableTargets);
+			updateOneInvestorCurrentBalance(investorName);
 		}
 	}
 

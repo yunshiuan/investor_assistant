@@ -32,6 +32,7 @@
 package application;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
@@ -593,7 +594,8 @@ public class Main extends Application {
 			 * Center panel: text fields
 			 */
 			VBox boxTextFields = new VBox();
-			// the date field
+			// the input text fields
+			ArrayList<TextField> listFields = new ArrayList<TextField>(ADD_TRANS_LABELS.length);
 			for (int indexField = 0; indexField < ADD_TRANS_LABELS.length; indexField++) {
 				HBox box = new HBox();
 				boxTextFields.getChildren().add(box);
@@ -602,6 +604,8 @@ public class Main extends Application {
 				box.getChildren().add(new Label(ADD_TRANS_LABELS[indexField]));
 				box.getChildren().add(textField);
 				box.setAlignment(Pos.CENTER);
+				// save the text fields so I could get the values later in the event handler
+				listFields.add(textField);
 			}
 
 			// center the text fields
@@ -625,10 +629,38 @@ public class Main extends Application {
 			/**
 			 * Secondary Event handlers
 			 */
-			// TODO: See if I could re-use event handlers
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
+					String investorName = "";
+					try {
+						long date = Long.valueOf(listFields.get(0).getText());
+						String transactionType = listFields.get(1).getText();
+						investorName = listFields.get(2).getText();
+						String target = listFields.get(3).getText();
+						Double unitPrice = Double.valueOf(listFields.get(4).getText());
+						Double numUnits = Double.valueOf(listFields.get(5).getText());
+						myRecorder.addTransaction(date, investorName, transactionType, target,
+								unitPrice, numUnits);
+					} catch (NumberFormatException error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText(
+								"Invalid input value. Please check the date, number of units, and unit price you typed are valid numbers.\n"
+										+ "Error message: " + error.getMessage());
+						alert.show();
+						return;
+					} catch (NonExistentInvestorException error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						//TODO: Should not hard-code 'Amy' and 'Andy' here
+						alert.setContentText("The investor name you typed " + "'" + investorName
+								+ "'" + "is not present in this recorder. Shold be 'Amy' or 'Andy'. \n" + "Error message: "
+								+ error.getMessage());
+						alert.show();
+						return;
+					}
+
 					Label thirdLabel = new Label(
 							"Sorry! The functionality is still under construction.");
 
