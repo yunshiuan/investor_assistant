@@ -45,9 +45,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -697,6 +700,7 @@ public class Main extends Application {
 				listInvestors.add(nameInvestor);
 			}
 			ComboBox<String> comboBox = new ComboBox<String>(listInvestors);
+			comboBox.setPromptText("Select...");
 			secondRoot.setCenter(comboBox);
 
 			/**
@@ -734,7 +738,28 @@ public class Main extends Application {
 				@Override
 				public void handle(final ActionEvent e) {
 
-					// TODO: Should read in the investor name and do the filtering
+					// Read in the investor name and do the filtering
+					String investorName = comboBox.getValue();
+					// The string of transactions to show to the text area
+					String stringTransactions = "";
+					// if nothing is selected
+					if (investorName == null) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Please choose the investor!");
+						alert.show();
+						return;
+					}
+					if (investorName.equals("All Investors")) {
+						stringTransactions += myRecorder.showAllTransactions("program");
+						// for developing
+						// myRecorder.showAllTransactions("console");
+					} else {
+						stringTransactions += myRecorder.showInvestorTransactions(investorName,
+								"program");
+						// for developing
+						// myRecorder.showInvestorTransactions(investorName, "console");
+					}
 
 					// create the pane
 					BorderPane thirdLayout = new BorderPane();
@@ -750,13 +775,25 @@ public class Main extends Application {
 					thirdWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
 					thirdWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
 
+					/**
+					 * top panel: title
+					 */
 					// create the title
-					Label thirdLabel = new Label("See below for the transactions.");
+					Label thirdLabel = new Label("See below for the transactions: " + investorName);
 					HBox boxTitle = new HBox(thirdLabel);
 					boxTitle.getStyleClass().add("text-new-window-title");
 					boxTitle.setAlignment(Pos.CENTER);
 					thirdLayout.setTop(boxTitle);
 
+					/**
+					 * center panel: text area
+					 */
+					TextArea textArea = new TextArea();
+					VBox boxText = new VBox(textArea);
+					boxText.setAlignment(Pos.CENTER);
+					thirdLayout.setCenter(boxText);
+					textArea.setText(stringTransactions);
+					textArea.setPrefHeight(THIRD_WINDOW_WIDTH * 2);
 					thirdWindow.show();
 				}
 			});

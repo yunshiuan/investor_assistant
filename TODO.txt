@@ -1,7 +1,7 @@
 (1) Enable the functionality of
   (1-1) 'add/remove a transaction'
   (1-3) write summary
-  (1-5) (-) show transactions
+  () Consider using tableView to show the transactions instead of a text area.
   (1-6) () Close the second window after confirmation
 (2) (V) Create more files
 (3) Pie chart
@@ -10,6 +10,8 @@
   () Ensure the color binds to a specific pie slice
 (4) Investor box
   (4-1) (V) Show the current total balance
+    - () sync the total balance
   (4-2) (-) Show the current stock/bond ratio
   (4-3) (-) Show the return of investment rate
 (5) Should handle the case when the imported data contains targets that are not yet present in the recorder.
+(6) Replace the third windows by the class Alert.

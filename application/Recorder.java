@@ -225,56 +225,108 @@ public class Recorder {
 
 	/**
 	 * Show a list of the transactions.
+	 * 
+	 * @param printTarget where the transaction should be printed to. Should be
+	 *                    either 'console' or 'program'
+	 * @return the list of transaction if printTarget = 'program'. Return null if
+	 *         printing to the console.
 	 */
-	public void showAllTransactions() {
-		System.out.println("=================");
-		System.out.println("Show all transactions in the recorders");
-		System.out.println("=================");
-		Set<String> investorNames = this.tableInvestors.keySet();
-		for (String investorName : investorNames) {
+	public String showAllTransactions(String printTarget) {
+		// print to the console
+		if (printTarget.equals("console")) {
 			System.out.println("=================");
-			System.out.println("Show " + investorName + "'s transactions in the recorders");
+			System.out.println("Show all investors' transactions in the recorder");
 			System.out.println("=================");
-			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
-			for (TransactionNode node : records) {
-				System.out.println("-----------------");
-				System.out.println(node.toString());
+			Set<String> investorNames = this.tableInvestors.keySet();
+			for (String investorName : investorNames) {
+				LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
+				for (TransactionNode node : records) {
+					System.out.println("-----------------");
+					System.out.println(node.toString());
+				}
 			}
+			System.out.println("========End=======");
+			return null;
+		} else if (printTarget.equals("program")) {
+			// print to the program
+			String stringRecords = "";
+			stringRecords += "==========================================\n";
+			stringRecords += "Show all investors' transactions in the recorder\n";
+			stringRecords += "==========================================\n";
+			Set<String> investorNames = this.tableInvestors.keySet();
+			for (String investorName : investorNames) {
+				stringRecords += showInvestorTransactions(investorName, printTarget);
+			}
+			return stringRecords;
+		} else {
+			System.out.println("Unrecognize printing target.");
 		}
-		System.out.println("--------End------");
+		return null;
 	}
 
 	/**
 	 * Show a given investor's list of the transactions.
 	 * 
-	 * @param investor the investor's name.
+	 * @param investor    the investor's name.
+	 * @param printTarget where the transaction should be printed to. Should be
+	 *                    either 'console' or 'program'
+	 * @return the list of transaction if printTarget = 'program'. This returned
+	 *         list will be returned to the program window. Return null if printing
+	 *         to the console.
 	 */
-	public void showInvestorTransactions(String investorName) {
-		System.out.println("=================");
-		System.out.println("Show " + investorName + "'s transactions in the recorders");
-		System.out.println("=================");
-		LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
-		for (TransactionNode node : records) {
-			System.out.println("-----------------");
-			System.out.println(node.toString());
+	public String showInvestorTransactions(String investorName, String printTarget) {
+		// print to the console
+		if (printTarget.equals("console")) {
+			System.out.println("==========================================");
+			System.out.println("Show " + investorName + "'s transactions in the recorder");
+			System.out.println("==========================================");
+			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
+			for (TransactionNode node : records) {
+				System.out.println("-----------------");
+				System.out.println(node.toString());
+			}
+			System.out.println("========End=======");
+			return null;
+		} else if (printTarget.equals("program")) {
+			// print to the program
+			String stringRecords = "";
+			stringRecords += "==========================================\n";
+			stringRecords += investorName + "'s transactions\n";
+			stringRecords += "==========================================\n";
+			stringRecords += "=======Start=======\n";
+			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
+			for (TransactionNode node : records) {
+				stringRecords += "-----------------\n";
+				stringRecords += node.toString();
+				stringRecords += "\n";
+			}
+			stringRecords += "========End=======\n";
+			return stringRecords;
+		} else {
+			System.out.println("Unrecognize printing target.");
 		}
-		System.out.println("--------End------");
+		return null;
 	}
 
 	/**
 	 * Show the information of all targets in the recorder.
+	 * 
+	 * @param printTarget where the transaction should be printed to. Should be
+	 *                    either 'console' or 'program'
+	 * @return the list of transaction if printTarget = 'program'. This returned
+	 *         list will be returned to the program window. Return null if printing
+	 *         to the console.
 	 */
-	public void showAllTargetsInfo() {
-		System.out.println("=================");
+	public void showAllTargetsInfo(String printTarget) {
+		System.out.println("==========================================");
 		System.out.println("Show the information of all targets in the recorder.");
-		System.out.println("=================");
+		System.out.println("==========================================");
 		Set<String> targetNames = this.tableTargets.keySet();
 		for (String targetName : targetNames) {
 			System.out.println("-----------------");
 			System.out.println(this.tableTargets.get(targetName).toString());
 		}
-		System.out.println("--------End------");
-
+		System.out.println("========End=======");
 	}
 
 	/**
