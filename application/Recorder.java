@@ -226,7 +226,8 @@ public class Recorder {
 			throw new NonExistentTargetException(
 					"The investment target you typed in is not present in the recorder.");
 		}
-		if (!(transactionType.equals("buy") || transactionType.equals("sell"))) {
+		if (!(transactionType.toLowerCase().equals("buy")
+				|| transactionType.toLowerCase().equals("sell"))) {
 			throw new IllegalArgumentException(
 					"The transaction type should be either 'buy' or 'sell'.");
 		}
@@ -410,9 +411,9 @@ public class Recorder {
 		// if the target already exists in this investor's portfolio
 		double currentNumUnits = currentPortfolio.get(target);
 		double updatedNumUnits = currentNumUnits;
-		if (transactionType.equals("buy")) {
+		if (transactionType.toLowerCase().equals("buy")) {
 			updatedNumUnits += numUnits;
-		} else if (transactionType.equals("sell")) {
+		} else if (transactionType.toLowerCase().equals("sell")) {
 			updatedNumUnits -= numUnits;
 		}
 		this.tableInvestors.get(investorName).getPortfolio().put(target, updatedNumUnits);

@@ -94,8 +94,8 @@ public class Main extends Application {
 	private static final String[] ADD_TRANS_LABELS = { "Transaction Date", "Transaction Type",
 			"Investor Name", "Target Name", "Unit Price", "# of Units" };
 	// the prompts for the "add a transaction" window
-	private static final String[] ADD_TRANS_PROMPT = { "20200714", "Buying", "Andy", "VTI",
-			"155.13", "4.5" };
+	private static final String[] ADD_TRANS_PROMPT = { "20200714", "buy", "Andy", "VTI", "155.13",
+			"4.5" };
 
 	/**
 	 * Private fields
@@ -319,17 +319,16 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Create the pie chart data for one investor's the portfolio pie chart. The
-	 * data will be used by the constructor PieChart().
+	 * Update one investor's pie chart data based on the portfolio. Should call
+	 * updatePieCharts() afterwards to actually update the corresponding pie chart.
 	 * 
 	 * @param investorName the investor's name of interest
-	 * @param recorder     the recorder that contains all information for portfolio
 	 * @return ObservableList<PieChart.Data> that will be used by the constructor
 	 *         PieChart().
 	 */
-	private void updateOnePortfolioChartData(String investorName, Recorder recorder) {
+	private void updateOnePortfolioChartData(String investorName) {
 		// get the current number of units
-		HashMap<String, Double> portfolio = recorder.getTableInvestors().get(investorName)
+		HashMap<String, Double> portfolio = myRecorder.getTableInvestors().get(investorName)
 				.getPortfolio();
 		// get the target names
 		Set<String> namesTargets = portfolio.keySet();
@@ -338,26 +337,34 @@ public class Main extends Application {
 		for (String thisTarget : namesTargets) {
 			// multiple the number of units by the current unit price
 			double targetAsset = portfolio.get(thisTarget)
-					* recorder.getTableTargets().get(thisTarget).getCurrentPrice();
+					* myRecorder.getTableTargets().get(thisTarget).getCurrentPrice();
 			pieChartData.add(new PieChart.Data(thisTarget, targetAsset));
 		}
 		this.tablePieChartData.put(investorName, pieChartData);
 	}
 
 	/**
-	 * Create the pie chart data for all investors' the portfolio pie chart.
+	 * Update all investors' pie chart data based on the portfolios. Should call
+	 * updatePieCharts() afterwards to actually update the corresponding pie charts.
 	 */
 	private void updateAllPortfolioChartData() {
 		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
 		for (String investorName : investorNames) {
-			updateOnePortfolioChartData(investorName, myRecorder);
+			updateOnePortfolioChartData(investorName);
 		}
 	}
 
 	/**
-	 * Update pie charts based on 'tablePieChartData'.
+	 * Update one pie chart based on 'tablePieChartData'.
 	 */
-	private void updatePieCharts() {
+	public void updateOnePieChart(String investorName) {
+		this.tablePieCharts.get(investorName).setData(this.tablePieChartData.get(investorName));
+	}
+
+	/**
+	 * Update all pie charts based on 'tablePieChartData'.
+	 */
+	private void updateAllPieCharts() {
 		// iterate over investors
 		Set<String> investorNames = myRecorder.getTableInvestors().keySet();
 		for (String investorName : investorNames) {
@@ -515,7 +522,7 @@ public class Main extends Application {
 						myRecorder.importRecordData(externalFile.getPath());
 						// update the pie charts accordingly
 						updateAllPortfolioChartData();
-						updatePieCharts();
+						updateAllPieCharts();
 						// show success
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setContentText(
@@ -642,10 +649,12 @@ public class Main extends Application {
 						Double numUnits = Double.valueOf(listFields.get(5).getText());
 						myRecorder.addTransaction(date, investorName, transactionType, target,
 								unitPrice, numUnits);
+						updateOnePortfolioChartData(investorName);
+						updateAllPieCharts();
 						// show success
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setContentText("You have successfully added the record. "
-								+ "The dashboard has been updated accordinly.");
+								+ "The dashboard has been updated accordingly.");
 						alert.show();
 						secondWindow.close();
 					} catch (NumberFormatException error) {
@@ -1046,7 +1055,7 @@ public class Main extends Application {
 					try {
 						myRecorder.updateTargetInfo(externalFile.getPath());
 						updateAllPortfolioChartData();
-						updatePieCharts();
+						updateAllPieCharts();
 						// show success
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setContentText(
