@@ -277,10 +277,14 @@ public class Recorder {
 	 * 
 	 * @param printTarget where the transaction should be printed to. Should be
 	 *                    either 'console' or 'program'
+	 * @param startDate   only show the transactions starting from this date. The
+	 *                    format should be yyyymmdd.
+	 * @param endDate     only show the transactions until this date. The format
+	 *                    should be yyyymmdd.
 	 * @return the list of transaction if printTarget = 'program'. Return null if
 	 *         printing to the console.
 	 */
-	public String showAllTransactions(String printTarget) {
+	public String showAllTransactions(String printTarget, Long startDate, Long endDate) {
 		// print to the console
 		if (printTarget.equals("console")) {
 			System.out.println("=================");
@@ -288,11 +292,7 @@ public class Recorder {
 			System.out.println("=================");
 			Set<String> investorNames = this.tableInvestors.keySet();
 			for (String investorName : investorNames) {
-				LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
-				for (TransactionNode node : records) {
-					System.out.println("-----------------");
-					System.out.println(node.toString());
-				}
+				showInvestorTransactions(investorName, printTarget, startDate, endDate);
 			}
 			System.out.println("========End=======");
 			return null;
@@ -304,7 +304,8 @@ public class Recorder {
 			stringRecords += "==========================================\n";
 			Set<String> investorNames = this.tableInvestors.keySet();
 			for (String investorName : investorNames) {
-				stringRecords += showInvestorTransactions(investorName, printTarget);
+				stringRecords += showInvestorTransactions(investorName, printTarget, startDate,
+						endDate);
 			}
 			return stringRecords;
 		} else {
@@ -319,11 +320,16 @@ public class Recorder {
 	 * @param investor    the investor's name.
 	 * @param printTarget where the transaction should be printed to. Should be
 	 *                    either 'console' or 'program'
+	 * @param startDate   only show the transactions starting from this date. The
+	 *                    format should be yyyymmdd.
+	 * @param endDate     only show the transactions until this date. The format
+	 *                    should be yyyymmdd.
 	 * @return the list of transaction if printTarget = 'program'. This returned
 	 *         list will be returned to the program window. Return null if printing
 	 *         to the console.
 	 */
-	public String showInvestorTransactions(String investorName, String printTarget) {
+	public String showInvestorTransactions(String investorName, String printTarget, Long startDate,
+			Long endDate) {
 		// print to the console
 		if (printTarget.equals("console")) {
 			System.out.println("==========================================");
@@ -331,6 +337,13 @@ public class Recorder {
 			System.out.println("==========================================");
 			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
 			for (TransactionNode node : records) {
+				// if date range is specified
+				if (startDate != null && endDate != null) {
+					// skip the record if not in the date range of interest
+					if (!(node.getDate() >= startDate && node.getDate() <= endDate)) {
+						continue;
+					}
+				}
 				System.out.println("-----------------");
 				System.out.println(node.toString());
 			}
@@ -345,6 +358,13 @@ public class Recorder {
 			stringRecords += "=======Start=======\n";
 			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
 			for (TransactionNode node : records) {
+				// if date range is specified
+				if (startDate != null && endDate != null) {
+					// skip the record if not in the date range of interest
+					if (!(node.getDate() >= startDate && node.getDate() <= endDate)) {
+						continue;
+					}
+				}
 				stringRecords += "-----------------\n";
 				stringRecords += node.toString();
 				stringRecords += "\n";

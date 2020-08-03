@@ -9,16 +9,18 @@
  * @attribution 
  * - based on  my assignment "a1 Milestone1: Design" and "a2 Milestone 2: UI"
  * JavaFX-related
+ * - JavaFX Overview: http://tutorials.jenkov.com/javafx/overview.html
  * - pie chart: 
  * -- https://docs.oracle.com/javafx/2/charts/pie-chart.htm
  * -- change pie label: https://stackoverflow.com/questions/35479375/display-additional-values-in-pie-chart
- * - JavaFX Overview: http://tutorials.jenkov.com/javafx/overview.html
- * - JavaFX css reference guide: https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
- * - padding: https://stackoverflow.com/questions/38528328/how-to-only-change-left-padding-in-javafx-css
+ * - JavaFX css reference guide: 
+ * -- https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html
+ * - Padding: 
+ * -- https://stackoverflow.com/questions/38528328/how-to-only-change-left-padding-in-javafx-css
  * - Event handler: 
  * -- open a new window: https://o7planning.org/en/11533/opening-a-new-window-in-javafx
  * -- encapsulate the handlers: https://stackoverflow.com/questions/51534680/eventhandler-in-a-separate-class
- * - file chooser:
+ * - File chooser:
  * -- https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm
  * -- set initial directory: https://stackoverflow.com/questions/44003330/set-programs-directory-as-the-initial-directory-of-javafx-filechooser
  * - Enable css in new windows: https://stackoverflow.com/questions/36295482/javafx-css-not-loading-when-opening-new-window
@@ -27,12 +29,15 @@
  * - DataBinding:
  * -- https://stackoverflow.com/questions/13227809/displaying-changing-values-in-javafx-label
  * -- using StringProperty: https://softwareengineering.stackexchange.com/questions/367463/javafx-is-there-difference-between-string-and-stringproperty-in-model-classes
+ * - Date picker:
+ * -- https://www.geeksforgeeks.org/javafx-datepicker-with-examples/
  * Others
  * - Self-defined exceptions: p3/KeyNotFoundException.java
  */
 package application;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -51,6 +56,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -755,6 +761,38 @@ public class Main extends Application {
 			boxChooseInvestor.getChildren().add(boxComboChooseInvestor);
 
 			/**
+			 * Center panel: choose the date range
+			 */
+			VBox boxChooseDate = new VBox();
+			secondRoot.setCenter(boxChooseDate);
+			// label
+			Text titleChooseDate = new Text("Please choose the date range you want to show.");
+			titleChooseDate.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+
+			HBox boxTitleChooseDate = new HBox(titleChooseDate);
+			boxTitleChooseDate.getStyleClass().add("text-new-window-title");
+			boxTitleChooseDate.setAlignment(Pos.CENTER);
+			boxChooseDate.getChildren().add(boxTitleChooseDate);
+
+			// date picker
+			// - start date
+			HBox boxStartDatePicker = new HBox();
+			boxChooseDate.getChildren().add(boxStartDatePicker);
+			boxStartDatePicker.setAlignment(Pos.CENTER);
+			boxStartDatePicker.getChildren().add(new Label("Start Date"));
+			DatePicker startDatePicker = new DatePicker();
+			boxStartDatePicker.getChildren().add(startDatePicker);
+			startDatePicker.setPromptText("20190619");
+			// - start date
+			HBox boxEndDatePicker = new HBox();
+			boxChooseDate.getChildren().add(boxEndDatePicker);
+			boxEndDatePicker.setAlignment(Pos.CENTER);
+			boxEndDatePicker.getChildren().add(new Label("End Date"));
+			DatePicker endDatePicker = new DatePicker();
+			boxEndDatePicker.getChildren().add(endDatePicker);
+			endDatePicker.setPromptText("20200801");
+
+			/**
 			 * Bottom panel: a Confirm and a Cancel button
 			 */
 			HBox boxButton = new HBox();
@@ -789,9 +827,9 @@ public class Main extends Application {
 				@Override
 				public void handle(final ActionEvent e) {
 
-					// Read in the investor name and do the filtering
+					// read in the investor name and check if valid
 					String investorName = comboBox.getValue();
-					// The string of transactions to show to the text area
+					// the string of transactions to show to the text area
 					String stringTransactions = "";
 					// if nothing is selected
 					if (investorName == null) {
@@ -801,13 +839,38 @@ public class Main extends Application {
 						alert.show();
 						return;
 					}
+					// read in the date range and check if valid
+					LocalDate startDate = startDatePicker.getValue();
+					LocalDate endDate = endDatePicker.getValue();
+					// empty input
+					if (startDate == null || endDate == null) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Please select both the start and end date!");
+						alert.show();
+						return;
+					}
+					// - convert the date to long format
+					long longStartDate = startDate.getYear() * 10000
+							+ startDate.getMonthValue() * 100 + startDate.getDayOfMonth();
+					long longEndDate = endDate.getYear() * 10000 + endDate.getMonthValue() * 100
+							+ endDate.getDayOfMonth();
+					// start date later than end date
+					if (longStartDate > longEndDate) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("The end date should be later than start date!");
+						alert.show();
+						return;
+					}
 					if (investorName.equals("All Investors")) {
-						stringTransactions += myRecorder.showAllTransactions("program");
+						stringTransactions += myRecorder.showAllTransactions("program",
+								longStartDate, longEndDate);
 						// for developing
 						// myRecorder.showAllTransactions("console");
 					} else {
 						stringTransactions += myRecorder.showInvestorTransactions(investorName,
-								"program");
+								"program", longStartDate, longEndDate);
 						// for developing
 						// myRecorder.showInvestorTransactions(investorName, "console");
 					}
