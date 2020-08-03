@@ -630,11 +630,12 @@ public class Main extends Application {
 				@Override
 				public void handle(final ActionEvent e) {
 					String investorName = "";
+					String target = "";
 					try {
 						long date = Long.valueOf(listFields.get(0).getText());
 						String transactionType = listFields.get(1).getText();
 						investorName = listFields.get(2).getText();
-						String target = listFields.get(3).getText();
+						target = listFields.get(3).getText();
 						Double unitPrice = Double.valueOf(listFields.get(4).getText());
 						Double numUnits = Double.valueOf(listFields.get(5).getText());
 						myRecorder.addTransaction(date, investorName, transactionType, target,
@@ -659,8 +660,24 @@ public class Main extends Application {
 						// TODO: Should not hard-code 'Amy' and 'Andy' here
 						alert.setContentText("The investor name you typed " + "'" + investorName
 								+ "'"
-								+ "is not present in this recorder. Shold be 'Amy' or 'Andy'. \n"
-								+ "Error message: " + error.getMessage());
+								+ " is not present in this recorder. Shold be 'Amy' or 'Andy'."
+								+ "\n\nError message: " + error.getMessage());
+						alert.show();
+						return;
+					} catch (NonExistentTargetException error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						// TODO: should not hard-code
+						alert.setContentText("The target " + target
+								+ " is not present in the recorder. "
+								+ "Should be one of the following: 'VTI','VWO','VPL','VWO','IEI','BWX'."
+								+ "\n\nError message: " + error.getMessage());
+						alert.show();
+						return;
+					} catch (IllegalArgumentException error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Error message: " + error.getMessage());
 						alert.show();
 						return;
 					}

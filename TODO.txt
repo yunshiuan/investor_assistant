@@ -10,9 +10,10 @@
     - (-) sync the total balance
   (4-2) (-) Show the current stock/bond ratio
   (4-3) (-) Show the return of investment rate
-(5) Should handle the case when the imported data or the newly added record contains targets that are not yet present in the recorder.
+
 
 Future work:
 - allow adding more investors.
 - allow adding more targets.
 - Should not hard-code 'Amy' and 'Andy' here
+- should support 'devidend' as one of the transaction type

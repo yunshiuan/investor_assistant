@@ -94,11 +94,23 @@ public class Recorder {
 			LinkedList<TransactionNode> newNodes = MyFileReader.readTransactionFile(fileName);
 			// should check if the investor already exists in 'tableInvestors'
 			Set<String> investorNames = this.tableInvestors.keySet();
+			// should check if the target already exists in 'tableTargets'
+			Set<String> targetNames = this.tableTargets.keySet();
+
 			// add the new nodes to the recorder
 			for (TransactionNode node : newNodes) {
+				// non-existent investors
 				if (!investorNames.contains(node.getInvestorName())) {
+					// TODO: should not hard-code this
 					throw new NonExistentInvestorException("The investor " + node.getInvestorName()
 							+ " is not present in the recorder. Shold be 'Amy' or 'Andy'.");
+				}
+				// non-existent targets
+				if (!targetNames.contains(node.getTarget())) {
+					// TODO: should not hard-code this
+					throw new NonExistentTargetException("The target " + node.getTarget()
+							+ " is not present in the recorder. "
+							+ "Should be one of the following: 'VTI','VWO','VPL','VWO','IEI','BWX'.");
 				}
 				// if the investor exists in 'tableInvestors' but has empty records
 				if (this.tableRecords.get(node.getInvestorName()) == null) {
@@ -115,7 +127,8 @@ public class Recorder {
 			// update the investors' current balance
 			this.updateAllInvestorsCurrentBalance();
 			return true;
-		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException e) {
+		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException
+				| NonExistentTargetException e) {
 //			e.printStackTrace();
 			throw new FailedReadingFileException(e.getMessage());
 //			return false;			
@@ -200,12 +213,22 @@ public class Recorder {
 	 * @param unitPrice
 	 * @param numUnits
 	 * @throws NonExistentInvestorException
+	 * @throws NonExistentTargetException
 	 */
 	public void addTransaction(long date, String investorName, String transactionType,
-			String target, double unitPrice, double numUnits) throws NonExistentInvestorException {
+			String target, double unitPrice, double numUnits)
+			throws NonExistentInvestorException, NonExistentTargetException {
 		if (!this.tableInvestors.containsKey(investorName)) {
 			throw new NonExistentInvestorException(
-					"The investor you typed in not present in the recorder.");
+					"The investor you typed in is not present in the recorder.");
+		}
+		if (!this.tableTargets.containsKey(target)) {
+			throw new NonExistentTargetException(
+					"The investment target you typed in is not present in the recorder.");
+		}
+		if (!(transactionType.equals("buy") || transactionType.equals("sell"))) {
+			throw new IllegalArgumentException(
+					"The transaction type should be either 'buy' or 'sell'.");
 		}
 		TransactionNode newNode = new TransactionNode(date, investorName, transactionType, target,
 				unitPrice, numUnits);
