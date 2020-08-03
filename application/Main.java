@@ -446,7 +446,8 @@ public class Main extends Application {
 			 * Top panel: add the title
 			 */
 			// the text to show on the new window
-			Text secondTitle = new Text("Please select the the file of transactions to import.");
+			Text secondTitle = new Text("Please select the the file of transactions to import."
+					+ "\n\nThe file should be in the correct format, e.g., 'transaction_record_20200801.csv'. ");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 			HBox boxTitle = new HBox(secondTitle);
@@ -505,6 +506,7 @@ public class Main extends Application {
 								"Please select a file that contains the transaction records,"
 										+ " e.g., 'transaction_record_20200801.csv'.");
 						alert.show();
+						return;
 					}
 
 					// import the transaction records
@@ -651,7 +653,7 @@ public class Main extends Application {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setContentText(
 								"Invalid input value. Please check the date, number of units, and unit price you typed are valid numbers.\n"
-										+ "Error message: " + error.getMessage());
+										+ "\n\nError message: " + error.getMessage());
 						alert.show();
 						return;
 					} catch (NonExistentInvestorException error) {
@@ -972,7 +974,9 @@ public class Main extends Application {
 			 */
 			// the text to show on the new window
 			Text secondTitle = new Text(
-					"Please select the file that contains the current target price.");
+					"Please select the file that contains the current target price."
+							+ " \n\nThe file should be in the correct format,"
+							+ " e.g., 'transaction_record_20200801.csv'.");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 
@@ -1031,6 +1035,7 @@ public class Main extends Application {
 								"Please select a file that contains the transaction records,"
 										+ " e.g., 'transaction_record_20200801.csv'.");
 						alert.show();
+						return;
 					}
 
 					// update the target info
