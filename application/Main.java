@@ -782,7 +782,7 @@ public class Main extends Application {
 			boxStartDatePicker.getChildren().add(new Label("Start Date"));
 			DatePicker startDatePicker = new DatePicker();
 			boxStartDatePicker.getChildren().add(startDatePicker);
-			startDatePicker.setPromptText("20190619");
+			startDatePicker.setPromptText("6/19/2019");
 			// - start date
 			HBox boxEndDatePicker = new HBox();
 			boxChooseDate.getChildren().add(boxEndDatePicker);
@@ -790,7 +790,7 @@ public class Main extends Application {
 			boxEndDatePicker.getChildren().add(new Label("End Date"));
 			DatePicker endDatePicker = new DatePicker();
 			boxEndDatePicker.getChildren().add(endDatePicker);
-			endDatePicker.setPromptText("20200801");
+			endDatePicker.setPromptText("8/1/2020");
 
 			/**
 			 * Bottom panel: a Confirm and a Cancel button
@@ -863,16 +863,24 @@ public class Main extends Application {
 						alert.show();
 						return;
 					}
-					if (investorName.equals("All Investors")) {
-						stringTransactions += myRecorder.showAllTransactions("program",
-								longStartDate, longEndDate);
-						// for developing
-						// myRecorder.showAllTransactions("console");
-					} else {
-						stringTransactions += myRecorder.showInvestorTransactions(investorName,
-								"program", longStartDate, longEndDate);
-						// for developing
-						// myRecorder.showInvestorTransactions(investorName, "console");
+					try {
+						if (investorName.equals("All Investors")) {
+							stringTransactions += myRecorder.showAllTransactions("program",
+									longStartDate, longEndDate);
+							// for developing
+							// myRecorder.showAllTransactions("console");
+						} else {
+							stringTransactions += myRecorder.showInvestorTransactions(investorName,
+									"program", longStartDate, longEndDate);
+							// for developing
+							// myRecorder.showInvestorTransactions(investorName, "console");
+						}
+					} catch (NullPointerException error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Error message: " + error.getMessage());
+						alert.show();
+						return;
 					}
 
 					// create the pane

@@ -8,6 +8,7 @@
   (4-2) (-) Show the current stock/bond ratio
   (4-3) (-) Show the return of investment rate
 () write README
+() add a 'show all' buttom for 'show transaction'
 
 Future work:
 - allow adding more investors.

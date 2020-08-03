@@ -327,9 +327,10 @@ public class Recorder {
 	 * @return the list of transaction if printTarget = 'program'. This returned
 	 *         list will be returned to the program window. Return null if printing
 	 *         to the console.
+	 * @throws NullPointerException
 	 */
 	public String showInvestorTransactions(String investorName, String printTarget, Long startDate,
-			Long endDate) {
+			Long endDate) throws NullPointerException {
 		// print to the console
 		if (printTarget.equals("console")) {
 			System.out.println("==========================================");
@@ -356,6 +357,7 @@ public class Recorder {
 			stringRecords += investorName + "'s transactions\n";
 			stringRecords += "==========================================\n";
 			stringRecords += "=======Start=======\n";
+			int countValidRecords = 0;
 			LinkedList<TransactionNode> records = this.tableRecords.get(investorName);
 			for (TransactionNode node : records) {
 				// if date range is specified
@@ -368,6 +370,13 @@ public class Recorder {
 				stringRecords += "-----------------\n";
 				stringRecords += node.toString();
 				stringRecords += "\n";
+				countValidRecords++;
+			}
+			if (countValidRecords == 0) {
+				throw new NullPointerException(
+						"There are no records that fullfill the date range you specified."
+								+ " Please re-specify the date range, "
+								+ "e.g, start date = 20190619 and end date = 20200801");
 			}
 			stringRecords += "========End=======\n";
 			return stringRecords;
