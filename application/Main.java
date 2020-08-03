@@ -26,6 +26,7 @@
  * - Read in csv filse: https://stackabuse.com/reading-and-writing-csvs-in-java/
  * - DataBinding:
  * -- https://stackoverflow.com/questions/13227809/displaying-changing-values-in-javafx-label
+ * -- using StringProperty: https://softwareengineering.stackexchange.com/questions/367463/javafx-is-there-difference-between-string-and-stringproperty-in-model-classes
  * Others
  * - Self-defined exceptions: p3/KeyNotFoundException.java
  */
@@ -306,8 +307,9 @@ public class Main extends Application {
 
 		Text nameInvestor = new Text("Name: " + investor.getName());
 		Text currentBalance = new Text("Current Balance: $"
-				+ ((double) Math.round(investor.getCurrentBalance()) * 100) / 100);
-
+				+ ((double) Math.round(investor.getCurrentBalance() * 100) / 100));
+		// enable data binding
+		currentBalance.textProperty().bind(investor.getStringCurrentBalance());
 		Text ratioInvestor = new Text("Targte Stock/Bond Ratio: " + investor.getTargetRatio());
 		Text returnInvestor = new Text("Return of Investment: " + investor.getRateReturn() + "%");
 		box.getChildren().add(numberInvestor);

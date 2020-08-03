@@ -14,6 +14,9 @@ package application;
 import java.util.HashMap;
 import java.util.Set;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * The class to store each investor’s information.
  * 
@@ -23,6 +26,27 @@ import java.util.Set;
  *
  */
 public class Investor {
+//	public class User{
+//	    private StringProperty nameProperty = new StringProperty();
+//
+//	    public final String getName() {
+//	        return nameProperty.get();
+//	    }
+//
+//	    public final void setName(String name) {
+//	        nameProperty.set(name);
+//	    }
+//
+//	    // expose the property for data binding
+//	    // – possibly use a read-only interface
+//	    public StringProperty nameProperty() {
+//	        return nameProperty;
+//	    }
+//
+//	    public User(String name) {
+//	        nameProperty.set(name);
+//	    }
+//	}	
 	/**
 	 * Private fields
 	 */
@@ -33,7 +57,11 @@ public class Investor {
 	private Double targetRatio;
 	// rate of return (%)
 	private Double rateReturn;
+	// the current total balance
 	private Double currentBalance;
+	// the property to facilitate data binding
+	private StringProperty stringCurrentBalance = new SimpleStringProperty();
+
 	// the hash table with keys being the investment target name and values being
 	// the number of units that the investor has
 	// - note that strictly speaking, this is not portfolio, which is a set of
@@ -103,7 +131,8 @@ public class Investor {
 			currentBalance += (this.portfolio.get(targetName)
 					* tableTagetsInfo.get(targetName).getCurrentPrice());
 		}
-		this.currentBalance = currentBalance;
+		// set both the string and the corresponding string property
+		this.setCurrentBalance(currentBalance);
 	}
 
 	/**
@@ -177,6 +206,17 @@ public class Investor {
 	 */
 	public void setCurrentBalance(Double currentBalance) {
 		this.currentBalance = currentBalance;
+		// update the corresponding property as well
+		// - format the string
+		this.stringCurrentBalance.set(
+				"Current Balance: $" + ((double) Math.round(this.getCurrentBalance() * 100) / 100));
+	}
+
+	/**
+	 * @return the stringCurrentBalance
+	 */
+	public StringProperty getStringCurrentBalance() {
+		return this.stringCurrentBalance;
 	}
 
 }
