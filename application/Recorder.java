@@ -376,7 +376,7 @@ public class Recorder {
 				throw new NullPointerException(
 						"There are no records that fullfill the date range you specified."
 								+ " Please re-specify the date range, "
-								+ "e.g, start date = 20190619 and end date = 20200801");
+								+ "e.g, start date = 6/19/2019 and end date = 8/1/2020");
 			}
 			stringRecords += "========End=======\n";
 			return stringRecords;

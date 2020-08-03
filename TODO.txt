@@ -1,6 +1,5 @@
 (1) Enable the functionality of
-  (1-3) write summary
-  () Consider using tableView to show the transactions instead of a text area.
+  (1-3) () write transactions
 (3) Pie chart
   (3-1) () Should place the labels above the chart. Probably relocate the labels.
   () Ensure the color binds to a specific pie slice
@@ -8,7 +7,7 @@
   (4-2) (-) Show the current stock/bond ratio
   (4-3) (-) Show the return of investment rate
 () write README
-() add a 'show all' buttom for 'show transaction'
+() add a 'show all' button for 'show transaction'
 
 Future work:
 - allow adding more investors.
@@ -16,3 +15,4 @@ Future work:
 - Should not hard-code 'Amy' and 'Andy'
 - Should not hard-code 'VTI',...
 - should support 'dividend' as one of the transaction type
+- for the button 'show transactions': use tableView to show the transactions instead of a text area.

@@ -792,6 +792,8 @@ public class Main extends Application {
 			boxEndDatePicker.getChildren().add(endDatePicker);
 			endDatePicker.setPromptText("8/1/2020");
 
+			startDatePicker.getEditor().setDisable(true);
+			endDatePicker.getEditor().setDisable(true);
 			/**
 			 * Bottom panel: a Confirm and a Cancel button
 			 */
