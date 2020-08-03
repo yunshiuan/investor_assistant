@@ -715,21 +715,21 @@ public class Main extends Application {
 			BorderPane secondRoot = new BorderPane();
 
 			/**
-			 * Top panel: add the title
+			 * Top panel: choose the investor
 			 */
-			// the text to show on the new window
-			Text secondTitle = new Text(
-					"Filter: Which investor's transactions do you want to see?");
-			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
+			VBox boxChooseInvestor = new VBox();
+			secondRoot.setTop(boxChooseInvestor);
+			// label
+			Text titleChooseInvestor = new Text(
+					"Which investor's transactions do you want to see?");
+			titleChooseInvestor.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 
-			HBox boxTitle = new HBox(secondTitle);
-			boxTitle.getStyleClass().add("text-new-window-title");
-			boxTitle.setAlignment(Pos.CENTER);
-			secondRoot.setTop(boxTitle);
+			HBox boxTitleChooseInvestor = new HBox(titleChooseInvestor);
+			boxTitleChooseInvestor.getStyleClass().add("text-new-window-title");
+			boxTitleChooseInvestor.setAlignment(Pos.CENTER);
+			boxChooseInvestor.getChildren().add(boxTitleChooseInvestor);
 
-			/**
-			 * Center panel: a combo box to select the investor of interest
-			 */
+			// combo box to select the investor of interest
 			ObservableList<String> listInvestors = FXCollections.observableArrayList();
 			listInvestors.add("All Investors");
 			Set<String> namesInvestors = myRecorder.getTableInvestors().keySet();
@@ -738,7 +738,10 @@ public class Main extends Application {
 			}
 			ComboBox<String> comboBox = new ComboBox<String>(listInvestors);
 			comboBox.setPromptText("Select...");
-			secondRoot.setCenter(comboBox);
+
+			HBox boxComboChooseInvestor = new HBox(comboBox);
+			boxComboChooseInvestor.setAlignment(Pos.CENTER);
+			boxChooseInvestor.getChildren().add(boxComboChooseInvestor);
 
 			/**
 			 * Bottom panel: a Confirm and a Cancel button
