@@ -245,14 +245,14 @@ public class Main extends Application {
 		VBox boxMenuButtons = new VBox();
 		boxMenuButtons.getStyleClass().add("box-menu-buttons");
 		Button buttonImport = new Button("Import \nTransactions");
-		Button buttonAddTrans = new Button("Add a \nTransaction");
+		Button buttonAddTransaction = new Button("Add a \nTransaction");
 		Button buttonShowTransactions = new Button("Show \nTransactions");
-		Button buttonWriteSummary = new Button("Write \nSummary");
+		Button buttonSaveTransactions = new Button("Save \nTransactions");
 		Button buttonUpdatePrice = new Button("Update Price");
 
 		// collect the buttons to a list
-		Button menuButtonsList[] = { buttonImport, buttonAddTrans, buttonShowTransactions,
-				buttonWriteSummary, buttonUpdatePrice };
+		Button menuButtonsList[] = { buttonImport, buttonAddTransaction, buttonShowTransactions,
+				buttonSaveTransactions, buttonUpdatePrice };
 		// add styled buttons to the box
 		for (int indexButton = 0; indexButton < menuButtonsList.length; indexButton++) {
 			// set the styles of the buttons
@@ -270,11 +270,11 @@ public class Main extends Application {
 		// the "import transactions" button
 		buttonImport.setOnAction(new ImportDataButtonHandler(primaryWindow));
 		// the "add a transaction" button
-		buttonAddTrans.setOnAction(new AddTransactionButtonHandler(primaryWindow));
+		buttonAddTransaction.setOnAction(new AddTransactionButtonHandler(primaryWindow));
 		// the "show transactions" button
 		buttonShowTransactions.setOnAction(new ShowTransactionsButtonHandler(primaryWindow));
-		// the "write summary" button
-		buttonWriteSummary.setOnAction(new WriteSummaryButtomHandler(primaryWindow));
+		// the "save transactions" button
+		buttonSaveTransactions.setOnAction(new SaveTransactionsButtomHandler(primaryWindow));
 		// the "update price" button
 		buttonUpdatePrice.setOnAction(new UpdatePriceButtomHandler(primaryWindow));
 		/**
@@ -931,16 +931,16 @@ public class Main extends Application {
 	};
 
 	/**
-	 * The event handler for the 'write summary' button.
+	 * The event handler for the 'save transactions' button.
 	 * 
 	 * @author Chuang, Yun-Shiuan (Sean)
 	 * @email ychuang26@wisc.edu
 	 * @date 20200801
 	 */
-	private class WriteSummaryButtomHandler implements EventHandler<ActionEvent> {
+	private class SaveTransactionsButtomHandler implements EventHandler<ActionEvent> {
 		private final Stage primaryWindow;
 
-		public WriteSummaryButtomHandler(Stage primaryWindow) {
+		public SaveTransactionsButtomHandler(Stage primaryWindow) {
 			this.primaryWindow = primaryWindow;
 		}
 
@@ -986,7 +986,7 @@ public class Main extends Application {
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
-			secondWindow.setTitle("Write Summary");
+			secondWindow.setTitle("Save Transactions");
 			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
