@@ -17,11 +17,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
- * The class to read external files.
+ * The class to read and write external files.
  * 
  * @author Chuang, Yun-Shiuan (Sean)
  * @email ychuang26@wisc.edu
@@ -253,6 +254,63 @@ public class MyFileReader {
 					"The file you attempted to read does not exist or is not a valid file: "
 							+ fileName);
 		}
+	}
+
+	/**
+	 * Write the transaction records in a given recorder to an external file.
+	 * 
+	 * @param fileName the file to write to
+	 * @param recorder the recorder that contains the transactions
+	 * @throws FileNotFoundException
+	 */
+	public static void writeTransactionToFile(String fileName, Recorder recorder)
+			throws FileNotFoundException {
+
+		try (PrintWriter writer = new PrintWriter(new File(fileName))) {
+			// the builder to collect the content
+			StringBuilder sb = new StringBuilder();
+
+			// get the table of records
+			HashMap<String, LinkedList<TransactionNode>> tableRecords = recorder.getTableRecords();
+
+			// add the header
+			final String[] HEADER = new String[] { "target", "date", "unitPrice", "investorName",
+					"numUnits", "transactionType" };
+			for (String varName : HEADER) {
+				sb.append(varName);
+				// add ',' except for the last var
+				if (!varName.equals(HEADER[HEADER.length - 1])) {
+					sb.append(",");
+				} else {
+					// add \n for the last var
+					sb.append('\n');
+				}
+			}
+			// add the rows: iterate over each investor's records
+			for (String investorName : tableRecords.keySet()) {
+				// iterate over each node
+				LinkedList<TransactionNode> records = recorder.getTableRecords().get(investorName);
+				for (TransactionNode node : records) {
+					sb.append(node.getTarget());
+					sb.append(",");
+					sb.append(node.getDate());
+					sb.append(",");
+					sb.append(node.getUnitPrice());
+					sb.append(",");
+					sb.append(node.getInvestorName());
+					sb.append(",");
+					sb.append(node.getNumUnits());
+					sb.append(",");
+					sb.append(node.getTransactionType());
+					sb.append('\n');
+				}
+			}
+			writer.write(sb.toString());
+		} catch (FileNotFoundException e) {
+			throw new FileNotFoundException(
+					"Failed to write the file: '" + fileName + "'." + e.getMessage());
+		}
+
 	}
 
 }

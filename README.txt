@@ -16,7 +16,12 @@ screenshots
 -----------------
 data
 -----------------
-- the data read by the recorder program.
+- the data read by the program.
+
+-----------------
+output
+-----------------
+- the data output by the program.
 
 -----------------
 manifest.txt

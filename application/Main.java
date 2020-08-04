@@ -23,6 +23,7 @@
  * - File chooser:
  * -- https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm
  * -- set initial directory: https://stackoverflow.com/questions/44003330/set-programs-directory-as-the-initial-directory-of-javafx-filechooser
+ * -- directory chooser: https://stackoverflow.com/questions/9375938/javafx-filechooser
  * - Enable css in new windows: https://stackoverflow.com/questions/36295482/javafx-css-not-loading-when-opening-new-window
  * - Styling Charts with CSS: https://docs.oracle.com/javafx/2/charts/css-styles.htm
  * - Read in csv filse: https://stackabuse.com/reading-and-writing-csvs-in-java/
@@ -32,12 +33,15 @@
  * - Date picker:
  * -- https://www.geeksforgeeks.org/javafx-datepicker-with-examples/
  * -- set default value: https://stackoverflow.com/questions/36968122/how-to-set-javafx-datepicker-value-correctly
+ * - Write csv file:
+ * -- https://stackoverflow.com/questions/30073980/java-writing-strings-to-a-csv-file
  * Others
  * - Self-defined exceptions: p3/KeyNotFoundException.java
  */
 package application;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -65,9 +69,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -109,11 +114,8 @@ public class Main extends Application {
 	/**
 	 * Private fields
 	 */
+	// the underlying program
 	private Recorder myRecorder = new Recorder();
-	// store any command-line arguments that were entered.
-	// -NOTE: this.getParameters().getRaw() will get these also
-	// could set the argument in "Run Configuration>Arguments>Program Arguments"
-	// private List<String> args;
 
 	// store the pie chart data as a class field so that it will get updated
 	// whenever the underlying data has changed
@@ -122,6 +124,10 @@ public class Main extends Application {
 	// store the pie charts to make synchronization between charts and underlying
 	// data easier
 	private HashMap<String, PieChart> tablePieCharts = new HashMap<String, PieChart>();
+	// the file chooser to choose files by browsing
+	private FileChooser fileChooser = new FileChooser();
+	// the directory chooser to choose directory by browsing
+	private DirectoryChooser dirChooser = new DirectoryChooser();
 
 	/**
 	 * Design the GUI. Inherit from the class Application.
@@ -131,15 +137,14 @@ public class Main extends Application {
 	 */
 	@Override
 	public void start(Stage primaryWindow) throws Exception {
-//		// save args example
-//		args = this.getParameters().getRaw();
+
 		/*
-		 * Initialize the recorder
+		 * Initialize the program
 		 */
-		// create investors
-		// - load in demo investor data
-		myRecorder.initializeFromFiles();
-//		myRecorder.initializeDemo();
+		// initialize the recorder by external files
+		initialize("files");
+		// initialize the recorder by demo data
+//		initialize("demo");
 
 //		myRecorder.showAllTransactions();
 //		myRecorder.showInvestorTransactions("Amy");
@@ -161,14 +166,6 @@ public class Main extends Application {
 		 */
 		mainScene.getStylesheets().add(FILE_CSS);
 
-//		/**
-//		 * Bottom panel: Only for developing use. Show console output.
-//		 */
-//		TextArea textArea = new TextArea();
-//		HBox boxTextArea = new HBox(textArea);
-//		boxTextArea.getStyleClass().add("text-main-window-title");		
-//        textArea.setText("abc");
-//		root.setBottom(boxTextArea);
 		/**
 		 * Top panel: title
 		 */
@@ -300,6 +297,27 @@ public class Main extends Application {
 	/**
 	 * Private helper functions
 	 */
+	/**
+	 * Initalize the program and the recorder.
+	 * 
+	 * @param source should be either "files" (initialize the recorder from external
+	 *               files) or "demo" (initialize the recorder from demo data).
+	 */
+	private void initialize(String source) {
+		// set the default directory for file chooser to the data directory
+		String dataPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
+		fileChooser.setInitialDirectory(new File(dataPath));
+		String outputPath = Paths.get("./output/").toAbsolutePath().normalize().toString();
+		dirChooser.setInitialDirectory(new File(outputPath));
+		if (source.equals("files")) {
+			// initialize the recorder by external files
+			myRecorder.initializeFromFiles();
+		} else if (source.equals("demo")) {
+			// initialize the recorder by demo data
+			myRecorder.initializeDemo();
+		}
+	}
+
 	/**
 	 * Add an investor information to a box as "Text" nodes of the children of the
 	 * box.
@@ -522,7 +540,7 @@ public class Main extends Application {
 			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					externalFile = Recorder.fileChooser.showOpenDialog(secondWindow);
+					externalFile = fileChooser.showOpenDialog(secondWindow);
 				}
 			});
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
@@ -811,7 +829,7 @@ public class Main extends Application {
 			endDatePicker.setPromptText("8/1/2020");
 			// set the default value for the date picker
 			endDatePicker.setValue(stringToLocalDate("01-08-2020"));
-			
+
 			startDatePicker.getEditor().setDisable(true);
 			endDatePicker.getEditor().setDisable(true);
 			/**
@@ -959,6 +977,7 @@ public class Main extends Application {
 	 */
 	private class SaveTransactionsButtomHandler implements EventHandler<ActionEvent> {
 		private final Stage primaryWindow;
+		private File externalDir;
 
 		public SaveTransactionsButtomHandler(Stage primaryWindow) {
 			this.primaryWindow = primaryWindow;
@@ -1019,31 +1038,38 @@ public class Main extends Application {
 			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					// TODO: should actually import the data
-					File file = Recorder.fileChooser.showOpenDialog(secondWindow);
+					externalDir = dirChooser.showDialog(secondWindow);
 				}
 			});
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-
-					Label thirdLabel = new Label(
-							"Sorry! The functionality is still under construction.");
-
-					StackPane thirdLayout = new StackPane();
-					thirdLayout.getChildren().add(thirdLabel);
-
-					Scene thirdScene = new Scene(thirdLayout, THIRD_WINDOW_WIDTH,
-							THIRD_WINDOW_HEIGHT);
-
-					Stage secondWindow = new Stage();
-					secondWindow.setTitle("Under Construction.");
-					secondWindow.setScene(thirdScene);
-
-					secondWindow.setX(primaryWindow.getX() + OFFSET_X_THIRD_WINDOW);
-					secondWindow.setY(primaryWindow.getY() + OFFSET_Y_THIRD_WINDOW);
-
-					secondWindow.show();
+					// handle the case that the user confirm without browsing
+					if (externalDir == null) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText(
+								"Please select a directory that you want to save the records to.");
+						alert.show();
+						return;
+					}
+					// save the transactions to the selected directory
+					try {
+						myRecorder.saveTransactions(externalDir.getPath()
+								+ "/your_transaction_record_" + LocalDate.now() + ".csv");
+						// show success
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setContentText("You have successfully written your transactions to:\n"
+								+ externalDir.getPath() + "/your_transaction_record_"
+								+ LocalDate.now() + ".csv");
+						alert.show();
+						secondWindow.close();
+					} catch (FailedWritingFileException error) {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText("Failed to write the file." + "\n\nError Message:"
+								+ error.getMessage());
+						alert.show();
+					}
 				}
 			});
 			buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -1128,7 +1154,7 @@ public class Main extends Application {
 			buttonBrowse.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					externalFile = Recorder.fileChooser.showOpenDialog(secondWindow);
+					externalFile = fileChooser.showOpenDialog(secondWindow);
 				}
 			});
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {

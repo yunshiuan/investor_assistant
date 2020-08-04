@@ -11,14 +11,11 @@
  */
 package application;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
-
-import javafx.stage.FileChooser;
 
 /**
  * The class stores the transaction records and provide the funtionality of the
@@ -43,8 +40,6 @@ public class Recorder {
 	/**
 	 * Private fields
 	 */
-	// a file chooser for browsing the file
-	protected static final FileChooser fileChooser = new FileChooser();
 	// the table to contain investors
 	private HashMap<String, Investor> tableInvestors = new HashMap<String, Investor>();
 	// the hash table with keys being the investment target name and values being
@@ -59,7 +54,7 @@ public class Recorder {
 	// - use the static methods in MyFileReader
 
 	/**
-	 * Getters and setters
+	 * Getters
 	 */
 	/**
 	 * @return the tableInvestors
@@ -73,6 +68,13 @@ public class Recorder {
 	 */
 	public HashMap<String, InvestmentTarget> getTableTargets() {
 		return tableTargets;
+	}
+
+	/**
+	 * @return the tableRecords
+	 */
+	public HashMap<String, LinkedList<TransactionNode>> getTableRecords() {
+		return tableRecords;
 	}
 
 	/**
@@ -253,11 +255,7 @@ public class Recorder {
 			System.out.println("Initilization failed.");
 			e.printStackTrace();
 			System.out.println(e.getMessage());
-		}
-
-		// set the default directory for file chooser to the data directory
-		String currentPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
-		Recorder.fileChooser.setInitialDirectory(new File(currentPath));
+		}	
 	}
 
 	/**
@@ -267,9 +265,6 @@ public class Recorder {
 		this.loadDemoInvestors();
 		this.loadDemoRecords();
 		this.loadDemoTargets();
-		// set the default directory for file chooser to the data directory
-		String currentPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
-		Recorder.fileChooser.setInitialDirectory(new File(currentPath));
 	}
 
 	/**
@@ -396,15 +391,35 @@ public class Recorder {
 	 *         to the console.
 	 */
 	public void showAllTargetsInfo(String printTarget) {
-		System.out.println("==========================================");
-		System.out.println("Show the information of all targets in the recorder.");
-		System.out.println("==========================================");
-		Set<String> targetNames = this.tableTargets.keySet();
-		for (String targetName : targetNames) {
-			System.out.println("-----------------");
-			System.out.println(this.tableTargets.get(targetName).toString());
+		if (printTarget == "console") {
+			System.out.println("==========================================");
+			System.out.println("Show the information of all targets in the recorder.");
+			System.out.println("==========================================");
+			Set<String> targetNames = this.tableTargets.keySet();
+			for (String targetName : targetNames) {
+				System.out.println("-----------------");
+				System.out.println(this.tableTargets.get(targetName).toString());
+			}
+			System.out.println("========End=======");
+		} else if (printTarget == "program") {
+			// undefined
+		} else {
+			System.out.println("Unrecognize printing target.");
 		}
-		System.out.println("========End=======");
+	}
+
+	/**
+	 * Save the transactions in the recorder to an external file.
+	 * 
+	 * @param fileName the file to save the transactions to.
+	 * @throws FailedWritingFileException 
+	 */
+	public void saveTransactions(String fileName) throws FailedWritingFileException {
+		try {
+			MyFileReader.writeTransactionToFile(fileName, this);
+		} catch (FileNotFoundException e) {
+			throw new FailedWritingFileException(e.getMessage());
+		}
 	}
 
 	/**

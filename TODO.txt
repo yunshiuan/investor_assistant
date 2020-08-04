@@ -1,5 +1,3 @@
-(1) Enable the functionality of
-  (1-3) (-) save transactions
 (3) Pie chart
   (3-1) () Should place the labels above the chart. Probably relocate the labels.
   () Ensure the color binds to a specific pie slice
