@@ -244,7 +244,7 @@ public class Main extends Application {
 		 */
 		VBox boxMenuButtons = new VBox();
 		boxMenuButtons.getStyleClass().add("box-menu-buttons");
-		Button buttonImport = new Button("Import Data");
+		Button buttonImport = new Button("Import \nTransactions");
 		Button buttonAddTrans = new Button("Add a \nTransaction");
 		Button buttonShowTransactions = new Button("Show \nTransactions");
 		Button buttonWriteSummary = new Button("Write \nSummary");
@@ -267,7 +267,7 @@ public class Main extends Application {
 		/**
 		 * Event Handlers
 		 */
-		// the "import data" button
+		// the "import transactions" button
 		buttonImport.setOnAction(new ImportDataButtonHandler(primaryWindow));
 		// the "add a transaction" button
 		buttonAddTrans.setOnAction(new AddTransactionButtonHandler(primaryWindow));
@@ -437,7 +437,7 @@ public class Main extends Application {
 	 * Event Handlers
 	 */
 	/**
-	 * The event handler for the 'import data' button.
+	 * The event handler for the 'import transactions' button.
 	 * 
 	 * @author Chuang, Yun-Shiuan (Sean)
 	 * @email ychuang26@wisc.edu
@@ -493,7 +493,7 @@ public class Main extends Application {
 
 			// create the stage for the new window
 			Stage secondWindow = new Stage();
-			secondWindow.setTitle("Import Data");
+			secondWindow.setTitle("Import Transactions");
 			secondWindow.setScene(secondScene);
 
 			// set position of the new window, related to primary window.
@@ -583,7 +583,7 @@ public class Main extends Application {
 			 * Top panel: add the title
 			 */
 			// the text to show on the new window
-			Text secondTitle = new Text("Type in the tractions you want to add");
+			Text secondTitle = new Text("Type in the tractions you want to add.");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 			HBox boxTitle = new HBox(secondTitle);
