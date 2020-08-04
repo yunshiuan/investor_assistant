@@ -31,6 +31,7 @@
  * -- using StringProperty: https://softwareengineering.stackexchange.com/questions/367463/javafx-is-there-difference-between-string-and-stringproperty-in-model-classes
  * - Date picker:
  * -- https://www.geeksforgeeks.org/javafx-datepicker-with-examples/
+ * -- set default value: https://stackoverflow.com/questions/36968122/how-to-set-javafx-datepicker-value-correctly
  * Others
  * - Self-defined exceptions: p3/KeyNotFoundException.java
  */
@@ -38,6 +39,7 @@ package application;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -378,6 +380,19 @@ public class Main extends Application {
 		for (String investorName : investorNames) {
 			this.tablePieCharts.get(investorName).setData(this.tablePieChartData.get(investorName));
 		}
+	}
+
+	/**
+	 * Convert string to type LocalDate, which is required by the class
+	 * DatePicker().
+	 * 
+	 * @param dateString
+	 * @return the corresponding object LocalDate.
+	 */
+	private static final LocalDate stringToLocalDate(String dateString) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate localDate = LocalDate.parse(dateString, formatter);
+		return localDate;
 	}
 
 	/**
@@ -783,6 +798,9 @@ public class Main extends Application {
 			DatePicker startDatePicker = new DatePicker();
 			boxStartDatePicker.getChildren().add(startDatePicker);
 			startDatePicker.setPromptText("6/19/2019");
+			// set the default value for the date picker
+			startDatePicker.setValue(stringToLocalDate("19-06-2019"));
+
 			// - start date
 			HBox boxEndDatePicker = new HBox();
 			boxChooseDate.getChildren().add(boxEndDatePicker);
@@ -791,7 +809,9 @@ public class Main extends Application {
 			DatePicker endDatePicker = new DatePicker();
 			boxEndDatePicker.getChildren().add(endDatePicker);
 			endDatePicker.setPromptText("8/1/2020");
-
+			// set the default value for the date picker
+			endDatePicker.setValue(stringToLocalDate("01-08-2020"));
+			
 			startDatePicker.getEditor().setDisable(true);
 			endDatePicker.getEditor().setDisable(true);
 			/**
