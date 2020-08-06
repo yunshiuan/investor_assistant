@@ -1,0 +1,1 @@
+The screenshots are named with a number label. The label indicates the order of the states. The file name provides a brief description of the content of each screenshot. For example, '2_import_transactions' means its the second screenshot I took after pressing the 'Import Transactions' button at '1_initial_menu'.
