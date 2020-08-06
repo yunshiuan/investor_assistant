@@ -214,14 +214,7 @@ public class Main extends Application {
 			VBox boxChart = new VBox();
 			boxThisInvestor.getChildren().add(boxChart);
 			// create the pie chart
-			// - TODO: Should beatify the chart.
-			// -- (1) Show the unit and percentage besides each slide in the
-			// - TODO: Should update the pie chart once the portfolio changes
-			// -- (1) (V) when importing data
-			// -- (2) when adding one transaction record
-			// -- (3) (V) the price gets updated
-			// TODO: ensure the color binds with specific target across investors' charts
-
+			// Future TODO: ensure the color binds with specific target across investors' charts
 			AnnotatedPieChart chart = new AnnotatedPieChart(
 					this.tablePieChartData.get(thisInvestor));
 			// hide the legend
@@ -447,8 +440,8 @@ public class Main extends Application {
 					sumBalance += d.getPieValue();
 				}
 				final double SUM_BALANCE = sumBalance;
-				// update the pie lab
-				// TODO: Should place the labels above the chart. Probably relocate the labels
+				// update the pie label
+				// Future TODO: Should place the labels above the chart. Probably relocate the labels
 				getData().forEach(d -> {
 					Optional<Node> opTextNode = this.lookupAll(".chart-pie-label").stream().filter(
 							n -> n instanceof Text && ((Text) n).getText().contains(d.getName()))
@@ -792,7 +785,7 @@ public class Main extends Application {
 					} catch (NonExistentInvestorException error) {
 						// show an error window
 						Alert alert = new Alert(AlertType.ERROR);
-						// TODO: Should not hard-code 'Amy' and 'Andy' here
+						// Future TODO: Should not hard-code 'Amy' and 'Andy' here
 						alert.setContentText("The investor name you typed " + "'" + investorName
 								+ "'"
 								+ " is not present in this recorder. Shold be 'Amy' or 'Andy'."
@@ -802,7 +795,7 @@ public class Main extends Application {
 					} catch (NonExistentTargetException error) {
 						// show an error window
 						Alert alert = new Alert(AlertType.ERROR);
-						// TODO: should not hard-code
+						// Future TODO: should not hard-code
 						alert.setContentText("The target " + target
 								+ " is not present in the recorder. "
 								+ "Should be one of the following: 'VTI','VWO','VPL','VWO','IEI','BWX'."

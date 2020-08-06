@@ -91,7 +91,6 @@ public class Recorder {
 	 */
 	public boolean importRecordData(String fileName) throws FailedReadingFileException {
 		try {
-			// TODO: Should check if the node is already present in the recorder
 			// get the list of the new nodes in the file
 			LinkedList<TransactionNode> newNodes = MyFileReader.readTransactionFile(fileName);
 			// should check if the investor already exists in 'tableInvestors'
@@ -103,7 +102,7 @@ public class Recorder {
 			for (TransactionNode node : newNodes) {
 				// non-existent investors
 				if (!investorNames.contains(node.getInvestorName())) {
-					// TODO: should not hard-code this
+					// Future TODO: should not hard-code this
 					throw new NonExistentInvestorException("The investor " + node.getInvestorName()
 							+ " is not present in the recorder. Shold be 'Amy' or 'Andy'.");
 				}
@@ -133,9 +132,7 @@ public class Recorder {
 			return true;
 		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException
 				| NonExistentTargetException e) {
-//			e.printStackTrace();
 			throw new FailedReadingFileException(e.getMessage());
-//			return false;			
 		} catch (Exception e) {
 			// TODO Should print this to the GUI
 			e.printStackTrace();
