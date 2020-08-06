@@ -41,4 +41,10 @@ executable.jar
 -----------------
 upload/
 -----------------
-- contains the files for assignment submission
+- contains the files for assignment submission.
+- Note that the README files are tailored for submission purpose.
+
+-----------------
+upload.zip
+-----------------
+- the compressed file of 'upload/' for submission.

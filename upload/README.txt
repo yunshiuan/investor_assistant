@@ -17,7 +17,7 @@ output/
 - the data output by the program.
 
 screenshots/
-- the screenshots of the program
+- the screenshots of the program.
 
 application/
 - the package that could be opened by Eclipse and run to launch the program.
