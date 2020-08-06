@@ -298,7 +298,7 @@ public class Main extends Application {
 	 * Private helper functions
 	 */
 	/**
-	 * Initalize the program and the recorder.
+	 * Initialize the program and the recorder.
 	 * 
 	 * @param source should be either "files" (initialize the recorder from external
 	 *               files) or "demo" (initialize the recorder from demo data).
@@ -356,7 +356,7 @@ public class Main extends Application {
 	 */
 	private void updateOnePortfolioChartData(String investorName) {
 		// get the current number of units
-		HashMap<String, Double> portfolio = myRecorder.getTableInvestors().get(investorName)
+		HashMap<String, PortfolioNode> portfolio = myRecorder.getTableInvestors().get(investorName)
 				.getPortfolio();
 		// get the target names
 		Set<String> namesTargets = portfolio.keySet();
@@ -364,7 +364,7 @@ public class Main extends Application {
 		// add portfolio information to the list
 		for (String thisTarget : namesTargets) {
 			// multiple the number of units by the current unit price
-			double targetAsset = portfolio.get(thisTarget)
+			double targetAsset = portfolio.get(thisTarget).getNumUnits()
 					* myRecorder.getTableTargets().get(thisTarget).getCurrentPrice();
 			pieChartData.add(new PieChart.Data(thisTarget, targetAsset));
 		}

@@ -255,7 +255,7 @@ public class Recorder {
 			System.out.println("Initilization failed.");
 			e.printStackTrace();
 			System.out.println(e.getMessage());
-		}	
+		}
 	}
 
 	/**
@@ -412,7 +412,7 @@ public class Recorder {
 	 * Save the transactions in the recorder to an external file.
 	 * 
 	 * @param fileName the file to save the transactions to.
-	 * @throws FailedWritingFileException 
+	 * @throws FailedWritingFileException
 	 */
 	public void saveTransactions(String fileName) throws FailedWritingFileException {
 		try {
@@ -439,28 +439,32 @@ public class Recorder {
 			String target, double numUnits) {
 
 		// update the number of units
-		HashMap<String, Double> currentPortfolio = this.tableInvestors.get(investorName)
+		HashMap<String, PortfolioNode> currentPortfolio = this.tableInvestors.get(investorName)
 				.getPortfolio();
 		// special case for the new investor who does not yet have any record
 		if (currentPortfolio == null) {
-			this.tableInvestors.get(investorName).setPortfolio(new HashMap<String, Double>());
-			this.tableInvestors.get(investorName).getPortfolio().put(target, numUnits);
+			this.tableInvestors.get(investorName)
+					.setPortfolio(new HashMap<String, PortfolioNode>());
+			this.tableInvestors.get(investorName).getPortfolio().put(target,
+					new PortfolioNode(numUnits));
 			return;
 		}
 		// if the target not yet exists in this investor's portfolio
 		if (!currentPortfolio.containsKey(target)) {
-			this.tableInvestors.get(investorName).getPortfolio().put(target, numUnits);
+			this.tableInvestors.get(investorName).getPortfolio().put(target,
+					new PortfolioNode(numUnits));
 			return;
 		}
 		// if the target already exists in this investor's portfolio
-		double currentNumUnits = currentPortfolio.get(target);
+		double currentNumUnits = currentPortfolio.get(target).getNumUnits();
 		double updatedNumUnits = currentNumUnits;
 		if (transactionType.toLowerCase().equals("buy")) {
 			updatedNumUnits += numUnits;
 		} else if (transactionType.toLowerCase().equals("sell")) {
 			updatedNumUnits -= numUnits;
 		}
-		this.tableInvestors.get(investorName).getPortfolio().put(target, updatedNumUnits);
+		this.tableInvestors.get(investorName).getPortfolio().put(target,
+				new PortfolioNode(updatedNumUnits));
 	}
 
 	/**
@@ -506,19 +510,19 @@ public class Recorder {
 	 */
 	private void loadDemoInvestors() {
 		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
-				new HashMap<String, Double>());
-		investorA.getPortfolio().put("VTI", 8.2);
-		investorA.getPortfolio().put("VGK", 3.2);
-		investorA.getPortfolio().put("VWO", 1.4);
-		investorA.getPortfolio().put("IEI", 1.2);
+				new HashMap<String, PortfolioNode>());
+		investorA.getPortfolio().put("VTI", new PortfolioNode(8.2));
+		investorA.getPortfolio().put("VGK", new PortfolioNode(3.2));
+		investorA.getPortfolio().put("VWO", new PortfolioNode(1.4));
+		investorA.getPortfolio().put("IEI", new PortfolioNode(1.2));
 		this.tableInvestors.put(investorA.getName(), investorA);
 
 		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
-				new HashMap<String, Double>());
-		investorB.getPortfolio().put("VTI", 2.5);
-		investorB.getPortfolio().put("VGK", 1.4);
-		investorB.getPortfolio().put("VWO", 5.0);
-		investorB.getPortfolio().put("IEI", 3.0);
+				new HashMap<String, PortfolioNode>());
+		investorB.getPortfolio().put("VTI", new PortfolioNode(2.5));
+		investorB.getPortfolio().put("VGK", new PortfolioNode(1.4));
+		investorB.getPortfolio().put("VWO", new PortfolioNode(5.0));
+		investorB.getPortfolio().put("IEI", new PortfolioNode(3.0));
 		this.tableInvestors.put(investorB.getName(), investorB);
 	}
 

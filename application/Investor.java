@@ -63,12 +63,14 @@ public class Investor {
 	private StringProperty stringCurrentBalance = new SimpleStringProperty();
 
 	// the hash table with keys being the investment target name and values being
-	// the number of units that the investor has
-	// - note that strictly speaking, this is not portfolio, which is a set of
-	// financial assets (not number of units). In order to compute the portfolio,
-	// The number of units should be multiplied by unit price, which is stored in
+	// the information of each target specific to the investor (e.g., number of
+	// units, average cost, rate of return)
+	// - note that strictly speaking, the number of units is not portfolio.
+	// Portfolio is a set of financial assets (not number of units). In order to
+	// compute the portfolio, The number of units should be multiplied by unit
+	// price, which is stored in
 	// 'InvestmentTarget'.
-	private HashMap<String, Double> portfolio;
+	private HashMap<String, PortfolioNode> portfolio;
 
 	/**
 	 * Constructors
@@ -107,7 +109,7 @@ public class Investor {
 	 * @param portfolio
 	 */
 	public Investor(String name, Double targetRatio, Double rateReturn,
-			HashMap<String, Double> portfolio) {
+			HashMap<String, PortfolioNode> portfolio) {
 		this.setName(name);
 		this.setTargetRatio(targetRatio);
 		this.setRateReturn(rateReturn);
@@ -128,7 +130,7 @@ public class Investor {
 		Set<String> targetNames = this.portfolio.keySet();
 		double currentBalance = 0;
 		for (String targetName : targetNames) {
-			currentBalance += (this.portfolio.get(targetName)
+			currentBalance += (this.portfolio.get(targetName).getNumUnits()
 					* tableTagetsInfo.get(targetName).getCurrentPrice());
 		}
 		// set both the string and the corresponding string property
@@ -183,14 +185,14 @@ public class Investor {
 	/**
 	 * @return the portfolio
 	 */
-	public HashMap<String, Double> getPortfolio() {
+	public HashMap<String, PortfolioNode> getPortfolio() {
 		return portfolio;
 	}
 
 	/**
 	 * @param portfolio the portfolio to set
 	 */
-	public void setPortfolio(HashMap<String, Double> portfolio) {
+	public void setPortfolio(HashMap<String, PortfolioNode> portfolio) {
 		this.portfolio = portfolio;
 	}
 
