@@ -214,7 +214,8 @@ public class Main extends Application {
 			VBox boxChart = new VBox();
 			boxThisInvestor.getChildren().add(boxChart);
 			// create the pie chart
-			// Future TODO: ensure the color binds with specific target across investors' charts
+			// Future TODO: ensure the color binds with specific target across investors'
+			// charts
 			AnnotatedPieChart chart = new AnnotatedPieChart(
 					this.tablePieChartData.get(thisInvestor));
 			// hide the legend
@@ -297,9 +298,19 @@ public class Main extends Application {
 	private void initialize(String source) {
 		// set the default directory for file chooser to the data directory
 		String dataPath = Paths.get("./data/").toAbsolutePath().normalize().toString();
-		fileChooser.setInitialDirectory(new File(dataPath));
 		String outputPath = Paths.get("./output/").toAbsolutePath().normalize().toString();
 		dirChooser.setInitialDirectory(new File(outputPath));
+
+		// set the initial directory only if the path exists
+		File fileDataPath = new File(dataPath);
+		if (fileDataPath.isFile()) {
+			fileChooser.setInitialDirectory(new File(dataPath));
+		}
+		File fileOutputPath = new File(outputPath);
+		if (fileOutputPath.isFile()) {
+			fileChooser.setInitialDirectory(new File(outputPath));
+		}
+		// read in initial data
 		if (source.equals("files")) {
 			// initialize the recorder by external files
 			myRecorder.initializeFromFiles();
@@ -441,7 +452,8 @@ public class Main extends Application {
 				}
 				final double SUM_BALANCE = sumBalance;
 				// update the pie label
-				// Future TODO: Should place the labels above the chart. Probably relocate the labels
+				// Future TODO: Should place the labels above the chart. Probably relocate the
+				// labels
 				getData().forEach(d -> {
 					Optional<Node> opTextNode = this.lookupAll(".chart-pie-label").stream().filter(
 							n -> n instanceof Text && ((Text) n).getText().contains(d.getName()))
