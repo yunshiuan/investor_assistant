@@ -120,10 +120,8 @@ public class Investor {
 
 	/**
 	 * Compute the rate of return of investment.
-	 * 
-	 * @param investorName
 	 */
-	public void computeRateOfReturn(String investorName) {
+	public void computeRateOfReturn() {
 		/**
 		 * compute the sum of cost
 		 */
@@ -188,11 +186,9 @@ public class Investor {
 		this.rateReturn = rateReturn;
 		// update the corresponding property as well
 		// - format the string
-		this.stringRateReturn
-				.set("Rate of Return: "
-						+ String.format("%1.2f",
-								(Math.round((this.getRateReturn() - 1) * 10000) / 100.0))
-						+ "%");
+		this.stringRateReturn.set("Rate of Return: "
+				+ String.format("%1.2f", (Math.round((this.getRateReturn() - 1) * 10000) / 100.0))
+				+ "%");
 	}
 
 	/**

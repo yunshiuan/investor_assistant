@@ -158,6 +158,7 @@ public class Recorder {
 			HashMap<String, InvestmentTarget> newTargetInfo = MyFileReader
 					.readTargetInfoFile(fileName);
 			this.tableTargets = newTargetInfo;
+			this.updateAllInvestorsCurrentBalance();
 			this.updateAllInvestorsRateReturn();
 		} catch (IOException | InvalidFileFormatException e) {
 			throw new FailedReadingFileException(e.getMessage());
@@ -530,7 +531,7 @@ public class Recorder {
 	 * @param investorName
 	 */
 	private void updateOneInvestorRateReturn(String investorName) {
-		this.tableInvestors.get(investorName).computeRateOfReturn(investorName);
+		this.tableInvestors.get(investorName).computeRateOfReturn();
 	}
 
 	/**

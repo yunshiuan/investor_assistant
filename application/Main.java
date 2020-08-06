@@ -497,7 +497,7 @@ public class Main extends Application {
 			 */
 			// the text to show on the new window
 			Text secondTitle = new Text("Please select the the file of transactions to import."
-					+ "\n\nThe file should be in the correct format, e.g., 'transaction_record_20200801.csv'. ");
+					+ "\n\nThe file should be in the correct format, e.g., 'transaction_record_new.csv'.");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 			HBox boxTitle = new HBox(secondTitle);
@@ -554,7 +554,7 @@ public class Main extends Application {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setContentText(
 								"Please select a file that contains the transaction records,"
-										+ " e.g., 'transaction_record_20200801.csv'.");
+										+ " e.g., 'transaction_record_new.csv'.");
 						alert.show();
 						return;
 					}
@@ -569,7 +569,7 @@ public class Main extends Application {
 						// show success
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setContentText(
-								"You have successfully imported the transaction records based the file:\n"
+								"You have successfully imported the transaction records based on the file:\n"
 										+ externalFile.getPath()
 										+ "\n\nThe dashboard has been updated accordinly.");
 						alert.show();
@@ -579,7 +579,7 @@ public class Main extends Application {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setContentText("Failed to read the file."
 								+ " Please check that the file is in the coorect format."
-								+ " For the correct format, see 'data/transaction_record_20200730.csv'"
+								+ " For the correct format, see 'data/transaction_record_new.csv'"
 								+ "\n\nError Message:" + error.getMessage());
 						alert.show();
 					}
@@ -1111,7 +1111,7 @@ public class Main extends Application {
 			Text secondTitle = new Text(
 					"Please select the file that contains the current target price."
 							+ " \n\nThe file should be in the correct format,"
-							+ " e.g., 'target_info_20200806.csv'.");
+							+ " e.g., 'target_info_new.csv'.");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 
@@ -1169,7 +1169,7 @@ public class Main extends Application {
 						alert.setContentText(
 								"Please select the file that contains the current target price."
 										+ " \n\nThe file should be in the correct format,"
-										+ " e.g., 'target_info_20200806.csv'.");
+										+ " e.g., 'target_info_new.csv'.");
 						alert.show();
 						return;
 					}
@@ -1183,7 +1183,7 @@ public class Main extends Application {
 						// show success
 						Alert alert = new Alert(AlertType.INFORMATION);
 						alert.setContentText(
-								"You have successfully updated the price based the file:\n"
+								"You have successfully updated the price based on the file:\n"
 										+ externalFile.getPath()
 										+ "\n\nThe dashboard has been updated accordinly.");
 						alert.show();
@@ -1194,7 +1194,7 @@ public class Main extends Application {
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setContentText("Failed to read the file."
 								+ " Please check that the file is in the coorect format."
-								+ " For the correct format, see 'data/target_info_20200731.csv'"
+								+ " For the correct format, see 'data/target_info_new.csv'"
 								+ "\n\nError Message:" + error.getMessage());
 						alert.show();
 					}
