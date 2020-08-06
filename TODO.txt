@@ -10,6 +10,12 @@
 () For "add a transaction"
   - () use combo box for investors and targets
   - () use date picker for date
+() move 'tableRecords' from the field of Recorder to the field of Investor
+  () to facilitate the update of 'average cost' in each investor's portfolio
+() add a class 'portfolioNode', which has fields:
+  - number of units
+  - average cost
+  - return of investment
 
 Future work:
 - allow adding more investors.
