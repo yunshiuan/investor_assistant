@@ -128,6 +128,8 @@ public class Recorder {
 			this.updateInvestorPortfolioAfterImporting(newNodes);
 			// update the investors' current balance
 			this.updateAllInvestorsCurrentBalance();
+			// update the investor's rate of return
+			this.updateAllInvestorsRateReturn();
 			return true;
 		} catch (IOException | InvalidFileFormatException | NonExistentInvestorException
 				| NonExistentTargetException e) {
@@ -156,6 +158,7 @@ public class Recorder {
 			HashMap<String, InvestmentTarget> newTargetInfo = MyFileReader
 					.readTargetInfoFile(fileName);
 			this.tableTargets = newTargetInfo;
+			this.updateAllInvestorsRateReturn();
 		} catch (IOException | InvalidFileFormatException e) {
 			throw new FailedReadingFileException(e.getMessage());
 		} catch (Exception e) {
@@ -237,9 +240,12 @@ public class Recorder {
 				unitPrice, numUnits);
 		this.tableRecords.get(investorName).add(newNode);
 		// update the investors' portfolios
-		this.updateInvestorPortfolioAfterOneChange(investorName, transactionType, target, numUnits);
+		this.updateInvestorPortfolioAfterOneChange(investorName, transactionType, target, numUnits,
+				unitPrice);
 		// update the investors' current balance
 		this.updateOneInvestorCurrentBalance(investorName);
+		// update the investors' rate of return
+		this.updateOneInvestorRateReturn(investorName);
 		;
 	}
 
@@ -248,8 +254,8 @@ public class Recorder {
 	 */
 	public void initializeFromFiles() {
 		try {
-			this.updateInvestorInfo("./data/investor_info_20200731.csv");
 			this.updateTargetInfo("./data/target_info_20200731.csv");
+			this.updateInvestorInfo("./data/investor_info_20200731.csv");
 			this.importRecordData("./data/transaction_record_20200730.csv");
 		} catch (Exception e) {
 			System.out.println("Initilization failed.");
@@ -433,38 +439,50 @@ public class Recorder {
 	 * @param investorName
 	 * @param transactionType
 	 * @param target
-	 * @param numUnits
+	 * @param numUnits        the number of units of the given target in this
+	 *                        transaction
+	 * @param unitPrice       the unit price of the target in this transaction
 	 */
 	private void updateInvestorPortfolioAfterOneChange(String investorName, String transactionType,
-			String target, double numUnits) {
+			String target, double numUnits, double unitPrice) {
 
 		// update the number of units
 		HashMap<String, PortfolioNode> currentPortfolio = this.tableInvestors.get(investorName)
 				.getPortfolio();
-		// special case for the new investor who does not yet have any record
+		// special case for the new investor who does not yet have any records
 		if (currentPortfolio == null) {
 			this.tableInvestors.get(investorName)
 					.setPortfolio(new HashMap<String, PortfolioNode>());
 			this.tableInvestors.get(investorName).getPortfolio().put(target,
-					new PortfolioNode(numUnits));
+					new PortfolioNode(numUnits, unitPrice));
 			return;
 		}
 		// if the target not yet exists in this investor's portfolio
 		if (!currentPortfolio.containsKey(target)) {
 			this.tableInvestors.get(investorName).getPortfolio().put(target,
-					new PortfolioNode(numUnits));
+					new PortfolioNode(numUnits, unitPrice));
 			return;
 		}
 		// if the target already exists in this investor's portfolio
 		double currentNumUnits = currentPortfolio.get(target).getNumUnits();
 		double updatedNumUnits = currentNumUnits;
+		double currentAvgUnitCost = currentPortfolio.get(target).getAverageUnitCost();
+		double updatedAvgUnitCost = currentAvgUnitCost;
 		if (transactionType.toLowerCase().equals("buy")) {
+			// update the number of units
 			updatedNumUnits += numUnits;
+			// update the average unit cost
+			updatedAvgUnitCost = ((currentNumUnits * currentAvgUnitCost) + (numUnits * unitPrice))
+					/ (currentNumUnits + numUnits);
 		} else if (transactionType.toLowerCase().equals("sell")) {
+			// update the number of units
 			updatedNumUnits -= numUnits;
+			// update the average unit cost
+			updatedAvgUnitCost = ((currentNumUnits * currentAvgUnitCost) - (numUnits * unitPrice))
+					/ (currentNumUnits - numUnits);
 		}
 		this.tableInvestors.get(investorName).getPortfolio().put(target,
-				new PortfolioNode(updatedNumUnits));
+				new PortfolioNode(updatedNumUnits, updatedAvgUnitCost));
 	}
 
 	/**
@@ -478,7 +496,8 @@ public class Recorder {
 		// iterate over the new nodes
 		for (TransactionNode node : newNodes) {
 			this.updateInvestorPortfolioAfterOneChange(node.getInvestorName(),
-					node.getTransactionType(), node.getTarget(), node.getNumUnits());
+					node.getTransactionType(), node.getTarget(), node.getNumUnits(),
+					node.getUnitPrice());
 		}
 
 	}
@@ -506,23 +525,45 @@ public class Recorder {
 	}
 
 	/**
+	 * Update one investor's rate of return based on the current balance.
+	 * 
+	 * @param investorName
+	 */
+	private void updateOneInvestorRateReturn(String investorName) {
+		this.tableInvestors.get(investorName).computeRateOfReturn(investorName);
+	}
+
+	/**
+	 * Update all investors' rate of return based on the current balance.
+	 */
+	private void updateAllInvestorsRateReturn() {
+		// get all investor names
+		Set<String> investorNames = this.tableInvestors.keySet();
+
+		// iterate over each investor
+		for (String investorName : investorNames) {
+			updateOneInvestorRateReturn(investorName);
+		}
+	}
+
+	/**
 	 * Load in demo investor data.
 	 */
 	private void loadDemoInvestors() {
 		Investor investorA = new Investor("Andy", Double.valueOf(0.8), Double.valueOf(5.5),
 				new HashMap<String, PortfolioNode>());
-		investorA.getPortfolio().put("VTI", new PortfolioNode(8.2));
-		investorA.getPortfolio().put("VGK", new PortfolioNode(3.2));
-		investorA.getPortfolio().put("VWO", new PortfolioNode(1.4));
-		investorA.getPortfolio().put("IEI", new PortfolioNode(1.2));
+		investorA.getPortfolio().put("VTI", new PortfolioNode(8.2, 1.0));
+		investorA.getPortfolio().put("VGK", new PortfolioNode(3.2, 2.0));
+		investorA.getPortfolio().put("VWO", new PortfolioNode(1.4, 3.0));
+		investorA.getPortfolio().put("IEI", new PortfolioNode(1.2, 4.0));
 		this.tableInvestors.put(investorA.getName(), investorA);
 
 		Investor investorB = new Investor("Amy", Double.valueOf(0.6), Double.valueOf(1.5),
 				new HashMap<String, PortfolioNode>());
-		investorB.getPortfolio().put("VTI", new PortfolioNode(2.5));
-		investorB.getPortfolio().put("VGK", new PortfolioNode(1.4));
-		investorB.getPortfolio().put("VWO", new PortfolioNode(5.0));
-		investorB.getPortfolio().put("IEI", new PortfolioNode(3.0));
+		investorB.getPortfolio().put("VTI", new PortfolioNode(2.5, 2.0));
+		investorB.getPortfolio().put("VGK", new PortfolioNode(1.4, 3.0));
+		investorB.getPortfolio().put("VWO", new PortfolioNode(5.0, 4.0));
+		investorB.getPortfolio().put("IEI", new PortfolioNode(3.0, 5.0));
 		this.tableInvestors.put(investorB.getName(), investorB);
 	}
 

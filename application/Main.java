@@ -336,13 +336,15 @@ public class Main extends Application {
 				+ ((double) Math.round(investor.getCurrentBalance() * 100) / 100));
 		// enable data binding
 		currentBalance.textProperty().bind(investor.getStringCurrentBalance());
-		Text ratioInvestor = new Text("Targte Stock/Bond Ratio: " + investor.getTargetRatio());
 		Text returnInvestor = new Text("Return of Investment: " + investor.getRateReturn() + "%");
+		Text ratioInvestor = new Text("Targeted Stock/Bond Ratio: " + investor.getTargetRatio());
+		// enable data binding
+		returnInvestor.textProperty().bind(investor.getStringRateReturn());
 		box.getChildren().add(numberInvestor);
 		box.getChildren().add(nameInvestor);
 		box.getChildren().add(currentBalance);
-		box.getChildren().add(ratioInvestor);
 		box.getChildren().add(returnInvestor);
+		box.getChildren().add(ratioInvestor);
 		return box;
 	}
 
@@ -1109,7 +1111,7 @@ public class Main extends Application {
 			Text secondTitle = new Text(
 					"Please select the file that contains the current target price."
 							+ " \n\nThe file should be in the correct format,"
-							+ " e.g., 'transaction_record_20200801.csv'.");
+							+ " e.g., 'target_info_20200806.csv'.");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 
@@ -1165,8 +1167,9 @@ public class Main extends Application {
 						// show an error window
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setContentText(
-								"Please select a file that contains the transaction records,"
-										+ " e.g., 'transaction_record_20200801.csv'.");
+								"Please select the file that contains the current target price."
+										+ " \n\nThe file should be in the correct format,"
+										+ " e.g., 'target_info_20200806.csv'.");
 						alert.show();
 						return;
 					}

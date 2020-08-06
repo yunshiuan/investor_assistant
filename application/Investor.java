@@ -26,27 +26,6 @@ import javafx.beans.property.StringProperty;
  *
  */
 public class Investor {
-//	public class User{
-//	    private StringProperty nameProperty = new StringProperty();
-//
-//	    public final String getName() {
-//	        return nameProperty.get();
-//	    }
-//
-//	    public final void setName(String name) {
-//	        nameProperty.set(name);
-//	    }
-//
-//	    // expose the property for data binding
-//	    // – possibly use a read-only interface
-//	    public StringProperty nameProperty() {
-//	        return nameProperty;
-//	    }
-//
-//	    public User(String name) {
-//	        nameProperty.set(name);
-//	    }
-//	}	
 	/**
 	 * Private fields
 	 */
@@ -57,6 +36,8 @@ public class Investor {
 	private Double targetRatio;
 	// rate of return (%)
 	private Double rateReturn;
+	// the property of rate of return (%)
+	private StringProperty stringRateReturn = new SimpleStringProperty();
 	// the current total balance
 	private Double currentBalance;
 	// the property to facilitate data binding
@@ -138,6 +119,31 @@ public class Investor {
 	}
 
 	/**
+	 * Compute the rate of return of investment.
+	 * 
+	 * @param investorName
+	 */
+	public void computeRateOfReturn(String investorName) {
+		/**
+		 * compute the sum of cost
+		 */
+		double sumCost = 0;
+		// iterate over the investor's all targets
+		Set<String> targetNames = this.portfolio.keySet();
+		for (String targetName : targetNames) {
+			sumCost += this.portfolio.get(targetName).getNumUnits()
+					* this.portfolio.get(targetName).getAverageUnitCost();
+		}
+
+		/**
+		 * Compute the rate of return
+		 */
+		double rateReturn = this.getCurrentBalance() / sumCost;
+		// set both the value and the corresponding value property
+		this.setRateReturn(rateReturn);
+	}
+
+	/**
 	 * Getters and setters
 	 */
 	/**
@@ -180,6 +186,13 @@ public class Investor {
 	 */
 	public void setRateReturn(Double rateReturn) {
 		this.rateReturn = rateReturn;
+		// update the corresponding property as well
+		// - format the string
+		this.stringRateReturn
+				.set("Rate of Return: "
+						+ String.format("%1.2f",
+								(Math.round((this.getRateReturn() - 1) * 10000) / 100.0))
+						+ "%");
 	}
 
 	/**
@@ -210,8 +223,8 @@ public class Investor {
 		this.currentBalance = currentBalance;
 		// update the corresponding property as well
 		// - format the string
-		this.stringCurrentBalance.set(
-				"Current Balance: $" + ((double) Math.round(this.getCurrentBalance() * 100) / 100));
+		this.stringCurrentBalance.set("Current Balance: $"
+				+ String.format("%1.2f", (Math.round(this.getCurrentBalance() * 100) / 100.0)));
 	}
 
 	/**
@@ -219,6 +232,13 @@ public class Investor {
 	 */
 	public StringProperty getStringCurrentBalance() {
 		return this.stringCurrentBalance;
+	}
+
+	/**
+	 * @return the stringRateReturn
+	 */
+	public StringProperty getStringRateReturn() {
+		return stringRateReturn;
 	}
 
 }

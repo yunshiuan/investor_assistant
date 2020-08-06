@@ -27,24 +27,23 @@ public class PortfolioNode {
 	 */
 	// the number of units of this target the investor has
 	private Double numUnits;
-	// the average cost
-	private Double averageCost;
-	// rate of return (%)
-	private Double rateReturn;
+	// the average unit cost
+	private Double averageUnitCost;
+//	// rate of return (%)
+//	private Double rateReturn;
 
 	/**
 	 * Constructors
 	 */
-	public PortfolioNode(Double numUnits, Double averageCost, Double rateReturn) {
-		this.numUnits = numUnits;
-		this.averageCost = averageCost;
-		this.rateReturn = rateReturn;
-	}
 
-	public PortfolioNode(Double numUnits) {
+	/**
+	 * 
+	 * @param numUnits
+	 * @param averageUnitCost
+	 */
+	public PortfolioNode(Double numUnits, Double averageUnitCost) {
 		this.numUnits = numUnits;
-		this.averageCost = (double) 0;
-		this.rateReturn = (double) 0;
+		this.averageUnitCost = averageUnitCost;
 	}
 
 	/**
@@ -67,29 +66,29 @@ public class PortfolioNode {
 	/**
 	 * @return the averageCost
 	 */
-	public Double getAverageCost() {
-		return averageCost;
+	public Double getAverageUnitCost() {
+		return averageUnitCost;
 	}
 
 	/**
 	 * @param averageCost the averageCost to set
 	 */
-	public void setAverageCost(Double averageCost) {
-		this.averageCost = averageCost;
+	public void setAverageCost(Double averageUnitCost) {
+		this.averageUnitCost = averageUnitCost;
 	}
-
-	/**
-	 * @return the rateReturn
-	 */
-	public Double getRateReturn() {
-		return rateReturn;
-	}
-
-	/**
-	 * @param rateReturn the rateReturn to set
-	 */
-	public void setRateReturn(Double rateReturn) {
-		this.rateReturn = rateReturn;
-	}
+//
+//	/**
+//	 * @return the rateReturn
+//	 */
+//	public Double getRateReturn() {
+//		return rateReturn;
+//	}
+//
+//	/**
+//	 * @param rateReturn the rateReturn to set
+//	 */
+//	public void setRateReturn(Double rateReturn) {
+//		this.rateReturn = rateReturn;
+//	}
 
 }

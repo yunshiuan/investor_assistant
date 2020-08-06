@@ -1,21 +1,11 @@
 (3) Pie chart
   (3-1) () Should place the labels above the chart. Probably relocate the labels.
-  () Ensure the color binds to a specific pie slice
-(4) Investor box
-  (4-2) (-) Show the current stock/bond ratio
-  (4-3) (-) Show the return of investment rate
-    () compute the average cost of each target of each investor
+  () Ensure the color bound to a specific pie slice
 () write README
 () add a 'show all' button for 'show transaction'
 () For "add a transaction"
   - () use combo box for investors and targets
   - () use date picker for date
-() move 'tableRecords' from the field of Recorder to the field of Investor
-  () to facilitate the update of 'average cost' in each investor's portfolio
-() add a class 'portfolioNode', which has fields:
-  - number of units
-  - average cost
-  - return of investment
 
 Future work:
 - allow adding more investors.
@@ -24,3 +14,6 @@ Future work:
 - Should not hard-code 'VTI',...
 - should support 'dividend' as one of the transaction type
 - for the button 'show transactions': use tableView to show the transactions instead of a text area.
+- should calculate the average unit cost on a first-one-first-out basis ,i.e., whenever sell, sell the one that was bought earlier). For now, if the investor sells an target with the price higher than the current average unit cost, the average unit cost will decrease.
+- Add a 'cost-basis' section. Show the rate of return for each target.
+- show the current stock/bond ratio and update it dynamically
