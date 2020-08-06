@@ -3,9 +3,7 @@
   () Ensure the color bound to a specific pie slice
 () write README
 () add a 'show all' button for 'show transaction'
-() For "add a transaction"
-  - () use combo box for investors and targets
-  - () use date picker for date
+() Add left margin for secondary windows.
 
 Future work:
 - allow adding more investors.

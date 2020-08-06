@@ -105,10 +105,9 @@ public class Main extends Application {
 //	 the title in the top panel
 	private static final String TOP_TITLE = APP_TITLE;
 	// the labels for the "add a transaction" window
-	private static final String[] ADD_TRANS_LABELS = { "Transaction Type", "Investor Name",
-			"Target Name", "Unit Price", "# of Units" };
+	private static final String[] ADD_TRANS_LABELS = { "Unit Price", "# of Units" };
 	// the prompts for the "add a transaction" window
-	private static final String[] ADD_TRANS_PROMPT = { "buy", "Andy", "VTI", "155.13", "4.5" };
+	private static final String[] ADD_TRANS_PROMPT = { "155.13", "4.5" };
 
 	/**
 	 * Private fields
@@ -617,7 +616,7 @@ public class Main extends Application {
 			 * Top panel: add the title
 			 */
 			// the text to show on the new window
-			Text secondTitle = new Text("Type in the tractions you want to add.");
+			Text secondTitle = new Text("Type in the transaction you want to add.");
 
 			secondTitle.wrappingWidthProperty().set(SECOND_WINDOW_WIDTH);
 			HBox boxTitle = new HBox(secondTitle);
@@ -642,10 +641,14 @@ public class Main extends Application {
 			 * Center panel: all the inputs
 			 */
 			VBox boxInputs = new VBox();
-			// for choosing the date
+			// center the box
+			boxInputs.setAlignment(Pos.CENTER);
+			secondRoot.setCenter(boxInputs);
+
+			// date picker: for choosing the transaction date
 			HBox boxDatePicker = new HBox();
 			boxInputs.getChildren().add(boxDatePicker);
-			boxDatePicker.setAlignment(Pos.CENTER);
+			boxDatePicker.setAlignment(Pos.CENTER_LEFT);
 			boxDatePicker.getChildren().add(new Label("Transaction Date"));
 			DatePicker inputDatePicker = new DatePicker();
 			boxDatePicker.getChildren().add(inputDatePicker);
@@ -653,6 +656,45 @@ public class Main extends Application {
 			// set the default value for the date picker
 			inputDatePicker.setValue(stringToLocalDate("07-08-2020"));
 			inputDatePicker.getEditor().setDisable(true);
+
+			// combo box: transaction type
+			ObservableList<String> listType = FXCollections.observableArrayList();
+			// TODO: should not hard-code
+			listType.add("buy");
+			listType.add("sell");
+			ComboBox<String> comboBoxType = new ComboBox<String>(listType);
+			comboBoxType.setPromptText("Select...");
+			HBox boxType = new HBox();
+			boxType.getChildren().add(new Label("Transaction Type"));
+			boxType.getChildren().add(comboBoxType);
+			boxType.setAlignment(Pos.CENTER_LEFT);
+			boxInputs.getChildren().add(boxType);
+
+			// combo box: investor name
+			ObservableList<String> listInvestor = FXCollections.observableArrayList();
+			for (String investorName : myRecorder.getTableInvestors().keySet()) {
+				listInvestor.add(investorName);
+			}
+			ComboBox<String> comboBoxInvestor = new ComboBox<String>(listInvestor);
+			comboBoxInvestor.setPromptText("Select...");
+			HBox boxInvestor = new HBox();
+			boxInvestor.getChildren().add(new Label("Investor Name"));
+			boxInvestor.getChildren().add(comboBoxInvestor);
+			boxInvestor.setAlignment(Pos.CENTER_LEFT);
+			boxInputs.getChildren().add(boxInvestor);
+
+			// combo box: target name
+			ObservableList<String> listTarget = FXCollections.observableArrayList();
+			for (String targetName : myRecorder.getTableTargets().keySet()) {
+				listTarget.add(targetName);
+			}
+			ComboBox<String> comboBoxTarget = new ComboBox<String>(listTarget);
+			comboBoxTarget.setPromptText("Select...");
+			HBox boxTarget = new HBox();
+			boxTarget.getChildren().add(new Label("Target Name"));
+			boxTarget.getChildren().add(comboBoxTarget);
+			boxTarget.setAlignment(Pos.CENTER_LEFT);
+			boxInputs.getChildren().add(boxTarget);
 			// the input text fields
 			ArrayList<TextField> listFields = new ArrayList<TextField>(ADD_TRANS_LABELS.length);
 			for (int indexField = 0; indexField < ADD_TRANS_LABELS.length; indexField++) {
@@ -662,14 +704,10 @@ public class Main extends Application {
 				textField.setPromptText(ADD_TRANS_PROMPT[indexField]);
 				box.getChildren().add(new Label(ADD_TRANS_LABELS[indexField]));
 				box.getChildren().add(textField);
-				box.setAlignment(Pos.CENTER);
+				box.setAlignment(Pos.CENTER_LEFT);
 				// save the text fields so I could get the values later in the event handler
 				listFields.add(textField);
 			}
-
-			// center the text fields
-			boxInputs.setAlignment(Pos.CENTER);
-			secondRoot.setCenter(boxInputs);
 			/**
 			 * Create the scene for the new window
 			 */
@@ -691,27 +729,48 @@ public class Main extends Application {
 			buttonConfirm.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(final ActionEvent e) {
-					String investorName = "";
+					// put the variables here to facilitate exception handling
 					String target = "";
+					String investorName = "";
 					try {
+						// read in the transaction date
 						LocalDate inputDate = inputDatePicker.getValue();
-						// empty input
-						if (inputDate == null || inputDate == null) {
-							// show an error window
-							Alert alert = new Alert(AlertType.ERROR);
-							alert.setContentText("Please select both the start and end date!");
-							alert.show();
-							return;
-						}
 						// - convert the date to long format
 						long longInputDate = inputDate.getYear() * 10000
 								+ inputDate.getMonthValue() * 100 + inputDate.getDayOfMonth();
 
-						String transactionType = listFields.get(0).getText();
-						investorName = listFields.get(1).getText();
-						target = listFields.get(2).getText();
-						Double unitPrice = Double.valueOf(listFields.get(3).getText());
-						Double numUnits = Double.valueOf(listFields.get(4).getText());
+						// read in the transaction type
+						String transactionType = comboBoxType.getValue();
+						// if nothing is selected
+						if (transactionType == null) {
+							// show an error window
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setContentText("Please choose the transaction type!");
+							alert.show();
+							return;
+						}
+						// read in the investor name
+						investorName = comboBoxInvestor.getValue();
+						// if nothing is selected
+						if (investorName == null) {
+							// show an error window
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setContentText("Please choose the investor name!");
+							alert.show();
+							return;
+						}
+						// read in the target name
+						target = comboBoxTarget.getValue();
+						// if nothing is selected
+						if (target == null) {
+							// show an error window
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setContentText("Please choose the target name!");
+							alert.show();
+							return;
+						}
+						Double unitPrice = Double.valueOf(listFields.get(0).getText());
+						Double numUnits = Double.valueOf(listFields.get(1).getText());
 						myRecorder.addTransaction(longInputDate, investorName, transactionType,
 								target, unitPrice, numUnits);
 						updateOnePortfolioChartData(investorName);
@@ -726,7 +785,7 @@ public class Main extends Application {
 						// show an error window
 						Alert alert = new Alert(AlertType.ERROR);
 						alert.setContentText(
-								"Invalid input value. Please check the date, number of units, and unit price you typed are valid numbers.\n"
+								"Invalid input value. Please check 'number of units' and 'unit price' you typed are valid numbers.\n"
 										+ "\n\nError message: " + error.getMessage());
 						alert.show();
 						return;
