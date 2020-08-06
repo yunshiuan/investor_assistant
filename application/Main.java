@@ -105,11 +105,10 @@ public class Main extends Application {
 //	 the title in the top panel
 	private static final String TOP_TITLE = APP_TITLE;
 	// the labels for the "add a transaction" window
-	private static final String[] ADD_TRANS_LABELS = { "Transaction Date", "Transaction Type",
-			"Investor Name", "Target Name", "Unit Price", "# of Units" };
+	private static final String[] ADD_TRANS_LABELS = { "Transaction Type", "Investor Name",
+			"Target Name", "Unit Price", "# of Units" };
 	// the prompts for the "add a transaction" window
-	private static final String[] ADD_TRANS_PROMPT = { "20200714", "buy", "Andy", "VTI", "155.13",
-			"4.5" };
+	private static final String[] ADD_TRANS_PROMPT = { "buy", "Andy", "VTI", "155.13", "4.5" };
 
 	/**
 	 * Private fields
@@ -640,14 +639,25 @@ public class Main extends Application {
 			secondRoot.setBottom(boxButton);
 
 			/**
-			 * Center panel: text fields
+			 * Center panel: all the inputs
 			 */
-			VBox boxTextFields = new VBox();
+			VBox boxInputs = new VBox();
+			// for choosing the date
+			HBox boxDatePicker = new HBox();
+			boxInputs.getChildren().add(boxDatePicker);
+			boxDatePicker.setAlignment(Pos.CENTER);
+			boxDatePicker.getChildren().add(new Label("Transaction Date"));
+			DatePicker inputDatePicker = new DatePicker();
+			boxDatePicker.getChildren().add(inputDatePicker);
+			inputDatePicker.setPromptText("8/7/2020");
+			// set the default value for the date picker
+			inputDatePicker.setValue(stringToLocalDate("07-08-2020"));
+			inputDatePicker.getEditor().setDisable(true);
 			// the input text fields
 			ArrayList<TextField> listFields = new ArrayList<TextField>(ADD_TRANS_LABELS.length);
 			for (int indexField = 0; indexField < ADD_TRANS_LABELS.length; indexField++) {
 				HBox box = new HBox();
-				boxTextFields.getChildren().add(box);
+				boxInputs.getChildren().add(box);
 				TextField textField = new TextField();
 				textField.setPromptText(ADD_TRANS_PROMPT[indexField]);
 				box.getChildren().add(new Label(ADD_TRANS_LABELS[indexField]));
@@ -658,8 +668,8 @@ public class Main extends Application {
 			}
 
 			// center the text fields
-			boxTextFields.setAlignment(Pos.CENTER);
-			secondRoot.setCenter(boxTextFields);
+			boxInputs.setAlignment(Pos.CENTER);
+			secondRoot.setCenter(boxInputs);
 			/**
 			 * Create the scene for the new window
 			 */
@@ -684,14 +694,26 @@ public class Main extends Application {
 					String investorName = "";
 					String target = "";
 					try {
-						long date = Long.valueOf(listFields.get(0).getText());
-						String transactionType = listFields.get(1).getText();
-						investorName = listFields.get(2).getText();
-						target = listFields.get(3).getText();
-						Double unitPrice = Double.valueOf(listFields.get(4).getText());
-						Double numUnits = Double.valueOf(listFields.get(5).getText());
-						myRecorder.addTransaction(date, investorName, transactionType, target,
-								unitPrice, numUnits);
+						LocalDate inputDate = inputDatePicker.getValue();
+						// empty input
+						if (inputDate == null || inputDate == null) {
+							// show an error window
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setContentText("Please select both the start and end date!");
+							alert.show();
+							return;
+						}
+						// - convert the date to long format
+						long longInputDate = inputDate.getYear() * 10000
+								+ inputDate.getMonthValue() * 100 + inputDate.getDayOfMonth();
+
+						String transactionType = listFields.get(0).getText();
+						investorName = listFields.get(1).getText();
+						target = listFields.get(2).getText();
+						Double unitPrice = Double.valueOf(listFields.get(3).getText());
+						Double numUnits = Double.valueOf(listFields.get(4).getText());
+						myRecorder.addTransaction(longInputDate, investorName, transactionType,
+								target, unitPrice, numUnits);
 						updateOnePortfolioChartData(investorName);
 						updateAllPieCharts();
 						// show success
