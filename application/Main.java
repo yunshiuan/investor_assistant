@@ -585,6 +585,11 @@ public class Main extends Application {
 								+ " For the correct format, see 'data/transaction_record_new.csv'"
 								+ "\n\nError Message:" + error.getMessage());
 						alert.show();
+					} catch (Exception error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText(error.getMessage());
+						alert.show();
 					}
 				}
 			});
@@ -664,7 +669,7 @@ public class Main extends Application {
 
 			// combo box: transaction type
 			ObservableList<String> listType = FXCollections.observableArrayList();
-			// TODO: should not hard-code
+			// future TODO: should include 'dividend' and should not hard-code
 			listType.add("buy");
 			listType.add("sell");
 			ComboBox<String> comboBoxType = new ComboBox<String>(listType);
@@ -1282,6 +1287,11 @@ public class Main extends Application {
 								+ " Please check that the file is in the coorect format."
 								+ " For the correct format, see 'data/target_info_new.csv'"
 								+ "\n\nError Message:" + error.getMessage());
+						alert.show();
+					} catch (Exception error) {
+						// show an error window
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setContentText(error.getMessage());
 						alert.show();
 					}
 				}

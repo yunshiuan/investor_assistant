@@ -87,9 +87,9 @@ public class Recorder {
 	 * 
 	 * @param fileName a csv file that contains the file of transaction records.
 	 * @return true if succeeded and false if failed
-	 * @throws FailedReadingFileException
+	 * @throws Exception
 	 */
-	public boolean importRecordData(String fileName) throws FailedReadingFileException {
+	public boolean importRecordData(String fileName) throws Exception {
 		try {
 			// get the list of the new nodes in the file
 			LinkedList<TransactionNode> newNodes = MyFileReader.readTransactionFile(fileName);
@@ -108,7 +108,7 @@ public class Recorder {
 				}
 				// non-existent targets
 				if (!targetNames.contains(node.getTarget())) {
-					// TODO: should not hard-code this
+					// Future TODO: should not hard-code this
 					throw new NonExistentTargetException("The target " + node.getTarget()
 							+ " is not present in the recorder. "
 							+ "Should be one of the following: 'VTI','VWO','VPL','VWO','IEI','BWX'.");
@@ -134,9 +134,7 @@ public class Recorder {
 				| NonExistentTargetException e) {
 			throw new FailedReadingFileException(e.getMessage());
 		} catch (Exception e) {
-			// TODO Should print this to the GUI
-			e.printStackTrace();
-			return false;
+			throw new Exception("An unexpected error occured.\n\nError message: " + e.getMessage());
 		}
 	}
 
@@ -147,9 +145,9 @@ public class Recorder {
 	 * 
 	 * @param fileName the file that contains the current price of each target.
 	 * @return true if succeeded and false if failed
-	 * @throws FailedReadingFileException
+	 * @throws Exception
 	 */
-	public boolean updateTargetInfo(String fileName) throws FailedReadingFileException {
+	public boolean updateTargetInfo(String fileName) throws Exception {
 		// get the hash table that contains the current price of each target
 		try {
 			HashMap<String, InvestmentTarget> newTargetInfo = MyFileReader
@@ -160,10 +158,7 @@ public class Recorder {
 		} catch (IOException | InvalidFileFormatException e) {
 			throw new FailedReadingFileException(e.getMessage());
 		} catch (Exception e) {
-			// TODO Should print this to the GUI
-			System.out.println("An unexpected exception occured!");
-			e.printStackTrace();
-			return false;
+			throw new Exception("An unexpected error occured.\n\nError message: " + e.getMessage());
 		}
 		return false;
 	}
@@ -175,8 +170,9 @@ public class Recorder {
 	 * 
 	 * @param fileName the file that contains investors' information.
 	 * @return true if succeeded and false if failed
+	 * @throws Exception
 	 */
-	public boolean updateInvestorInfo(String fileName) {
+	public boolean updateInvestorInfo(String fileName) throws Exception {
 		// get the hash table that contains the information of each investor
 		try {
 			HashMap<String, Investor> newInvestorInfo = MyFileReader.readInvestorInfoFile(fileName);
@@ -195,13 +191,10 @@ public class Recorder {
 			// update the tableInvestors
 			this.tableInvestors = newInvestorInfo;
 		} catch (IOException | InvalidFileFormatException e) {
-			// TODO Should print this to the GUI
-			e.printStackTrace();
-			return false;
+			throw new FailedReadingFileException(
+					"An error occured while reading the file.\n\nError message: " + e.getMessage());
 		} catch (Exception e) {
-			// TODO Should print this to the GUI
-			e.printStackTrace();
-			return false;
+			throw new Exception("An unexpected error occured.\n\nError message: " + e.getMessage());
 		}
 		return false;
 	}
