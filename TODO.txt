@@ -1,9 +1,11 @@
-(3) Pie chart
-  (3-1) () Should place the labels above the chart. Probably relocate the labels.
-  () Ensure the color bound to a specific pie slice
 () write README
-() add a 'show all' button for 'show transaction'
-() Add left margin for secondary windows.
+() must have a way to exit the program.
+
+Known bugs:
+- Pie chart:
+  - Adding new transactions sometimes cause the slice color of each target in the pie chart changes. Ideally, the color should bind to a specific target
+  - The labels for the targets disappear when the slice becomes too small. Should figure out a way to re-locate the labels so they fit in the box.
+  - Some label are covered by the pie chart. The labels should always be above the pie chart.
 
 Future work:
 - allow adding more investors.
@@ -15,3 +17,5 @@ Future work:
 - should calculate the average unit cost on a first-one-first-out basis ,i.e., whenever sell, sell the one that was bought earlier). For now, if the investor sells an target with the price higher than the current average unit cost, the average unit cost will decrease.
 - Add a 'cost-basis' section. Show the rate of return for each target.
 - show the current stock/bond ratio and update it dynamically
+- add a 'show all date range' button for 'show transaction'
+- Add left margin for secondary windows.

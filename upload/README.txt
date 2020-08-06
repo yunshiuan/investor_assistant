@@ -25,7 +25,6 @@ application/
 -------------------
 future works
 -------------------
-
 - Allow adding more investors.
 - Allow adding more targets.
 - Should support 'dividend' as one of the transaction type
