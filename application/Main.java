@@ -61,6 +61,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -240,10 +241,11 @@ public class Main extends Application {
 		Button buttonShowTransactions = new Button("Show \nTransactions");
 		Button buttonSaveTransactions = new Button("Save \nTransactions");
 		Button buttonUpdatePrice = new Button("Update Price");
+		Button buttonQuit = new Button("Quit Program");
 
 		// collect the buttons to a list
 		Button menuButtonsList[] = { buttonImport, buttonAddTransaction, buttonShowTransactions,
-				buttonSaveTransactions, buttonUpdatePrice };
+				buttonSaveTransactions, buttonUpdatePrice, buttonQuit };
 		// add styled buttons to the box
 		for (int indexButton = 0; indexButton < menuButtonsList.length; indexButton++) {
 			// set the styles of the buttons
@@ -268,6 +270,8 @@ public class Main extends Application {
 		buttonSaveTransactions.setOnAction(new SaveTransactionsButtomHandler(primaryWindow));
 		// the "update price" button
 		buttonUpdatePrice.setOnAction(new UpdatePriceButtomHandler(primaryWindow));
+		// the "quit program" button
+		buttonQuit.setOnAction(new QuiteProgramButtomHandler(primaryWindow));
 		/**
 		 * Define the stage based on the scene
 		 */
@@ -1303,6 +1307,40 @@ public class Main extends Application {
 				}
 			});
 		}
-
 	};
+
+	/**
+	 * The event handler for the 'quite program' button.
+	 * 
+	 * @author Chuang, Yun-Shiuan (Sean)
+	 * @email ychuang26@wisc.edu
+	 * @date 20200801
+	 */
+	private class QuiteProgramButtomHandler implements EventHandler<ActionEvent> {
+		private final Stage primaryWindow;
+
+		public QuiteProgramButtomHandler(Stage primaryWindow) {
+			this.primaryWindow = primaryWindow;
+		}
+
+		@Override
+		public void handle(ActionEvent event) {
+
+			// ask for confirmation
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Confirm to quit the program");
+			alert.setHeaderText("Are you sure you want to quit the program?");
+			alert.setContentText("Note: If you want to use the program later with the"
+					+ " records you have imported/added, "
+					+ " please use 'Save Transactions' to save the records.");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK) {
+				primaryWindow.close();
+			} else {
+				alert.close();
+			}
+		};
+	}
+
 }

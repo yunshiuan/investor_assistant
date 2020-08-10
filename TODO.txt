@@ -1,6 +1,3 @@
-() write README
-() must have a way to exit the program.
-
 Known bugs:
 see upload/README.txt
 
