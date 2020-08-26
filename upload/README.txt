@@ -1,11 +1,3 @@
-Course: cs400
-Semester: Summer 2020
-Project name: Best Investment Assistant for Joint Account Holders
-Student Name: Chuang, Yun-Shiuan (Sean)
-email: ychuang26@wisc.edu
-
-Other notes or comments to the grader:
-
 -------------------
 sub-directories
 -------------------
