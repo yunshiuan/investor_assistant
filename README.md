@@ -5,6 +5,7 @@
 - [Best Investment Assistant for Joint Account Holders project](#best-investment-assistant-for-joint-account-holders-project)
   - [Project Name:](#project-name)
   - [Description:](#description)
+  - [The GUI preview](#the-gui-preview)
   - [Directorie structure](#directorie-structure)
 - [application](#application)
 - [design proposal](#design-proposal)
@@ -28,6 +29,9 @@ Best Investment Assistant for Joint Account Holders project
 Investment is a key to build up savings. Some investors use a joint investment account for various reasons like reducing account maintenance fee, fulfilling a minimum asset requirement. In such case, it is especially challenging for each individual to keep track of their assets because (1) each person’s investment target may overlap with one another, (2) different investors’ transactions on the same transaction target might have different unit cost, and (3) the dividends are given to the investors as a group rather than individually. Mainstream brokerage companies (e.g., Charles Schwab, TD Ameritrade) do not provide user interfaces for joint investors to view their individual investment records (e.g., current assets portfolio, change in assets).
 
 With this program, the investors could readily (1) view their assets (e.g., current assets portfolio, return of investment, investment history), and (2) manage their investment accordingly (e.g., rebalancing).
+
+### The GUI preview
+![The GUI](screenshots/1_initial_menu.png)
 
 ### Directorie structure
 
